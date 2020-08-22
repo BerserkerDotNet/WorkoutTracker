@@ -11,7 +11,7 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker
 {
-    public class ExerciseListAdapter : BaseAdapter<ExerciseLogEntry>
+    public class ExerciseLogsAdapter : BaseAdapter<ExerciseLogEntry>
     {
         private readonly Activity _context;
         private readonly IRepository _repository;
@@ -19,7 +19,7 @@ namespace WorkoutTracker
         private ExerciseLogEntry[] _items;
         private Dictionary<Guid, Exercise> _exercisesLookup;
 
-        public ExerciseListAdapter(Activity context, IRepository repository, SwipeRefreshLayout refreshLayout)
+        public ExerciseLogsAdapter(Activity context, IRepository repository, SwipeRefreshLayout refreshLayout)
         {
             _context = context;
             _repository = repository;

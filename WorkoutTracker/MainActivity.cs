@@ -12,14 +12,15 @@ using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
 using WorkoutTracker.Data;
+using WorkoutTracker.Interfaces;
 using WorkoutTracker.Models;
 
 namespace WorkoutTracker
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
+    public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener, IToolBarHost
     {
-        ExerciseListAdapter _exercisesAdapter;
+        public event EventHandler OnFabClicked;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -28,8 +29,6 @@ namespace WorkoutTracker
             SetContentView(Resource.Layout.activity_main);
             Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
-
-            var refreshLayout = FindViewById<SwipeRefreshLayout>(Resource.Id.exercises_refresh_layout);
 
             FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.addNewExercise);
             fab.Click += FabOnClick;
@@ -42,9 +41,7 @@ namespace WorkoutTracker
             NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
             navigationView.SetNavigationItemSelectedListener(this);
 
-            _exercisesAdapter = new ExerciseListAdapter(this, ApiRepository.Instance, refreshLayout);
-            var exercisesLog = FindViewById<ListView>(Resource.Id.exercises_list);
-            exercisesLog.Adapter = _exercisesAdapter;
+            NavigateTo<ExerciseLogs>();
         }
 
         public override void OnBackPressed()
@@ -73,11 +70,7 @@ namespace WorkoutTracker
 
         private void FabOnClick(object sender, EventArgs eventArgs)
         {
-            var intent = new Android.Content.Intent(this, typeof(AddExerciseLogActivity));
-            var exerciseId = _exercisesAdapter.Last.ExerciseId;
-
-            intent.PutExtra(nameof(ExerciseLogEntry.ExerciseId), exerciseId.ToString());
-            StartActivityForResult(intent, 1);
+            OnFabClicked?.Invoke(sender, eventArgs);
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
@@ -99,30 +92,41 @@ namespace WorkoutTracker
                 Note = data.GetStringExtra("Note")
             };
 
-            _exercisesAdapter.AddAndRefresh(exerciseLogEntry);
+            // _exercisesAdapter.AddAndRefresh(exerciseLogEntry);
         }
 
         public bool OnNavigationItemSelected(IMenuItem item)
         {
-            int id = item.ItemId;
-
-            if (id == Resource.Id.nav_camera)
+            switch (item.ItemId)
             {
-                // Handle the camera action
-            }
-            else if (id == Resource.Id.nav_gallery)
-            {
+                case Resource.Id.nav_exercise_logs:
+                    NavigateTo<ExerciseLogs>();
+                    break;
+                case Resource.Id.nav_exercises:
+                    NavigateTo<Exercises>();
+                    break;
             }
 
-            DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
+            var drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             drawer.CloseDrawer(GravityCompat.Start);
             return true;
         }
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+
+        private void NavigateTo<T>()
+            where T: Android.Support.V4.App.Fragment, new()
+        {
+            SupportFragmentManager
+                .BeginTransaction()
+                .Replace(Resource.Id.fragment_container, new T())
+                .Commit();
         }
     }
 }

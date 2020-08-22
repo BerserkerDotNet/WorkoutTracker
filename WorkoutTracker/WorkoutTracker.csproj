@@ -66,10 +66,15 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\ExercisesAdapter.cs" />
     <Compile Include="AddExerciseLogActivity.cs" />
     <Compile Include="Data\ApiRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
-    <Compile Include="ExerciseListAdapter.cs" />
+    <Compile Include="Adapters\ExerciseLogsAdapter.cs" />
+    <Compile Include="ExerciseLogs.cs" />
+    <Compile Include="Adapters\ExerciseSelector.cs" />
+    <Compile Include="Exercises.cs" />
+    <Compile Include="Interfaces\IToolBarHost.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -189,6 +194,22 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\decline_crunch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\exercises_log.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\exercises.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\exercises_listview.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
