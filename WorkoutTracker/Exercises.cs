@@ -38,7 +38,7 @@ namespace WorkoutTracker
             _toolBarHost = Activity as IToolBarHost;
             if (_toolBarHost is object)
             {
-                _toolBarHost.OnFabClicked += OnFabClicked;
+                _toolBarHost.FabButtonVisible = false;
             }
 
             return view;
@@ -46,16 +46,7 @@ namespace WorkoutTracker
 
         public override void OnDestroy()
         {
-            if (_toolBarHost is object)
-            {
-                _toolBarHost.OnFabClicked -= OnFabClicked;
-            }
-
             base.OnDestroy();
-        }
-
-        private void OnFabClicked(object sender, EventArgs e)
-        {
         }
     }
 }

@@ -74,6 +74,7 @@
     <Compile Include="ExerciseLogs.cs" />
     <Compile Include="Adapters\ExerciseSelector.cs" />
     <Compile Include="Exercises.cs" />
+    <Compile Include="Interfaces\IActivityResultHandler.cs" />
     <Compile Include="Interfaces\IToolBarHost.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

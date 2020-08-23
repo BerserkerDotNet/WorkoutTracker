@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Support.V4.Widget;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using WorkoutTracker.Data;
@@ -17,10 +11,10 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker
 {
-    public class ExerciseLogs : Android.Support.V4.App.Fragment
+    public class ExerciseLogs : Android.Support.V4.App.Fragment, IActivityResultHandler
     {
-        ExerciseLogsAdapter _exercisesAdapter;
-        IToolBarHost _toolBarHost;
+        private ExerciseLogsAdapter _exercisesAdapter;
+        private IToolBarHost _toolBarHost;
 
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -39,6 +33,7 @@ namespace WorkoutTracker
             _toolBarHost = Activity as IToolBarHost;
             if (_toolBarHost is object)
             {
+                _toolBarHost.FabButtonVisible = true;
                 _toolBarHost.OnFabClicked += OnFabClicked;
             }
 
@@ -53,6 +48,28 @@ namespace WorkoutTracker
             }
 
             base.OnDestroy();
+        }
+
+        public void HandleActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            if (resultCode == Result.Canceled)
+            {
+                return;
+            }
+
+            var exerciseLogEntry = new ExerciseLogEntry
+            {
+                Id = Guid.NewGuid(),
+                ExerciseId = Guid.Parse(data.GetStringExtra("Exercise")),
+                Date = DateTime.UtcNow,
+                Repetitions = data.GetIntExtra("Reps", 0),
+                Duration = TimeSpan.FromSeconds(data.GetIntExtra("Duration", 0)),
+                Score = data.GetIntExtra("Score", 0),
+                Weight = data.GetDoubleExtra("Weight", 0),
+                Note = data.GetStringExtra("Note")
+            };
+
+            _exercisesAdapter.AddAndRefresh(exerciseLogEntry);
         }
 
         private void OnFabClicked(object sender, EventArgs e)

@@ -20,6 +20,15 @@ namespace WorkoutTracker
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener, IToolBarHost
     {
+        private const string CurrentFragmentTag = "CURRENT_FRAGMENT";
+        private FloatingActionButton _fabButton;
+
+        public bool FabButtonVisible 
+        {
+            get => _fabButton.Visibility == ViewStates.Visible;
+            set => _fabButton.Visibility = value ? ViewStates.Visible : ViewStates.Gone;
+        }
+
         public event EventHandler OnFabClicked;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -30,8 +39,8 @@ namespace WorkoutTracker
             Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
 
-            FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.addNewExercise);
-            fab.Click += FabOnClick;
+            _fabButton = FindViewById<FloatingActionButton>(Resource.Id.addNewExercise);
+            _fabButton.Click += FabOnClick;
 
             DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             var toggle = new ActionBarDrawerToggle(this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
@@ -75,24 +84,11 @@ namespace WorkoutTracker
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
         {
-            if (resultCode == Result.Canceled)
+            var handler = SupportFragmentManager.FindFragmentByTag(CurrentFragmentTag) as IActivityResultHandler;
+            if (handler is object)
             {
-                return;
+                handler.HandleActivityResult(requestCode, resultCode, data);
             }
-
-            var exerciseLogEntry = new ExerciseLogEntry
-            {
-                Id = Guid.NewGuid(),
-                ExerciseId = Guid.Parse(data.GetStringExtra("Exercise")),
-                Date = DateTime.UtcNow,
-                Repetitions = data.GetIntExtra("Reps", 0),
-                Duration = TimeSpan.FromSeconds(data.GetIntExtra("Duration", 0)),
-                Score = data.GetIntExtra("Score", 0),
-                Weight = data.GetDoubleExtra("Weight", 0),
-                Note = data.GetStringExtra("Note")
-            };
-
-            // _exercisesAdapter.AddAndRefresh(exerciseLogEntry);
         }
 
         public bool OnNavigationItemSelected(IMenuItem item)
@@ -125,7 +121,7 @@ namespace WorkoutTracker
         {
             SupportFragmentManager
                 .BeginTransaction()
-                .Replace(Resource.Id.fragment_container, new T())
+                .Replace(Resource.Id.fragment_container, new T(), CurrentFragmentTag)
                 .Commit();
         }
     }
