@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-
+using System.Threading.Tasks;
 using Android.App;
 using Android.Graphics;
 using Android.Views;
@@ -13,14 +13,18 @@ namespace WorkoutTracker
     public class ExerciseSelector : BaseAdapter<Exercise>
     {
         private readonly Activity _context;
+        private CacheManager _cache;
         Exercise[] _items;
 
         public ExerciseSelector(Activity context)
         {
-            var exercises = InMemoryCache.Instance.GetCollection<Exercise>(nameof(Exercise));
-            _items = exercises.OrderBy(e => e.Name).ToArray();
-
             _context = context;
+            _cache = new CacheManager(context);
+            _items = Array.Empty<Exercise>();
+
+            LoadData()
+                .ConfigureAwait(false)
+                .GetAwaiter().GetResult();
         }
 
         public override Exercise this[int position] => _items[position];
@@ -51,6 +55,14 @@ namespace WorkoutTracker
         {
             var item = _items.Single(i => i.Id == id);
             return Array.IndexOf(_items, item);
+        }
+
+        private Task LoadData()
+        {
+            return _cache.GetAll(ApiRepository.Instance.GetAll<Exercise>).ContinueWith(task =>
+            {
+                _items = task.Result.OrderBy(e => e.Name).ToArray();
+            });
         }
     }
 }

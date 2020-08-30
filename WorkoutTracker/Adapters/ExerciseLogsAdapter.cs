@@ -17,6 +17,7 @@ namespace WorkoutTracker
     {
         private readonly Activity _context;
         private readonly IExerciseLogRepository _repository;
+        private readonly CacheManager _cache;
         private readonly SwipeRefreshLayout _refreshLayout;
         private List<ExerciseLogEntry> _items;
         private DateTime[] _dates;
@@ -26,7 +27,9 @@ namespace WorkoutTracker
         public ExerciseLogsAdapter(Activity context, IExerciseLogRepository repository, SwipeRefreshLayout refreshLayout)
         {
             _context = context;
+
             _repository = repository;
+            _cache = new CacheManager(context);
             _refreshLayout = refreshLayout;
             _refreshLayout.Refresh += OnRefresh;
 
@@ -75,7 +78,7 @@ namespace WorkoutTracker
         private Task ReloadData()
         {
             _refreshLayout.Refreshing = true;
-            var exercisesTask = InMemoryCache.Instance.ContainsKey(nameof(Exercise)) ? Task.FromResult(InMemoryCache.Instance.GetCollection<Exercise>(nameof(Exercise))) : _repository.GetAll<Exercise>();
+            var exercisesTask = _cache.GetAll(_repository.GetAll<Exercise>);
             var datesTask = _repository.GetDates();
 
             return Task.WhenAll(exercisesTask, datesTask)
@@ -83,7 +86,6 @@ namespace WorkoutTracker
                 {
                     var exercises = exercisesTask.Result;
                     _exercisesLookup = exercises.ToDictionary(e => e.Id, e => e);
-                    InMemoryCache.Instance.SetCollection(nameof(Exercise), exercises);
 
                     _dates = datesTask.Result
                         .Select(d => DateTime.ParseExact(d, "dd-MM-yyyy", null))

@@ -70,6 +70,7 @@
     <Compile Include="Adapters\RandomizeListAdapter.cs" />
     <Compile Include="AddExerciseLogActivity.cs" />
     <Compile Include="Data\ApiRepository.cs" />
+    <Compile Include="Data\CacheManager.cs" />
     <Compile Include="Data\IExerciseLogRepository.cs" />
     <Compile Include="Data\InMemoryCache.cs" />
     <Compile Include="Data\IRepository.cs" />

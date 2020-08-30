@@ -14,6 +14,7 @@ namespace WorkoutTracker
     public class ExercisesAdapter : BaseAdapter<Exercise>
     {
         private readonly Activity _context;
+        private readonly CacheManager _cache;
         private readonly SwipeRefreshLayout _refreshLayout;
         private readonly IRepository _repository;
         private Exercise[] _items;
@@ -21,6 +22,7 @@ namespace WorkoutTracker
         public ExercisesAdapter(Activity context, SwipeRefreshLayout refreshLayout)
         {
             _context = context;
+            _cache = new CacheManager(context);
             _refreshLayout = refreshLayout;
             _refreshLayout.Refresh += OnRefresh;
             _repository = ApiRepository.Instance;
@@ -62,7 +64,7 @@ namespace WorkoutTracker
         {
             _refreshLayout.Refreshing = true;
 
-            return _repository.GetAll<Exercise>().ContinueWith(itemsTask =>
+            return _cache.GetAll(_repository.GetAll<Exercise>).ContinueWith(itemsTask =>
             {
                 _items = itemsTask.Result.OrderBy(e => e.Name).ToArray();
                 _context.RunOnUiThread(() =>

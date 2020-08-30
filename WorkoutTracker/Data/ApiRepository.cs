@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using WorkoutTracker.Models;
 
@@ -16,7 +17,7 @@ namespace WorkoutTracker.Data
         private ApiRepository()
         {
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("http://192.168.0.19:7071/api/" /* "https://workouttrackerfunctions.azurewebsites.net/api/" */);
+            _client.BaseAddress = new Uri(/*"http://192.168.0.19:7071/api/"*/  "https://workouttrackerfunctions.azurewebsites.net/api/" );
             _client.DefaultRequestHeaders.Add("x-functions-key", "tEtzNOPdCPqpWIakJBMf3gHKhVpX9cssTLT6O0rRygD1r3ohys0N7A==");
         }
 
@@ -67,22 +68,6 @@ namespace WorkoutTracker.Data
             return _client.PatchAsync(endpoint, new StringContent(content, System.Text.Encoding.UTF8, "application/json"));
         }
 
-        private string GetApiEndpointFor<T>()
-            where T : EntityBase
-        {
-            var type = typeof(T);
-            if (type == typeof(Exercise))
-            {
-                return "Exercises";
-            }
-            else if (type == typeof(ExerciseLogEntry))
-            {
-                return "ExerciseLogs";
-            }
-
-            throw new NotSupportedException($"Type of {type} is not supported.");
-        }
-
         async Task<IEnumerable<ExerciseLogEntry>> IExerciseLogRepository.GetByDate(DateTime date)
         {
             var endpoint = GetApiEndpointFor<ExerciseLogEntry>();
@@ -111,6 +96,22 @@ namespace WorkoutTracker.Data
             var items = JsonConvert.DeserializeObject<IEnumerable<string>>(content);
 
             return items;
+        }
+
+        private string GetApiEndpointFor<T>()
+            where T : EntityBase
+        {
+            var type = typeof(T);
+            if (type == typeof(Exercise))
+            {
+                return "Exercises";
+            }
+            else if (type == typeof(ExerciseLogEntry))
+            {
+                return "ExerciseLogs";
+            }
+
+            throw new NotSupportedException($"Type of {type} is not supported.");
         }
     }
 }
