@@ -29,6 +29,7 @@ namespace WorkoutTracker
             _exercisesAdapter = new ExerciseLogsAdapter(Activity, ApiRepository.Instance, refreshLayout);
             var exercisesLog = view.FindViewById<ListView>(Resource.Id.exercises_log_list);
             exercisesLog.Adapter = _exercisesAdapter;
+            exercisesLog.SetOnScrollListener(_exercisesAdapter);
 
             _toolBarHost = Activity as IToolBarHost;
             if (_toolBarHost is object)

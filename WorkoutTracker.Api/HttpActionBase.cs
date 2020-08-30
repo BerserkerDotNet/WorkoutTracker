@@ -4,40 +4,33 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Azure.Cosmos.Table;
 using WorkoutTracker.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Web.Http;
-using Microsoft.Azure.Cosmos.Table.Queryable;
 using Microsoft.Extensions.Configuration;
+using WorkoutTracker.Api.Interfaces;
 
 namespace WorkoutTracker.Api
 {
     public abstract class HttpActionsBase<T>
         where T : EntityBase, new()
     {
-        private CloudTable _table;
-
-        public HttpActionsBase(IConfigurationRoot config)
+        public HttpActionsBase(IRepository<T> repository)
         {
-            var prefix = config.GetValue<string>("TablePrefix");
-            var storageConString = config.GetConnectionString("StorageConnection");
-            var storageAccount = CloudStorageAccount.Parse(storageConString);
-            var client = storageAccount.CreateCloudTableClient();
-            _table = client.GetTableReference($"{prefix}{typeof(T).Name}");
-            _table.CreateIfNotExists();
+            this.Repository = repository;
         }
 
         protected ILogger Log { get; private set; }
+
+        protected IRepository<T> Repository { get; private set; }
 
         public async Task<IActionResult> Run(HttpRequest req, ILogger log)
         {
             object result;
             try
             {
-                
                 Log = log;
                 switch (req.Method.ToUpper())
                 {
@@ -73,50 +66,31 @@ namespace WorkoutTracker.Api
             return new OkObjectResult(result);
         }
 
-        internal abstract EntityWrapper<T> GetEntityWrapper(T entity);
-
-        internal abstract TableQuery<EntityWrapper<T>> GetQueryFromRequest(TableQuery<EntityWrapper<T>> query, HttpRequest req);
-
-        protected ValueTask<IEnumerable<T>> Get(HttpRequest req)
+        protected virtual async ValueTask<IEnumerable<T>> Get(HttpRequest req)
         {
-            var query = GetQueryFromRequest(_table.CreateQuery<EntityWrapper<T>>(), req);
-            var result = _table.ExecuteQuery(query);
+            if (req.Query.ContainsKey("id"))
+            {
+                var id = ExtractId(req);
+                var item = await Repository.Get(Guid.Parse(id));
+                return new[] { item };
+            }
 
-            return new ValueTask<IEnumerable<T>>(Task.FromResult(result.Select(w => w.Entity)));
+            return await Repository.Get();
         }
 
         protected async ValueTask<T> Post(T entity)
         {
-            var wrapper = GetEntityWrapper(entity);
-            var operation = TableOperation.Insert(wrapper);
-            await _table.ExecuteAsync(operation);
-
-            return entity;
+            return await Repository.Create(entity);
         }
 
         protected async ValueTask<T> Patch(T entity)
         {
-            var wrapper = GetEntityWrapper(entity);
-            var operation = TableOperation.Merge(wrapper);
-            await _table.ExecuteAsync(operation);
-
-            var readOperation = TableOperation.Retrieve(wrapper.PartitionKey, wrapper.RowKey);
-            var operationResult = await _table.ExecuteAsync(readOperation);
-
-            return (T)operationResult.Result;
+            return await Repository.Update(entity);
         }
 
         protected async ValueTask<bool> Delete(string id)
         {
-            var entities = _table.ExecuteQuery(_table.CreateQuery<EntityWrapper<T>>().Where(q => q.RowKey == id).AsTableQuery());
-            if (!entities.Any())
-            {
-                return false;
-            }
-
-            var deleteOperation  = TableOperation.Delete(entities.First());
-            await _table.ExecuteAsync(deleteOperation);
-
+            await Repository.Delete(Guid.Parse(id));
             return true;
         }
 

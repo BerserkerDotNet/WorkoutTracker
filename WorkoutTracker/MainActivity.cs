@@ -101,6 +101,9 @@ namespace WorkoutTracker
                 case Resource.Id.nav_exercises:
                     NavigateTo<Exercises>();
                     break;
+                case Resource.Id.nav_randomize_exercises:
+                    NavigateTo<ExerciseRandomizer>();
+                    break;
             }
 
             var drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);

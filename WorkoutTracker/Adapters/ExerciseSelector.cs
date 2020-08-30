@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Android.App;
+using Android.Graphics;
 using Android.Views;
 using Android.Widget;
 using WorkoutTracker.Data;
@@ -17,7 +18,7 @@ namespace WorkoutTracker
         public ExerciseSelector(Activity context)
         {
             var exercises = InMemoryCache.Instance.GetCollection<Exercise>(nameof(Exercise));
-            _items = exercises.ToArray();
+            _items = exercises.OrderBy(e => e.Name).ToArray();
 
             _context = context;
         }
@@ -38,9 +39,8 @@ namespace WorkoutTracker
 
             var img = layout.FindViewById<ImageView>(Resource.Id.exercise_selector_image);
             var name = layout.FindViewById<TextView>(Resource.Id.exercise_selector_name);
-
-            var icon = _context.Resources.GetIdentifier(item.Icon, "drawable", _context.PackageName);
-            img.SetImageResource(icon);
+            var iconBitmap = BitmapFactory.DecodeByteArray(item.Icon, 0, item.Icon.Length);
+            img.SetImageBitmap(iconBitmap);
 
             name.Text = item.Name;
 

@@ -10,6 +10,9 @@ using WorkoutTracker.Models;
 using Microsoft.Azure.Cosmos.Table.Queryable;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using WorkoutTracker.Api.Data;
+using System.Collections.Generic;
+using WorkoutTracker.Api.Interfaces;
 
 namespace WorkoutTracker.Api.Exercises
 {
@@ -34,30 +37,32 @@ namespace WorkoutTracker.Api.Exercises
     public class ExerciseLogActions : HttpActionsBase<ExerciseLogEntry>
     {
         public ExerciseLogActions(IConfigurationRoot config)
-            : base(config)
+            : base(new ATSExerciseLogRepository(config))
         {
-
         }
 
-        internal override EntityWrapper<ExerciseLogEntry> GetEntityWrapper(ExerciseLogEntry entity)
+        protected override async ValueTask<IEnumerable<ExerciseLogEntry>> Get(HttpRequest req)
         {
-            var partitionKey = entity.Date.ToString("dd-MM-yyyy");
-            return EntityWrapper<ExerciseLogEntry>.From(entity, partitionKey);
+            var repo = Repository as IExerciseLogRepository;
+            if (repo is object && req.Query.ContainsKey("date"))
+            {
+                var date = ExtractDate(req);
+                return await repo.GetByDate(date);
+            }
+
+            return await base.Get(req);
         }
 
-        internal override TableQuery<EntityWrapper<ExerciseLogEntry>> GetQueryFromRequest(TableQuery<EntityWrapper<ExerciseLogEntry>> query, HttpRequest req)
+        private string ExtractDate(HttpRequest req)
         {
-            if (req.Query.ContainsKey("id"))
+            var dates = req.Query["date"];
+
+            if (!dates.Any())
             {
-                var id = ExtractId(req);
-                return query.Where(w => w.RowKey == id).AsTableQuery();
+                throw new BadRequestException("Date is missing.");
             }
 
-            if (req.Query.ContainsKey("query"))
-            {
-            }
-
-            return query;
+            return dates.First();
         }
     }
 }

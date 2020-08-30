@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
+using Android.Graphics;
+using Android.Runtime;
 using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
@@ -11,31 +13,34 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker
 {
-    public class ExerciseLogsAdapter : BaseAdapter<ExerciseLogEntry>
+    public class ExerciseLogsAdapter : BaseAdapter<ExerciseLogEntry>, AbsListView.IOnScrollListener
     {
         private readonly Activity _context;
-        private readonly IRepository _repository;
+        private readonly IExerciseLogRepository _repository;
         private readonly SwipeRefreshLayout _refreshLayout;
-        private ExerciseLogEntry[] _items;
+        private List<ExerciseLogEntry> _items;
+        private DateTime[] _dates;
+        private int _currentDateIndex;
         private Dictionary<Guid, Exercise> _exercisesLookup;
 
-        public ExerciseLogsAdapter(Activity context, IRepository repository, SwipeRefreshLayout refreshLayout)
+        public ExerciseLogsAdapter(Activity context, IExerciseLogRepository repository, SwipeRefreshLayout refreshLayout)
         {
             _context = context;
             _repository = repository;
             _refreshLayout = refreshLayout;
             _refreshLayout.Refresh += OnRefresh;
 
-            _items = Array.Empty<ExerciseLogEntry>();
+            _items = new List<ExerciseLogEntry>();
+            _dates = Array.Empty<DateTime>();
 
-            ReloadData(loadExercises: true);
+            ReloadData();
         }
 
         public override ExerciseLogEntry this[int position] => _items[position];
 
-        public override int Count => _items.Length;
+        public override int Count => _items.Count;
 
-        public ExerciseLogEntry Last => _items[0];
+        public ExerciseLogEntry Last => _items.Count > 0 ? _items[0] : null;
 
         public override long GetItemId(int position)
         {
@@ -56,36 +61,38 @@ namespace WorkoutTracker
             var statsField = convertView.FindViewById<TextView>(Resource.Id.exercise_stats);
             var scoreField = convertView.FindViewById<TextView>(Resource.Id.exercise_score);
             var iconField = convertView.FindViewById<ImageView>(Resource.Id.exercise_icon);
-            var icon = _context.Resources.GetIdentifier(exercise.Icon, "drawable", _context.PackageName);
+            var iconBitmap = BitmapFactory.DecodeByteArray(exercise.Icon, 0, exercise.Icon.Length);
             nameField.Text = exercise.Name;
             dateField.Text = log.Date.ToLocalTime().ToString("f");
             statsField.Text = $"Reps: {log.Repetitions} Weight: {log.Weight} Duration: {log.Duration}";
             scoreField.Text = $"Score: {log.Score}";
 
-            iconField.SetImageResource(icon);
+            iconField.SetImageBitmap(iconBitmap);
+
             return convertView;
         }
 
-        public Task ReloadData(bool loadExercises = false)
+        private Task ReloadData()
         {
             _refreshLayout.Refreshing = true;
+            var exercisesTask = InMemoryCache.Instance.ContainsKey(nameof(Exercise)) ? Task.FromResult(InMemoryCache.Instance.GetCollection<Exercise>(nameof(Exercise))) : _repository.GetAll<Exercise>();
+            var datesTask = _repository.GetDates();
 
-            return _repository.GetAll<ExerciseLogEntry>().ContinueWith(itemsTask =>
-            {
-                if (loadExercises)
+            return Task.WhenAll(exercisesTask, datesTask)
+                .ContinueWith(t =>
                 {
-                    var exercises = _repository.GetAll<Exercise>().ConfigureAwait(false).GetAwaiter().GetResult();
+                    var exercises = exercisesTask.Result;
                     _exercisesLookup = exercises.ToDictionary(e => e.Id, e => e);
                     InMemoryCache.Instance.SetCollection(nameof(Exercise), exercises);
-                }
 
-                _items = itemsTask.Result.OrderByDescending(i => i.Date).ToArray();
-                _context.RunOnUiThread(() =>
-                {
-                    NotifyDataSetChanged();
-                    _refreshLayout.Refreshing = false;
-                });
-            });
+                    _dates = datesTask.Result
+                        .Select(d => DateTime.ParseExact(d, "dd-MM-yyyy", null))
+                        .OrderByDescending(d => d)
+                        .ToArray();
+                    _currentDateIndex = 0;
+                    _items.Clear();
+
+                }).ContinueWith(_ => LoadNextChunk());
         }
 
         public Task AddAndRefresh(ExerciseLogEntry record)
@@ -97,6 +104,55 @@ namespace WorkoutTracker
         private void OnRefresh(object sender, EventArgs e)
         {
             ReloadData();
+        }
+
+        private Task LoadNextChunk()
+        {
+            if (_dates.Length <= _currentDateIndex)
+            {
+                return Task.CompletedTask;
+            }
+
+            if (_dates.Length == 0)
+            {
+                StopLoadingAndNotifyChange();
+                return Task.CompletedTask;
+            }
+
+            _refreshLayout.Refreshing = true;
+
+            return _repository.GetByDate(_dates[_currentDateIndex]).ContinueWith(chunk =>
+            {
+                _items.AddRange(chunk.Result.OrderByDescending(e => e.Date));
+                _currentDateIndex++;
+                StopLoadingAndNotifyChange();
+            });
+        }
+
+        public void OnScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+        {
+            if (_refreshLayout.Refreshing)
+            {
+                return;
+            }
+
+            if (firstVisibleItem + visibleItemCount >= totalItemCount)
+            {
+                LoadNextChunk();
+            }
+        }
+
+        public void OnScrollStateChanged(AbsListView view, [GeneratedEnum] ScrollState scrollState)
+        {
+        }
+
+        private void StopLoadingAndNotifyChange()
+        {
+            _context.RunOnUiThread(() =>
+            {
+                NotifyDataSetChanged();
+                _refreshLayout.Refreshing = false;
+            });
         }
     }
 }

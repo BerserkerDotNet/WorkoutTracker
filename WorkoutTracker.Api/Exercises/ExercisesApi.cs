@@ -10,6 +10,8 @@ using System;
 using Microsoft.Azure.Cosmos.Table.Queryable;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using WorkoutTracker.Api.Interfaces;
+using WorkoutTracker.Api.Data;
 
 namespace WorkoutTracker.Api.Exercises
 {
@@ -34,30 +36,8 @@ namespace WorkoutTracker.Api.Exercises
     public class ExerciseActions : HttpActionsBase<Exercise>
     {
         public ExerciseActions(IConfigurationRoot config)
-            : base(config)
+            : base(new AzureTableStorageRepository<Exercise>(config))
         {
-
-        }
-
-        internal override EntityWrapper<Exercise> GetEntityWrapper(Exercise entity)
-        {
-            return EntityWrapper<Exercise>.From(entity, "Exercises");
-        }
-
-        internal override TableQuery<EntityWrapper<Exercise>> GetQueryFromRequest(TableQuery<EntityWrapper<Exercise>> query, HttpRequest req)
-        {
-            if (req.Query.ContainsKey("id"))
-            {
-                var id = ExtractId(req);
-                return query.Where(w => w.RowKey == id).AsTableQuery();
-            }
-
-            if (req.Query.ContainsKey("query"))
-            {
-
-            }
-
-            return query;
         }
     }
 }

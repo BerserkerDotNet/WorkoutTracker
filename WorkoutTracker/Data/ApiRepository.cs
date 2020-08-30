@@ -8,7 +8,7 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker.Data
 {
-    public class ApiRepository : IRepository
+    public class ApiRepository : IRepository, IExerciseLogRepository
     {
         private static ApiRepository _instance = new ApiRepository();
         private readonly HttpClient _client;
@@ -16,11 +16,11 @@ namespace WorkoutTracker.Data
         private ApiRepository()
         {
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("http://192.168.0.19:7071/api/" /*"https://workouttrackerfunctions.azurewebsites.net/api/"*/ );
+            _client.BaseAddress = new Uri("http://192.168.0.19:7071/api/" /* "https://workouttrackerfunctions.azurewebsites.net/api/" */);
             _client.DefaultRequestHeaders.Add("x-functions-key", "tEtzNOPdCPqpWIakJBMf3gHKhVpX9cssTLT6O0rRygD1r3ohys0N7A==");
         }
 
-        public static IRepository Instance => _instance;
+        public static ApiRepository Instance => _instance;
 
         public Task Create<T>(T entity)
             where T : EntityBase
@@ -82,23 +82,35 @@ namespace WorkoutTracker.Data
 
             throw new NotSupportedException($"Type of {type} is not supported.");
         }
-    }
 
-    public class InMemoryCache
-    {
-        private static InMemoryCache _instance = new InMemoryCache();
-        public static InMemoryCache Instance => _instance;
-
-        Dictionary<string, object> _data = new Dictionary<string, object>();
-
-        public IEnumerable<T> GetCollection<T>(string key)
+        async Task<IEnumerable<ExerciseLogEntry>> IExerciseLogRepository.GetByDate(DateTime date)
         {
-            return (IEnumerable<T>)_data[key];
+            var endpoint = GetApiEndpointFor<ExerciseLogEntry>();
+            var response = await _client.GetAsync($"{endpoint}?date={date.Date.ToString("dd-MM-yyyy")}").ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("TODO: change this!");
+            }
+
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var items = JsonConvert.DeserializeObject<IEnumerable<ExerciseLogEntry>>(content);
+
+            return items;
         }
 
-        public void SetCollection<T>(string key, IEnumerable<T> collection)
+        async Task<IEnumerable<string>> IExerciseLogRepository.GetDates()
         {
-            _data[key] = collection;
+            var response = await _client.GetAsync("ExerciseLogsDates");
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("TODO: change this!");
+            }
+
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(content);
+
+            return items;
         }
     }
 }

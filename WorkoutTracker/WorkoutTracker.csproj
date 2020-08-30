@@ -67,16 +67,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\ExercisesAdapter.cs" />
+    <Compile Include="Adapters\RandomizeListAdapter.cs" />
     <Compile Include="AddExerciseLogActivity.cs" />
     <Compile Include="Data\ApiRepository.cs" />
+    <Compile Include="Data\IExerciseLogRepository.cs" />
+    <Compile Include="Data\InMemoryCache.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Adapters\ExerciseLogsAdapter.cs" />
     <Compile Include="ExerciseLogs.cs" />
     <Compile Include="Adapters\ExerciseSelector.cs" />
+    <Compile Include="ExerciseRandomizer.cs" />
     <Compile Include="Exercises.cs" />
     <Compile Include="Interfaces\IActivityResultHandler.cs" />
     <Compile Include="Interfaces\IToolBarHost.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="RandomExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -159,15 +164,6 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\gym.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\pullup.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\strong.png" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\exerciselogs_add.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
@@ -177,24 +173,6 @@
     <AndroidResource Include="Resources\layout\exercise_selector.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\bench_press.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\bicep_curl.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\triceps_overhead.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\m_shoulder_press.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\lat_pull_down.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\decline_crunch.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\exercises_log.xml">
@@ -208,6 +186,17 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\exercises_listview.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\exercise_randomizer.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\exercises_random_listview.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>

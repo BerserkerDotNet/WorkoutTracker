@@ -12,7 +12,7 @@ namespace WorkoutTracker.Models
 
         public TimeSpan Duration { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.UtcNow;
 
         public int Score { get; set; }
 

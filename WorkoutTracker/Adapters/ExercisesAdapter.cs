@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
+using Android.Graphics;
 using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
@@ -48,8 +49,8 @@ namespace WorkoutTracker
             var iconField = convertView.FindViewById<ImageView>(Resource.Id.exercise_list_icon);
             var nameField = convertView.FindViewById<TextView>(Resource.Id.exercise_list_name);
             var musclesField = convertView.FindViewById<TextView>(Resource.Id.exercise_list_muscles);
-            var icon = _context.Resources.GetIdentifier(exercise.Icon, "drawable", _context.PackageName);
-            iconField.SetImageResource(icon);
+            var iconBitmap = BitmapFactory.DecodeByteArray(exercise.Icon, 0, exercise.Icon.Length);
+            iconField.SetImageBitmap(iconBitmap);
             nameField.Text = exercise.Name;
             var musclesGroup = exercise.Muscles == null ? "N/A" : string.Join(", ", exercise.Muscles);
             musclesField.Text = $"Muscles: {musclesGroup}";
