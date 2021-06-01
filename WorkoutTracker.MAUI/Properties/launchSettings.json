@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Android Emulator": {
+      "commandName": "Xamarin",
+      "device": "",
+      "devicePlatform": "Android"
+    },
+    "WorkoutTracker.MAUI": {
+      "commandName": "Project"
+    }
+  }
+}

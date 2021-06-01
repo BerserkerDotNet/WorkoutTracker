@@ -1,0 +1,30 @@
+﻿@for (int i = 1; i <= MaxStars; i++)
+{
+    var current = i;
+    <span class="rating oi oi-star @(i <= Value ? "highlighted" : "")" @onclick="() => SetValue(current)"></span>
+}
+
+@code {
+
+    [Parameter]
+    public int Value { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    [Parameter]
+    public int MaxStars { get; set; }
+
+    [Parameter]
+    public bool IsReadonly { get; set; }
+
+    private void SetValue(int value)
+    {
+        if (IsReadonly)
+        {
+            return;
+        }
+
+        ValueChanged.InvokeAsync(value);
+    }
+}

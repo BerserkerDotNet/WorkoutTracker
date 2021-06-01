@@ -22,13 +22,14 @@ foreach (var line in lines)
     }
 
     var imageBytes = await File.ReadAllBytesAsync(imagePath);
-
+    var tags = properties.Length >= 4 ? properties[3] : string.Empty;
     var exercise = new Exercise
     {
         Id = Guid.Parse(properties[0]),
         Name = properties[1],
         Icon = imageBytes,
-        Muscles = properties[2]
+        Muscles = properties[2],
+        Tags = tags
     };
 
     using (var client = new HttpClient())

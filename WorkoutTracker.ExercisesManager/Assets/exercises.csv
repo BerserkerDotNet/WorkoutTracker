@@ -1,17 +1,17 @@
-02486d85-d7c0-44fd-8436-ebd244171b20,Dumbbell Bench Press,Chest
-3ac77a25-c9fa-4018-8f25-517fa1a59e27,Pushups,Chest
-d872d38b-64a2-457b-962c-2a8861dc3e8c,Dumbbell Flyes,Chest
+02486d85-d7c0-44fd-8436-ebd244171b20,Dumbbell Bench Press,Chest,GoodForHome
+3ac77a25-c9fa-4018-8f25-517fa1a59e27,Pushups,Chest,GoodForHome
+d872d38b-64a2-457b-962c-2a8861dc3e8c,Dumbbell Flyes,Chest,GoodForHome
 b819a3e2-d964-4008-9799-e120487d35b2,Incline dumbbell bench press,Chest
 5bee64e0-fee6-4a13-9231-cb09fad9b4d3,Low-cable cross-over,Chest
 36e2faae-5e22-4897-8daa-d13f55da0472,Cable Crossover,Chest
-b4c88cb7-cb82-4e6c-b28b-298571b5fa36,Straight-arm dumbbell pull-over,Chest
+b4c88cb7-cb82-4e6c-b28b-298571b5fa36,Straight-arm dumbbell pull-over,Chest,GoodForHome
 a9b4a9c0-5e60-4386-9d08-63a3d802086a,Decline Smith Press,Chest
 6ebba228-4205-4d17-b51f-b870fd061332,Smith machine bench press,Chest
 d08d5353-d420-4b6d-ac6e-906aba8e4588,Smith Machine Close-Grip Bench Press,Chest
 84d83f0e-3cbd-4ed5-92d1-7fd73386752a,Suspended push-up,Chest
 73e995fc-daae-46b7-b455-2d916c260f15,Smith Machine Incline Bench Press,Chest
 04ad6bd8-5dec-4264-b05d-5182429a1ec9,Pullups,Lats;Back
-1897a22d-935c-42af-8e7e-3bf04830d740,One-Arm Dumbbell Row,Middle Back;Back
+1897a22d-935c-42af-8e7e-3bf04830d740,One-Arm Dumbbell Row,Middle Back;Back,GoodForHome
 3faa8112-b9f3-41fb-aef1-787af8f478ee,Close-grip pull-down,Lats;Back
 6560da0f-d38e-474f-bdb6-de708a975e04,Incline dumbbell row,Middle Back;Back
 36193ac8-50a5-4962-a255-6af6509668ae,V-bar pull-up,Lats;Back
@@ -19,32 +19,48 @@ d6846bae-ccf8-4073-8825-e9fb28def637,Lat pull-down,Lats;Back
 2095c0d0-4c7b-47ff-a7d9-2b19761a8d50,Machine seated row,Lats;Back
 16e41189-84b2-4412-9aaf-80af692377fa,Suspended row,Middle back;Back
 5696232f-2778-455f-919b-fb1333d22c1b,Machine Shoulder (Military) Press,Shoulders
-f9585d34-46bd-4044-8221-ed3ce0b7a7fc,Military press,Shoulders
-55f03e58-1679-4315-9e8e-615a69230030,Seated barbell shoulder press,Shoulders
+f9585d34-46bd-4044-8221-ed3ce0b7a7fc,Military press,Shoulders,GoodForHome
+55f03e58-1679-4315-9e8e-615a69230030,Seated barbell shoulder press,Shoulders,GoodForHome
 97fe8dea-c336-4ec0-a654-ba76fe3fb62d,Smith machine shrug,Shoulders
-8d7c362d-7268-468e-9161-e1f35b2f4fa7,Seated Dumbbell Press,Shoulders
-ad514683-3fb4-4f41-a33c-9e74b450a9f7,Side Lateral Raise,Shoulders
-d547182e-76a7-4436-b5a4-fe27ca0c8d3d,Dumbbell front raise,Shoulders
+8d7c362d-7268-468e-9161-e1f35b2f4fa7,Seated Dumbbell Press,Shoulders,GoodForHome
+ad514683-3fb4-4f41-a33c-9e74b450a9f7,Side Lateral Raise,Shoulders,GoodForHome
+d547182e-76a7-4436-b5a4-fe27ca0c8d3d,Dumbbell front raise,Shoulders,GoodForHome
 4771a0a8-fe23-43e1-a6d1-e349164e92aa,Single-arm cable front raise,Shoulders
-6faa9e62-4bca-44a0-8191-4a8313943e43,Alternating Kettlebell Press,Shoulders
-2fef50ae-bb3f-483c-87f6-dfd3b833aee1,Cuban press,Shoulders
+6faa9e62-4bca-44a0-8191-4a8313943e43,Alternating Kettlebell Press,Shoulders,GoodForHome
+2fef50ae-bb3f-483c-87f6-dfd3b833aee1,Cuban press,Shoulders,GoodForHome
 d090b2a4-3248-4afa-82fa-07f4c9b3a077,Single-arm cable triceps extension,Triceps
 10acd08c-f7ad-492e-8473-81a2c5852001,Reverse Grip Triceps Pushdown,Triceps
 5178a01c-33aa-437b-8a77-e0fff902e8f0,Bench dip,Triceps
 5777801b-3bf1-43f1-860c-bb4db0fec108,Cable V-bar push-down,Triceps
-b78b47e7-6e16-4581-9de8-fc6cbf7578c7,Seated triceps press,Triceps
+b78b47e7-6e16-4581-9de8-fc6cbf7578c7,Seated triceps press,Triceps,GoodForHome
 6c2b964b-8876-41f9-a249-5b4c3598f053,Low cable overhead extension,Triceps
 1f9f31b1-efe1-4354-ad6d-4793e0cfccdc,Cable overhead extension,Triceps
-2510b0af-19fc-4034-8011-a9955ad07679,Hammer Curls,Biceps
-d85e7213-6f30-4968-8b41-c31efbc43b45,Dumbbell Bicep Curl,Biceps
-93b66b46-74bc-484f-bc52-844d5facba69,Barbell Curl,Biceps
-605cb4bb-d7fe-4626-8bc2-a00f61162b1b,Concentration curl,Biceps
-e29cff55-a310-46a6-9b4f-7852ff7adee9,Seated dumbbell biceps curl,Biceps
+2510b0af-19fc-4034-8011-a9955ad07679,Hammer Curls,Biceps,GoodForHome
+d85e7213-6f30-4968-8b41-c31efbc43b45,Dumbbell Bicep Curl,Biceps,GoodForHome
+93b66b46-74bc-484f-bc52-844d5facba69,Barbell Curl,Biceps,GoodForHome
+605cb4bb-d7fe-4626-8bc2-a00f61162b1b,Concentration curl,Biceps,GoodForHome
+e29cff55-a310-46a6-9b4f-7852ff7adee9,Seated dumbbell biceps curl,Biceps,GoodForHome
 d8c50d1f-bd10-4282-9991-5fdd1d1b9c46,Standing Biceps Cable Curl,Biceps
 73dd8830-c348-4f69-84b2-3e20a70fcf89,Machine Preacher Curls,Biceps
-9ac8c3a1-06d6-4818-8c20-80329bcac5d3,Reverse-grip barbell curl,Biceps
-4d68823d-5666-49ef-8032-6b984c02c74e,Bottoms Up,Abdominals
-7f085143-472d-4f06-b264-1f5318c6facc,Landmine twist,Abdominals
-a6be73f3-bbb7-4515-9beb-b2bcda254bd4,Decline Crunch,Abdominals
+9ac8c3a1-06d6-4818-8c20-80329bcac5d3,Reverse-grip barbell curl,Biceps,GoodForHome
+4d68823d-5666-49ef-8032-6b984c02c74e,Bottoms Up,Abdominals,GoodForHome
+7f085143-472d-4f06-b264-1f5318c6facc,Landmine twist,Abdominals,GoodForHome
+a6be73f3-bbb7-4515-9beb-b2bcda254bd4,Decline Crunch,Abdominals,GoodForHome
 64d42394-efdd-4a74-9d18-1f0f9baba620,Hanging Oblique Knee Raise,Abdominals
-da27af0a-5014-4751-8e22-e5c47fb6f68d,Side Bridge,Abdominals
+da27af0a-5014-4751-8e22-e5c47fb6f68d,Side Bridge,Abdominals,GoodForHome
+5e47c045-8515-49cc-9084-e71b33363250,Incline Push-Up,Chest,GoodForHome
+2514e9ce-6b1b-42af-a545-5ec415c11c1b,Decline Push-Up,Chest,GoodForHome
+bf52f2da-bf6f-429a-ae2a-ea0fa1edc1fa,Dumbbell Floor Press,Chest,GoodForHome
+4cf3af9f-f162-40f3-9e0f-61c27fed6c5e,One-Arm Push-Up,Chest,GoodForHome
+b33af80a-8608-4ef9-a792-a18c7eadb676,Barbell deadlift,Lats;Back,GoodForHome
+405e7cdb-7999-4c77-85fe-ee5b672a35c0,Reverse-grip bent-over row,Lats;Back,GoodForHome
+b1ce8082-2b1a-4956-b3de-e687e3e16902,Bent Over Barbell Row,Lats;Back,GoodForHome
+de1c2ba1-6536-45ef-a592-40656e95ae64,Superman,Lats;Back,GoodForHome
+fe86b6df-40bf-4eae-8cf1-1a4608272fac,Single-arm kettlebell push-press,Shoulders,GoodForHome
+ea83a9c3-0f86-43f9-be3f-364b728919e3,Single-arm lateral raise,Shoulders,GoodForHome
+33e31d12-f529-4cdf-b033-e48f6949de25,Alternating standing shoulder press,Shoulders,GoodForHome
+048cd2bd-0bc3-4b6a-986d-ed31a6f007a2,Bent-over dumbbell rear delt row,Shoulders,GoodForHome
+5a149e4a-b553-43ea-b045-94fbe7e97b7a,Standing dumbbell shrug,Shoulders;Traps,GoodForHome
+74ff6501-0384-412b-a259-781f71f7e519,Standing dumbbell upright row,Shoulders;Traps,GoodForHome
+0595fd44-7f19-404f-966b-74a8445c1dfc,Single-arm dumbbell triceps extension,Triceps,GoodForHome
+0d204816-2de6-4a25-913a-93f4ac4566b0,Dumbbell V-Sit Cross Jab,Abdominals,GoodForHome
