@@ -200,3 +200,7 @@ span.highlighted {
 span.rating {
     font-size: 25px;
 }
+
+.card {
+    box-shadow: 5px 7px rgba(0,0,0,.125);
+}

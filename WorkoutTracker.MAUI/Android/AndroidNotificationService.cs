@@ -7,7 +7,7 @@ namespace WorkoutTracker.MAUI.Android
     {
         public void ShowToast(string message)
         {
-            Widget.Toast.MakeText(AndroidApp.Application.Context, "Foo", Widget.ToastLength.Short);
+            Widget.Toast.MakeText(AndroidApp.Application.Context, message, Widget.ToastLength.Long).Show();
         }
     }
 }

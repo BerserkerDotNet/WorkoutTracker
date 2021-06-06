@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Components.WebView.Maui;
+﻿using BlazorState.Redux.Extensions;
+using Microsoft.AspNetCore.Components.WebView.Maui;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Hosting;
 using WorkoutTracker.MAUI.Android;
+using WorkoutTracker.MAUI.Data.Actions;
+using WorkoutTracker.MAUI.Data.Reducers;
 using Xamarin.Android.Net;
 
 namespace WorkoutTracker.MAUI
@@ -33,8 +36,13 @@ namespace WorkoutTracker.MAUI
 
                     services.AddSingleton<IRepository, ApiRepository>();
                     services.AddSingleton<IExerciseLogRepository, ApiRepository>();
-                    services.AddSingleton<AppState>();
                     services.AddSingleton<INotificationService, AndroidNotificationService>();
+                    services.AddSingleton<ICacheService, AndroidCacheService>();
+                    services.AddReduxStore<RootState>(cfg =>
+                    {
+                        cfg.RegisterActionsFromAssemblyContaining<FetchExercisesAction>();
+                        cfg.Map<ExercisesReducer, ExercisesState>(s => s.Exercises);
+                    });
                 });
         }
     }

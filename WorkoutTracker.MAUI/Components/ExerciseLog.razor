@@ -1,0 +1,37 @@
+﻿<h1>Exercise history</h1>
+<Virtualize Items="Props.Log" Context="logRecord">
+    <div class="card">
+        <div class="row no-gutters">
+            <div class="col-4 text-center">
+                <span style="display:inline-block; height:100%; vertical-align: middle;"></span>
+                <img src="data:image/png;base64, @Convert.ToBase64String(logRecord.Exercise.Icon)" alt="@logRecord.Exercise.Name" style="width: calc(100% - 5px);">
+            </div>
+            <div class="col-8">
+                <div class="card-body">
+                    <h5 class="card-title">@logRecord.Exercise.Name</h5>
+                    <div><bold>Date:</bold> @logRecord.Entry.Date.ToShortDateString()</div>
+                    <div><bold>Reps:</bold> @logRecord.Entry.Repetitions</div>
+                    <div><bold>Weight:</bold> @logRecord.Entry.Weight</div>
+                    <div><bold>Duration:</bold> @logRecord.Entry.Duration.ToString("g")</div>
+                    <Rating MaxStars="5" Value="@logRecord.Entry.Score" IsReadonly="true" />
+                    <div>
+                        <button @onclick:preventDefault @onclick="() => EditExercise(logRecord.Entry)" class="btn btn-outline-warning"><span class="oi oi-pencil"></span></button>
+                        <button @onclick:preventDefault @onclick="() => Props.Delete.InvokeAsync(logRecord.Entry.Id)" class="btn btn-outline-danger"><span class="oi oi-trash"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+</Virtualize>
+
+@code
+{
+    [Parameter]
+    public ExercisesLogProps Props { get; set; }
+
+    public async Task EditExercise(ExerciseLogEntry log)
+    {
+    }
+}
+

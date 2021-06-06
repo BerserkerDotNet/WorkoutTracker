@@ -1,0 +1,98 @@
+﻿<h3>Log exercise</h3>
+
+<form>
+    <div class="form-group">
+        <label>Exercise:</label>
+        @if (Props.Exercise == null)
+        {
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-3">
+                    <img src="data:image/png;base64, @(Convert.ToBase64String(Props.Exercise.Icon))" width="100" height="100" alt="@Props.Exercise.Name" style="text-align: center" />
+                </div>
+                <div class="col-9">
+                    <h5>@Props.Exercise.Name</h5>
+                    <span>@Props.Exercise.Muscles</span>
+                </div>
+            </div>
+        }
+
+    </div>
+    <div class="form-group">
+        <label>Repetetions:</label>
+        <input type="number" class="form-control" @bind="logEntry.Repetitions" />
+    </div>
+    <div class="form-group">
+        <label>Weight:</label>
+        <div class="input-group">
+            <input type="number" class="form-control" @bind="logEntry.Weight">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" @onclick="ChangeWeightUnits">@_weightUnits</button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Duration:</label>
+        <div class="input-group">
+            <input type="number" class="form-control" @bind="duration">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" @onclick="@ToggleExerciseStopwatch">@(_stopWatch.IsRunning ? "Stop" : "Start")</button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Notes:</label>
+        <textarea rows="4" class="form-control" @bind="logEntry.Note" />
+    </div>
+    <div class="form-group">
+        <label>Rate:</label>
+        <Rating MaxStars="5" @bind-Value="logEntry.Score" />
+    </div>
+    <button type="button" class="btn btn-outline-success" @onclick="Save"><span class="oi oi-check"></span> Save</button>
+    <button type="button" class="btn btn-outline-danger" @onclick="Props.Cancel"><span class="oi oi-action-undo"></span> Cancel</button>
+    <br />
+    <br />
+</form>
+
+@code {
+
+    private string _weightUnits = "KG";
+    private ExerciseLogEntry logEntry = new ExerciseLogEntry();
+    private System.Diagnostics.Stopwatch _stopWatch = new System.Diagnostics.Stopwatch();
+    private int duration = 0;
+
+    [Parameter]
+    public EditExerciseProps Props { get; set; }
+
+    private void ChangeWeightUnits()
+    {
+        _weightUnits = _weightUnits == "KG" ? "LB" : "KG";
+    }
+
+    private void ToggleExerciseStopwatch()
+    {
+        if (!_stopWatch.IsRunning)
+        {
+            _stopWatch.Restart();
+        }
+        else
+        {
+            _stopWatch.Stop();
+            duration = (int)_stopWatch.Elapsed.TotalSeconds;
+            logEntry.Duration = _stopWatch.Elapsed;
+        }
+    }
+
+    private async Task Save()
+    {
+        logEntry.Id = Guid.NewGuid();
+        logEntry.ExerciseId = Props.Exercise.Id;
+        logEntry.Weight = _weightUnits == "LB" ? logEntry.Weight * 0.453592 : logEntry.Weight;
+        await Props.Save.InvokeAsync(logEntry);
+    }
+}
