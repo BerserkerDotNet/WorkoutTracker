@@ -1,0 +1,55 @@
+﻿@inject EditExerciseLogStyles Styles
+
+<FieldSetItem Label="Repetetions:">
+	<RadzenNumeric @bind-Value="repetitions" Placeholder="0" Name="Reps" class="@Styles.Input" />
+</FieldSetItem>
+<FieldSetItem Label="Duration:">
+	<RadzenNumeric @bind-Value="duration" Placeholder="0" Name="Duration" class="@Styles.Input" />
+</FieldSetItem>
+<FieldSetItem Label="Notes:">
+	<textarea rows="4" class="form-control" @bind="notes" />
+</FieldSetItem>
+<FieldSetItem Label="Rate:">
+	<Rating MaxStars="5" @bind-Value="rating" />
+</FieldSetItem>
+
+<div class="row mt-3">
+	<div class="col-12">
+		<RadzenButton Text="Save" Click="Save" />
+		<RadzenButton Text="Cancel" Click="Cancel" ButtonStyle="ButtonStyle.Secondary" class="ml-3" />
+	</div>
+</div>
+
+
+@code {
+
+	private int duration = 0;
+	private int repetitions = 0;
+	private string notes = "";
+	private int rating = 0;
+
+	[Parameter]
+	public int SetNumber { get; set; }
+
+	[Parameter]
+	public int CurrentDuration { get; set; }
+
+	[Parameter]
+	public EventCallback<SetDetail> SaveDetails { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		duration = CurrentDuration;
+		base.OnParametersSet();
+	}
+
+	private async Task Save()
+	{
+		await SaveDetails.InvokeAsync(new SetDetail(duration, repetitions, rating, notes));
+	}
+
+	private async Task Cancel()
+	{
+		await SaveDetails.InvokeAsync(null);
+	}
+}

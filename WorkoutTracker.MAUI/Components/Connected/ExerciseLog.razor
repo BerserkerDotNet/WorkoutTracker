@@ -1,0 +1,16 @@
+﻿<h2>Exercise history</h2>
+<Virtualize Items="Props.Log" Context="logRecord">
+    <ExerciseCard Exercise="logRecord.Exercise" LogEntry="logRecord.Entry">
+        <Actions>
+            @*<button @onclick:preventDefault @onclick="() => EditExercise(logRecord.Entry)" class="btn btn-outline-warning"><span class="oi oi-pencil"></span> Edit</button>
+            <button @onclick:preventDefault @onclick="() => Props.Delete.InvokeAsync(logRecord.Entry.Id)" class="btn btn-outline-danger"><span class="oi oi-trash"></span> Delete</button>*@
+        </Actions>
+    </ExerciseCard>
+</Virtualize>
+
+@code
+{
+    [Parameter]
+    public ExercisesLogProps Props { get; set; }
+}
+

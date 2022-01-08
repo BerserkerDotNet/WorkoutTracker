@@ -28,13 +28,41 @@ namespace WorkoutTracker.MAUI.Data.Props
         public EventCallback<ExerciseLogEntry> Edit { get; set; }
     }
 
+    public class EditExerciseLogProps
+    {
+        public Exercise Exercise { get; set; }
+
+        public Guid? NextExerciseId { get; set; }
+
+        public Guid? PreviousExerciseId { get; set; }
+
+        public int ExerciseSetNumber { get; set; }
+
+		public IEnumerable<ExerciseLogEntry> Sets { get; set; }
+
+		public EventCallback<ExerciseLogEntry> Save { get; set; }
+
+        public EventCallback<Guid> Next { get; set; }
+
+        public EventCallback<Guid> Previous { get; set; }
+
+        public EventCallback Cancel { get; set; }
+    }
+
     public class EditExerciseProps
     {
         public Exercise Exercise { get; set; }
 
-        public EventCallback<ExerciseLogEntry> Save { get; set; }
+        public EventCallback<Exercise> Save { get; set; }
 
         public EventCallback Cancel { get; set; }
+    }
+
+    public class ExerciseListProps
+    {
+        public IEnumerable<Exercise> List { get; set; }
+
+        public EventCallback<Exercise> Edit { get; set; }
     }
 
     public class LogRecord

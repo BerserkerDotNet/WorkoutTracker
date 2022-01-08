@@ -1,0 +1,8 @@
+﻿@page "/editexercise/{exerciseid:guid}"
+
+<EditExerciseConnected ExerciseId="@ExerciseId" />
+
+@code {
+    [Parameter]
+    public Guid ExerciseId { get; set; }
+}

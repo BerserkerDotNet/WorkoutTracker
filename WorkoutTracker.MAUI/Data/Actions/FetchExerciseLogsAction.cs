@@ -6,28 +6,16 @@ namespace WorkoutTracker.MAUI.Data.Actions
 {
     public class FetchExerciseLogsAction : IAsyncAction
     {
-        private readonly IExerciseLogRepository _repository;
+        private readonly IRepository _repository;
 
-        public FetchExerciseLogsAction(IExerciseLogRepository repository)
+        public FetchExerciseLogsAction(IRepository repository)
         {
             _repository = repository;
         }
 
         public async Task Execute(IDispatcher dispatcher)
         {
-            var availableDatesString = await _repository.GetDates();
-            var availableDates = availableDatesString
-                .Select(d => DateTime.ParseExact(d, "dd-MM-yyyy", null))
-                .OrderByDescending(d => d)
-                .ToArray();
-
-            if (availableDates.Length == 0)
-            {
-                dispatcher.Dispatch(new ReceiveExerciseLogsAction(Enumerable.Empty<ExerciseLogEntry>()));
-                return;
-            }
-
-            var logEntryChunk = await _repository.GetByDate(availableDates[0]);
+            var logEntryChunk = await _repository.GetAll<ExerciseLogEntry>();
             dispatcher.Dispatch(new ReceiveExerciseLogsAction(logEntryChunk.OrderByDescending(i => i.Date)));
         }
     }

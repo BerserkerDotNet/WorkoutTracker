@@ -1,11 +1,27 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="sidebar">
-    <NavMenu />
-</div>
 
-<div class="main">
-    <div class="content px-4">
-        @Body
-    </div>
+<RadzenDialog />
+
+<RadzenHeader>
+	<ChildContent>
+		<div class="sidebar">
+			<NavMenu />
+		</div>
+	</ChildContent>
+</RadzenHeader>
+<div style="width:100%">
+	<RadzenBody Expanded="true">
+		<ChildContent>
+			<RadzenContentContainer Name="main">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12 px-3 px-lg-5">
+							@Body
+						</div>
+					</div>
+				</div>
+			</RadzenContentContainer>
+		</ChildContent>
+	</RadzenBody>
 </div>

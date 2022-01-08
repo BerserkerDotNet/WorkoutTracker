@@ -1,15 +1,13 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data
 {
-    public class ApiRepository : IRepository, IExerciseLogRepository
+    public class ApiRepository : IRepository
     {
         private readonly HttpClient _client;
 
@@ -18,12 +16,17 @@ namespace WorkoutTracker.MAUI.Data
             _client = clientFactory.CreateClient("api");
         }
 
-        public Task Create<T>(T entity)
+        public async Task Create<T>(T entity)
             where T : EntityBase
         {
             var endpoint = GetApiEndpointFor<T>();
             var content = JsonConvert.SerializeObject(entity);
-            return _client.PostAsync(endpoint, new StringContent(content, System.Text.Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync(endpoint, new StringContent(content, System.Text.Encoding.UTF8, "application/json"));
+            if (!response.IsSuccessStatusCode)
+            {
+                var message = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Something went wrong. Response code: {response}. Message: {message}.");
+            }
         }
 
         public async Task<IEnumerable<T>> GetAll<T>() where T : EntityBase
@@ -70,50 +73,18 @@ namespace WorkoutTracker.MAUI.Data
             return _client.DeleteAsync($"{endpoint}?id={id}");
         }
 
-        async Task<IEnumerable<ExerciseLogEntry>> IExerciseLogRepository.GetByDate(DateTime date)
-        {
-            var endpoint = GetApiEndpointFor<ExerciseLogEntry>();
-            var response = await _client.GetAsync($"{endpoint}?date={date.Date.ToString("dd-MM-yyyy")}");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("TODO: change this!");
-            }
-
-            var content = await response.Content.ReadAsStringAsync();
-            var items = JsonConvert.DeserializeObject<IEnumerable<ExerciseLogEntry>>(content);
-
-            return items;
-        }
-
-        async Task<IEnumerable<string>> IExerciseLogRepository.GetDates()
-        {
-            var response = await _client.GetAsync("ExerciseLogsDates");
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("TODO: change this!");
-            }
-
-            var content = await response.Content.ReadAsStringAsync();
-            var items = JsonConvert.DeserializeObject<IEnumerable<string>>(content);
-
-            return items;
-        }
-
         private string GetApiEndpointFor<T>()
             where T : EntityBase
         {
-            var type = typeof(T);
-            if (type == typeof(Exercise))
+            switch (typeof(T).Name) 
             {
-                return "Exercises";
+                case nameof(Exercise):
+                    return nameof(Exercise);
+                case nameof(ExerciseLogEntry):
+                    return "ExerciseLog";
+                default:
+                    throw new NotSupportedException("Endpoint for the entity is not supported.");
             }
-            else if (type == typeof(ExerciseLogEntry))
-            {
-                return "ExerciseLogs";
-            }
-
-            throw new NotSupportedException($"Type of {type} is not supported.");
         }
     }
 }

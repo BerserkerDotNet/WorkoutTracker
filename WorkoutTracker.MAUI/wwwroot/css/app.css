@@ -201,6 +201,12 @@ span.rating {
     font-size: 25px;
 }
 
-.card {
-    box-shadow: 5px 7px rgba(0,0,0,.125);
+/*.action-buttons{
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
 }
+.action-buttons > button{
+    margin: 0;
+    padding: 0 1rem;
+}*/

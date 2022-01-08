@@ -16,8 +16,6 @@ namespace WorkoutTracker.MAUI.Data.Actions
                 return Task.CompletedTask;
             }
 
-            var exercises = allExercises.Where(e => e.Tags.Contains("GoodForHome"));
-
             var categoriesToPick = new[] { "Chest", "Back", "Shoulders", "Triceps", "Biceps", "Abdominals" };
             _random.Shuffle(categoriesToPick);
 
@@ -25,7 +23,7 @@ namespace WorkoutTracker.MAUI.Data.Actions
 
             foreach (var category in categoriesToPick)
             {
-                var exercisesByCategory = exercises.Where(e => e.Muscles.Contains(category));
+                var exercisesByCategory = allExercises.Where(e => e.Muscles.Contains(category));
                 var count = exercisesByCategory.Count();
 
                 var pickedExercise = exercisesByCategory.ElementAt(_random.Next(0, count));

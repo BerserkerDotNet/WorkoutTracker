@@ -11,5 +11,7 @@ namespace WorkoutTracker.MAUI
         Task<IEnumerable<Exercise>> GetExercises();
 
         Task SaveExercises(IEnumerable<Exercise> exercises);
+
+        void ResetExercisesCache();
     }
 }

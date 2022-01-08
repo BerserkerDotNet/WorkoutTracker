@@ -28,7 +28,7 @@ foreach (var line in lines)
         Id = Guid.Parse(properties[0]),
         Name = properties[1],
         Icon = imageBytes,
-        Muscles = properties[2],
+        Muscles = properties[2].Split(';'),
         Tags = tags
     };
 
@@ -36,7 +36,7 @@ foreach (var line in lines)
     {
         
         var json = JsonConvert.SerializeObject(exercise);
-        var response = await client.PostAsync("http://localhost:7071/api/Exercises", new StringContent(json, Encoding.UTF8, "application/json"));
+        var response = await client.PostAsync("http://localhost:7071/api/Exercise", new StringContent(json, Encoding.UTF8, "application/json"));
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");

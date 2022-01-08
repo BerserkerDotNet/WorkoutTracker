@@ -6,6 +6,7 @@
     <title>WorkoutTracker</title>
     <base href="/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
     <link href="css/app.css" rel="stylesheet" />
 </head>
 
@@ -20,6 +21,43 @@
     </div>
 
     <script src="_framework/blazor.webview.js" autostart="false"></script>
+    <script>
+        Blazor.registerCustomEventType('onswipedright', {
+            browserEventName: 'swiped-right',
+            createEventArgs: event => {
+                alert(event.detail);
+                return {
+                    target: event.target,
+                    direction: event.detail.dir
+                };
+            }
+        });
+                Blazor.registerCustomEventType('onswipedleft', {
+            browserEventName: 'swiped-left',
+            createEventArgs: event => {
+                alert(event.detail);
+                return {
+                    target: event.target,
+                    direction: event.detail.dir
+                };
+            }
+        });
+    </script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    <script src="scripts/swiped-events.js"></script>
+
+    <script>
+          window.getSelectedValues = function(sel) {
+            var results = [];
+            var i;
+            for (i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].selected) {
+                    results[results.length] = sel.options[i].value;
+                }
+            }
+            return results;
+        };
+    </script>
 
 </body>
 

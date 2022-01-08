@@ -5,10 +5,10 @@ namespace WorkoutTracker.MAUI.Data.Actions
 {
     public class FetchExercisesAction : IAsyncAction
     {
-        private readonly IExerciseLogRepository _repository;
+        private readonly IRepository _repository;
         private readonly ICacheService _cacheService;
 
-        public FetchExercisesAction(IExerciseLogRepository repository, ICacheService cacheService)
+        public FetchExercisesAction(IRepository repository, ICacheService cacheService)
         {
             _repository = repository;
             _cacheService = cacheService;

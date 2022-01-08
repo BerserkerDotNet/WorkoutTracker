@@ -1,0 +1,56 @@
+﻿@inject IJSRuntime Js
+@*"Chest", "Back", "Shoulders", "Triceps", "Biceps", "Abdominals" *@
+<form>
+    <div class="form-group">
+        <div class="row">
+            <img src="data:image/png;base64, @(Convert.ToBase64String(Props.Exercise.Icon))" width="100" height="100" alt="@Props.Exercise.Name" style="text-align: center" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Name:</label>
+        <input type="text" class="form-control" @bind="Props.Exercise.Name" />
+    </div>
+    <div class="form-group">
+        <label>Muscles:</label>
+        <select @ref="musclesSelect" multiple @onchange="SelectionChanged" class="form-control">
+            @foreach (var muscle in supportedMuscles)
+            {
+                <option selected="@(Props.Exercise.Muscles.Contains(muscle))" value="@muscle">@muscle</option>
+            }
+        </select>
+    </div>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="goodForHomeTag" @onchange="GoodForHomeChanged" checked="@Props.Exercise.Tags.Contains("GoodForHome")">
+        <label class="form-check-label" for="goodForHomeTag">Good for home</label>
+    </div>
+    <button type="button" class="btn btn-outline-success" @onclick="() => Props.Save.InvokeAsync(Props.Exercise)"><span class="oi oi-plus"></span> Save</button>
+    <button type="button" class="btn btn-outline-danger" @onclick="Props.Cancel"><span class="oi oi-action-undo"></span> Cancel</button>
+</form>
+
+
+@code {
+
+    private ElementReference musclesSelect;
+    private string[] supportedMuscles = new[] { "Chest", "Back", "Shoulders", "Triceps", "Biceps", "Abdominals", "Lats", "Traps" };
+
+    [Parameter]
+    public EditExerciseProps Props { get; set; }
+
+    private async Task SelectionChanged(ChangeEventArgs evt)
+    {
+        var muscles = await GetSelectedMuscles();
+        Props.Exercise.Muscles = muscles.ToArray();
+        StateHasChanged();
+    }
+
+    private void GoodForHomeChanged(ChangeEventArgs evt)
+    {
+        var goodForHome = (bool)evt.Value;
+        Props.Exercise.Tags = goodForHome ? "GoodForHome" : "";
+    }
+
+    public async Task<List<string>> GetSelectedMuscles()
+    {
+        return await Js.InvokeAsync<List<string>>("getSelectedValues", musclesSelect);
+    }
+}

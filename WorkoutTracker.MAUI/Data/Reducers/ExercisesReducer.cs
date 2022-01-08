@@ -22,7 +22,8 @@ namespace WorkoutTracker.MAUI.Data.Reducers
                 case ReceiveExerciseScheduleAction a:
                     return state with { Schedule = a.Schedule };
                 case AddExerciseLogEntryAction a:
-                    return state with { Log = new[] { a.Entry }.Union(state.Log) };
+                    var log = state.Log ?? Enumerable.Empty<ExerciseLogEntry>();
+                    return state with { Log = new[] { a.Entry }.Union(log)};
                 default:
                     return state;
             }

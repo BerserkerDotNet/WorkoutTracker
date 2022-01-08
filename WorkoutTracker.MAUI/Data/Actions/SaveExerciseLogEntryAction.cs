@@ -5,10 +5,10 @@ namespace WorkoutTracker.MAUI.Data.Actions
 {
     public class SaveExerciseLogEntryAction : IAsyncAction<ExerciseLogEntry>
     {
-        private readonly IExerciseLogRepository _repository;
+        private readonly IRepository _repository;
         private readonly INotificationService _notificationService;
 
-        public SaveExerciseLogEntryAction(IExerciseLogRepository repository, INotificationService notificationService)
+        public SaveExerciseLogEntryAction(IRepository repository, INotificationService notificationService)
         {
             _repository = repository;
             _notificationService = notificationService;

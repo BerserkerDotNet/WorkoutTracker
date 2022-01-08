@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data.Actions
 {
@@ -15,9 +16,17 @@ namespace WorkoutTracker.MAUI.Data.Actions
             }
 
             var exercise = request.ExerciseToReplace;
-            var categories = exercise.Muscles.Split(";");
-            var exercises = request.AllExercises.Where(e => e.Id != exercise.Id && e.Tags.Contains("GoodForHome") && categories.Any(c => e.Muscles.Contains(c)));
-            var newExercise = exercises.ElementAt(_random.Next(0, exercises.Count()));
+            var categories = exercise.Muscles;
+            var exercises = request.AllExercises.Where(e => e.Id != exercise.Id && categories.Any(c => e.Muscles.Contains(c)));
+            Exercise newExercise = null;
+            while (true) 
+            {
+                newExercise = exercises.ElementAt(_random.Next(0, exercises.Count()));
+                if (!request.CurrentSchedule.Any(s => s.Id == newExercise.Id)) 
+                {
+                    break;
+                }
+            }
 
             var currentSchedule = request.CurrentSchedule.ToArray();
             var idx = Array.IndexOf(currentSchedule, exercise);

@@ -1,0 +1,11 @@
+﻿@page "/editexerciselog/{id:guid}/{exerciseid:guid}"
+
+<EditExerciseLogConnected Id="Id" ExerciseId="ExerciseId" />
+
+@code{
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public Guid ExerciseId { get; set; }
+}

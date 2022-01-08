@@ -5,10 +5,10 @@ namespace WorkoutTracker.MAUI.Data.Actions
 {
     public class DeleteExerciseLogEntryAction : IAsyncAction<Guid>
     {
-        private readonly IExerciseLogRepository _repository;
+        private readonly IRepository _repository;
         private readonly INotificationService _notificationService;
 
-        public DeleteExerciseLogEntryAction(IExerciseLogRepository repository, INotificationService notificationService)
+        public DeleteExerciseLogEntryAction(IRepository repository, INotificationService notificationService)
         {
             _repository = repository;
             _notificationService = notificationService;

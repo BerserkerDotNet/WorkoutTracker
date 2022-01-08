@@ -1,0 +1,2 @@
+﻿<RadzenNumeric @bind-Value="Duration" Placeholder="0" Name="Duration" class="@InputClass" />
+<RadzenButton Click="ToggleExerciseStopwatch" Icon="timer" Text="@(_isRunning ? "Stop" : "Start")" ButtonStyle="@(_isRunning ? ButtonStyle.Warning : ButtonStyle.Light)" style="padding: 0 1em;" class="@ButtonClass" />

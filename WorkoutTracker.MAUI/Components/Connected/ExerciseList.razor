@@ -1,0 +1,15 @@
+﻿<h2>Exercises</h2>
+
+@foreach (var item in Props.List)
+{
+    <ExerciseCard Exercise="item">
+        <Actions>
+            <button @onclick:preventDefault @onclick="() => Props.Edit.InvokeAsync(item)" class="btn btn-outline-warning"><span class="oi oi-pencil"></span> Edit</button>
+        </Actions>
+    </ExerciseCard>
+}
+
+@code {
+    [Parameter]
+    public ExerciseListProps Props { get; set; }
+}
