@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,16 +11,23 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Components.Connected
 {
-    public partial class EditExerciseLog 
+    public partial class EditExerciseLog : IDisposable
     {
+        const string DefaultDialogStyle = "min-height:auto;min-width:auto;width:auto";
         const string KG = "KG";
         const string LB = "LB";
-        private bool isSaving = false;
+        private Stopwatch _timeTracker;
         private bool _isRunning = false;
         private CancellationTokenSource _source;
         private string _weightUnits = "KG";
-        private ExerciseLogEntry logEntry = new ExerciseLogEntry();
-        private int duration = 0;
+        private ExerciseLogEntry logEntry = new ExerciseLogEntry 
+        {
+            Repetitions = 0,
+            Weight = 0,
+            Duration = TimeSpan.Zero,
+        };
+
+        private TimeSpan duration = TimeSpan.Zero;
 
         [Parameter]
         public EditExerciseLogProps Props { get; set; }
@@ -33,47 +41,109 @@ namespace WorkoutTracker.MAUI.Components.Connected
         [Inject]
         public DialogService DialogService { get; set; }
 
+        private bool DisablePrevious => !Props.PreviousExerciseId.HasValue || _isRunning;
+
+        private bool DisableNext => !Props.NextExerciseId.HasValue || _isRunning;
+
+        public void Dispose()
+        {
+            _source.Cancel();
+            _source = null;
+        }
+
+        protected override void OnInitialized()
+        {
+            _timeTracker = Stopwatch.StartNew();
+            _source = new CancellationTokenSource();
+            Task.Factory.StartNew(async () => await StartCounting(_source.Token));
+        }
+
         private async Task SaveAndNew(SetDetail details)
         {
             var weightInKG = _weightUnits == "LB" ? Math.Ceiling((double)logEntry.Weight * 0.453592d) : logEntry.Weight;
-            isSaving = true;
-            await Props.Save.InvokeAsync(new ExerciseLogEntry
-            {
-                Id = Guid.NewGuid(),
-                ExerciseId = Props.Exercise.Id,
-                Duration = TimeSpan.FromSeconds(details.Duration),
-                Weight = weightInKG,
-                Repetitions = details.Repetitions,
-                Score = details.Rating,
-                Note = details.Notes
+                await Props.Save.InvokeAsync(new ExerciseLogEntry
+                {
+                    Id = Guid.NewGuid(),
+                    ExerciseId = Props.Exercise.Id,
+                    Duration = TimeSpan.FromSeconds(details.Duration),
+                    Weight = weightInKG,
+                    Repetitions = details.Repetitions,
+                    Score = details.Rating,
+                    Note = details.Notes
 
-            });
-            isSaving = false;
-            logEntry.Repetitions = 0;
-            logEntry.Note = string.Empty;
-            duration = 0;
+                });
+                logEntry.Repetitions = 0;
+                logEntry.Note = string.Empty;
         }
 
         private void StartSet()
         {
-            if (!_isRunning)
-            {
-                _source = new CancellationTokenSource();
-                Task.Factory.StartNew(async () => await StartCounting(_source.Token));
-                _isRunning = true;
-            }
+            _timeTracker.Restart();
+            _isRunning = true;
         }
 
         private async Task EndSet()
         {
-            if (_isRunning)
+            _isRunning = false;
+            var exerciseDuration = (int)_timeTracker.Elapsed.TotalSeconds;
+            _timeTracker.Restart();
+            var details = await ShowSetCompletionDialog(exerciseDuration);
+            if (details is null) 
             {
-                _source.Cancel();
-                _source = null;
-                _isRunning = false;
+                return;
             }
 
-            var details = await DialogService.OpenAsync($"Details of set {Props.ExerciseSetNumber}", ds => 
+            try
+            {
+                ShowMessageDialog(string.Empty, "Saving, please wait...");
+                await SaveAndNew(details);
+            }
+            catch (Exception ex)
+            {
+                // TODO: Need to close saving and open error dialog
+                ShowMessageDialog("Error saving the record", ex.Message, closeOnDismiss: true);
+            }
+            DialogService.Close();
+        }
+
+        private async Task StartCounting(CancellationToken token)
+        {
+            using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+            while (await timer.WaitForNextTickAsync())
+            {
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                await InvokeAsync(() => StateHasChanged());
+            }
+        }
+
+        private void ShowMessageDialog(string title, string message, bool closeOnDismiss = false) 
+        {
+            var showHeader = !string.IsNullOrEmpty(title);
+            DialogService.Open(title, ds =>
+            {
+                var seq = 0;
+                RenderFragment content = b =>
+                {
+                    b.OpenElement(seq++, "div");
+                    b.AddAttribute(seq++, "class", "row");
+                    b.OpenElement(seq++, "div");
+                    b.AddAttribute(seq++, "class", "col-md-12");
+                    b.AddContent(seq++, message);
+                    b.CloseElement();
+                    b.CloseElement();
+                };
+
+                return content;
+            }, new DialogOptions() { ShowTitle = showHeader, ShowClose = showHeader, CloseDialogOnOverlayClick = closeOnDismiss, Style = DefaultDialogStyle });
+        }
+
+        private async Task<SetDetail> ShowSetCompletionDialog(int duration) 
+        {
+            return await DialogService.OpenAsync($"Details of set {Props.ExerciseSetNumber}", ds =>
             {
                 var seq = 0;
                 RenderFragment content = b =>
@@ -86,48 +156,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
                 };
 
                 return content;
-            }, new DialogOptions() { Style = "min-height:auto;min-width:auto;width:auto" });
-
-            if (details is null) 
-            {
-                return;
-            }
-
-            DialogService.Open("", ds =>
-            {
-                var seq = 0;
-                RenderFragment content = b =>
-                {
-                    b.OpenElement(seq++, "div");
-                    b.AddAttribute(seq++, "class", "row");
-                    b.OpenElement(seq++, "div");
-                    b.AddAttribute(seq++, "class", "col-md-12");
-                    b.AddContent(seq++, "Saving, please wait...");
-                    b.CloseElement();
-                    b.CloseElement();
-                };
-
-                return content;
-            }, new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto" });
-
-            await SaveAndNew(details);
-
-            DialogService.Close();
-        }
-
-        private async Task StartCounting(CancellationToken token)
-        {
-            using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-            int currentDuration = 0;
-            while (await timer.WaitForNextTickAsync())
-            {
-                if (token.IsCancellationRequested)
-                {
-                    break;
-                }
-
-                duration = ++currentDuration;
-            }
+            }, new DialogOptions() { Style = DefaultDialogStyle });
         }
     }
 

@@ -6,12 +6,7 @@
 		</div>
 		<div class="col-6">
 			<RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Set #{Props.ExerciseSetNumber}")" />
-			<div>
-				@foreach (var muscle in Props.Exercise.Muscles)
-				{
-					<RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@muscle" />
-				}
-			</div>
+			<ExerciseTimerBadge IsResting="!_isRunning" Time="_timeTracker.Elapsed" RestingTemplate="Resting for {0}" WorkingoutTemplate="In progress for {0}" />
 			<div style="padding-top: 10px">
 				<RadzenLabel Text="Weight:" />
 				<RadzenNumeric @bind-Value="logEntry.Weight" Placeholder="0" Name="Weight" class="@($"{Styles.Input} {Styles.InputWithButton}")" />
@@ -26,9 +21,9 @@
 	</div>
 	<div class="row">
 		<div class="col-12">
-			<RadzenButton Icon="chevron_left" ButtonStyle="ButtonStyle.Secondary" Click="() => Props.Previous.InvokeAsync(Props.PreviousExerciseId.Value)" Disabled="!Props.PreviousExerciseId.HasValue" />
+			<RadzenButton Icon="chevron_left" ButtonStyle="ButtonStyle.Secondary" Click="() => Props.Previous.InvokeAsync(Props.PreviousExerciseId.Value)" Disabled="DisablePrevious" />
 			<StartStopButton IdleText="@($"Start set #{Props.ExerciseSetNumber}")" ActiveText="@($"Complete set #{Props.ExerciseSetNumber}")" OnStart="StartSet" OnEnd="EndSet" />
-			<RadzenButton Icon="chevron_right" ButtonStyle="ButtonStyle.Secondary" Click="() => Props.Next.InvokeAsync(Props.NextExerciseId.Value)" Disabled="!Props.NextExerciseId.HasValue" />
+			<RadzenButton Icon="chevron_right" ButtonStyle="ButtonStyle.Secondary" Click="() => Props.Next.InvokeAsync(Props.NextExerciseId.Value)" Disabled="DisableNext" />
 		</div>
 		@if (Props.Sets.Any())
 		{

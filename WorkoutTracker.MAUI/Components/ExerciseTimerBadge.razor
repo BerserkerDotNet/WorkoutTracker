@@ -1,0 +1,26 @@
+﻿<RadzenBadge BadgeStyle="_badgeStyle" Text="@_formattedString" />
+
+@code{
+
+	private BadgeStyle _badgeStyle = BadgeStyle.Secondary;
+	private string _formattedString = "";
+
+	[Parameter]
+	public bool IsResting { get; set; }
+
+	[Parameter]
+	public string RestingTemplate { get; set; }
+
+	[Parameter]
+	public string WorkingoutTemplate { get; set; }
+
+	[Parameter]
+	public TimeSpan Time { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		_badgeStyle = IsResting ? BadgeStyle.Secondary : BadgeStyle.Light;
+		var formattedTime = Time.ToString(@"mm\:ss");
+		_formattedString = IsResting ? string.Format(RestingTemplate, formattedTime) : string.Format(WorkingoutTemplate, formattedTime);
+	}
+}
