@@ -1,0 +1,398 @@
+[
+  {
+    "id": "02486d85-d7c0-44fd-8436-ebd244171b20",
+    "name": "Dumbbell Bench Press",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "3ac77a25-c9fa-4018-8f25-517fa1a59e27",
+    "name": "Pushups",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "a3b78f02-e175-484f-ba42-e2df413258ed" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "d872d38b-64a2-457b-962c-2a8861dc3e8c",
+    "name": "Dumbbell Flyes",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "efe87918-5893-4f07-b13c-b850493746d5" ],
+    "tags": []
+  },
+  {
+    "id": "b819a3e2-d964-4008-9799-e120487d35b2",
+    "name": "Incline dumbbell bench press",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "5bee64e0-fee6-4a13-9231-cb09fad9b4d3",
+    "name": "Low-cable cross-over",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "efe87918-5893-4f07-b13c-b850493746d5" ],
+    "tags": []
+  },
+  {
+    "id": "36e2faae-5e22-4897-8daa-d13f55da0472",
+    "name": "Cable Crossover",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "2146c3a3-e656-49be-8288-4e65c35f92e1" ],
+    "tags": []
+  },
+  {
+    "id": "b4c88cb7-cb82-4e6c-b28b-298571b5fa36",
+    "name": "Straight-arm dumbbell pull-over",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "70da1002-465a-4e77-93df-7ddd9ee21e1e", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "0177b55c-bbba-4098-8173-bc9191091871" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "a9b4a9c0-5e60-4386-9d08-63a3d802086a",
+    "name": "Decline Smith Press",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "6ebba228-4205-4d17-b51f-b870fd061332",
+    "name": "Smith machine bench press",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "d08d5353-d420-4b6d-ac6e-906aba8e4588",
+    "name": "Smith Machine Close-Grip Bench Press",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5" ],
+    "tags": []
+  },
+  {
+    "id": "84d83f0e-3cbd-4ed5-92d1-7fd73386752a",
+    "name": "Suspended push-up",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "a3b78f02-e175-484f-ba42-e2df413258ed" ],
+    "tags": []
+  },
+  {
+    "id": "73e995fc-daae-46b7-b455-2d916c260f15",
+    "name": "Smith Machine Incline Bench Press",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "04ad6bd8-5dec-4264-b05d-5182429a1ec9",
+    "name": "Pullups",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "cfd15288-e475-4f42-bf5b-543c4b549254", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "e9aae9da-db47-4c71-a187-198879c6b88a", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62" ],
+    "tags": []
+  },
+  {
+    "id": "1897a22d-935c-42af-8e7e-3bf04830d740",
+    "name": "One-Arm Dumbbell Row",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "cfd15288-e475-4f42-bf5b-543c4b549254", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "e9aae9da-db47-4c71-a187-198879c6b88a", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "3faa8112-b9f3-41fb-aef1-787af8f478ee",
+    "name": "Close-grip pull-down",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "cfd15288-e475-4f42-bf5b-543c4b549254", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "e9aae9da-db47-4c71-a187-198879c6b88a", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac" ],
+    "tags": []
+  },
+  {
+    "id": "6560da0f-d38e-474f-bdb6-de708a975e04",
+    "name": "Incline dumbbell row",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "cfd15288-e475-4f42-bf5b-543c4b549254", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc" ],
+    "tags": []
+  },
+  {
+    "id": "36193ac8-50a5-4962-a255-6af6509668ae",
+    "name": "V-bar pull-up",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "cfd15288-e475-4f42-bf5b-543c4b549254", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "e9aae9da-db47-4c71-a187-198879c6b88a", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62" ],
+    "tags": []
+  },
+  {
+    "id": "d6846bae-ccf8-4073-8825-e9fb28def637",
+    "name": "Lat pull-down",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "cfd15288-e475-4f42-bf5b-543c4b549254", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "e9aae9da-db47-4c71-a187-198879c6b88a", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "70da1002-465a-4e77-93df-7ddd9ee21e1e" ],
+    "tags": []
+  },
+  {
+    "id": "2095c0d0-4c7b-47ff-a7d9-2b19761a8d50",
+    "name": "Machine seated row",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "cfd15288-e475-4f42-bf5b-543c4b549254", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "70da1002-465a-4e77-93df-7ddd9ee21e1e" ],
+    "tags": []
+  },
+  {
+    "id": "16e41189-84b2-4412-9aaf-80af692377fa",
+    "name": "Suspended row",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "70da1002-465a-4e77-93df-7ddd9ee21e1e", "0177b55c-bbba-4098-8173-bc9191091871" ],
+    "tags": []
+  },
+  {
+    "id": "5696232f-2778-455f-919b-fb1333d22c1b",
+    "name": "Machine Shoulder (Military) Press",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "70da1002-465a-4e77-93df-7ddd9ee21e1e", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "b3b12bf1-6606-4528-bb1c-31d858ff30bc" ],
+    "tags": []
+  },
+  {
+    "id": "f9585d34-46bd-4044-8221-ed3ce0b7a7fc",
+    "name": "Military press",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "792efd62-cc4f-458b-b0f6-c3e6735eb24d", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "55f03e58-1679-4315-9e8e-615a69230030",
+    "name": "Seated barbell shoulder press",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "792efd62-cc4f-458b-b0f6-c3e6735eb24d" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "8d7c362d-7268-468e-9161-e1f35b2f4fa7",
+    "name": "Seated Dumbbell Press",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "792efd62-cc4f-458b-b0f6-c3e6735eb24d", "f156ee55-1292-4f60-b3c2-888efb7dd197", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "97fe8dea-c336-4ec0-a654-ba76fe3fb62d",
+    "name": "Smith machine shrug",
+    "muscles": [ "b3b12bf1-6606-4528-bb1c-31d858ff30bc" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "ad514683-3fb4-4f41-a33c-9e74b450a9f7",
+    "name": "Side Lateral Raise,Shoulders",
+    "muscles": [ "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "792efd62-cc4f-458b-b0f6-c3e6735eb24d" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "d547182e-76a7-4436-b5a4-fe27ca0c8d3d",
+    "name": "Dumbbell front raise,Shoulders",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "792efd62-cc4f-458b-b0f6-c3e6735eb24d", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "4771a0a8-fe23-43e1-a6d1-e349164e92aa",
+    "name": "Single-arm cable front raise",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "792efd62-cc4f-458b-b0f6-c3e6735eb24d", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac" ],
+    "tags": []
+  },
+  {
+    "id": "6faa9e62-4bca-44a0-8191-4a8313943e43",
+    "name": "Alternating Kettlebell Press",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "792efd62-cc4f-458b-b0f6-c3e6735eb24d", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "2fef50ae-bb3f-483c-87f6-dfd3b833aee1",
+    "name": "Cuban press",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "b3b12bf1-6606-4528-bb1c-31d858ff30bc" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "d090b2a4-3248-4afa-82fa-07f4c9b3a077",
+    "name": "Single-arm cable triceps extension",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "10acd08c-f7ad-492e-8473-81a2c5852001",
+    "name": "Reverse Grip Triceps Pushdown",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "5178a01c-33aa-437b-8a77-e0fff902e8f0",
+    "name": "Bench dip",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "5777801b-3bf1-43f1-860c-bb4db0fec108",
+    "name": "Cable V-bar push-down",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "b78b47e7-6e16-4581-9de8-fc6cbf7578c7",
+    "name": "Seated triceps press",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "6c2b964b-8876-41f9-a249-5b4c3598f053",
+    "name": "Low cable overhead extension",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "1f9f31b1-efe1-4354-ad6d-4793e0cfccdc",
+    "name": "Cable overhead extension",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": []
+  },
+  {
+    "id": "2510b0af-19fc-4034-8011-a9955ad07679",
+    "name": "Hammer Curls",
+    "muscles": [ "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "e9aae9da-db47-4c71-a187-198879c6b88a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "d85e7213-6f30-4968-8b41-c31efbc43b45",
+    "name": "Dumbbell Bicep Curl",
+    "muscles": [ "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "e9aae9da-db47-4c71-a187-198879c6b88a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "93b66b46-74bc-484f-bc52-844d5facba69",
+    "name": "Barbell Curl",
+    "muscles": [ "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "e9aae9da-db47-4c71-a187-198879c6b88a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "605cb4bb-d7fe-4626-8bc2-a00f61162b1b",
+    "name": "Concentration curl",
+    "muscles": [ "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "e9aae9da-db47-4c71-a187-198879c6b88a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "e29cff55-a310-46a6-9b4f-7852ff7adee9",
+    "name": "Seated dumbbell biceps curl",
+    "muscles": [ "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "e9aae9da-db47-4c71-a187-198879c6b88a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "d8c50d1f-bd10-4282-9991-5fdd1d1b9c46",
+    "name": "Standing Biceps Cable Curl",
+    "muscles": [ "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "e9aae9da-db47-4c71-a187-198879c6b88a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "73dd8830-c348-4f69-84b2-3e20a70fcf89",
+    "name": "Machine Preacher Curls",
+    "muscles": [ "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "e9aae9da-db47-4c71-a187-198879c6b88a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "9ac8c3a1-06d6-4818-8c20-80329bcac5d3",
+    "name": "Reverse-grip barbell curl",
+    "muscles": [ "efe87918-5893-4f07-b13c-b850493746d5", "8d5a0324-c6c3-4dc0-8331-84f9636a4d88", "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62", "e9aae9da-db47-4c71-a187-198879c6b88a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "4d68823d-5666-49ef-8032-6b984c02c74e",
+    "name": "Bottoms Up",
+    "muscles": [ "a3b78f02-e175-484f-ba42-e2df413258ed" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "7f085143-472d-4f06-b264-1f5318c6facc",
+    "name": "Landmine twist",
+    "muscles": [ "f156ee55-1292-4f60-b3c2-888efb7dd197", "a3b78f02-e175-484f-ba42-e2df413258ed" ],
+    "tags": []
+  },
+  {
+    "id": "a6be73f3-bbb7-4515-9beb-b2bcda254bd4",
+    "name": "Decline Crunch",
+    "muscles": [ "a3b78f02-e175-484f-ba42-e2df413258ed", "f156ee55-1292-4f60-b3c2-888efb7dd197" ],
+    "tags": []
+  },
+  {
+    "id": "64d42394-efdd-4a74-9d18-1f0f9baba620",
+    "name": "Hanging Oblique Knee Raise",
+    "muscles": [ "f156ee55-1292-4f60-b3c2-888efb7dd197", "a3b78f02-e175-484f-ba42-e2df413258ed" ],
+    "tags": []
+  },
+  {
+    "id": "da27af0a-5014-4751-8e22-e5c47fb6f68d",
+    "name": "Side Bridge",
+    "muscles": [ "f156ee55-1292-4f60-b3c2-888efb7dd197", "a3b78f02-e175-484f-ba42-e2df413258ed" ],
+    "tags": []
+  },
+  {
+    "id": "5e47c045-8515-49cc-9084-e71b33363250",
+    "name": "Incline Push-Up",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "efe87918-5893-4f07-b13c-b850493746d5" ],
+    "tags": []
+  },
+  {
+    "id": "2514e9ce-6b1b-42af-a545-5ec415c11c1b",
+    "name": "Decline Push-Up",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "efe87918-5893-4f07-b13c-b850493746d5" ],
+    "tags": []
+  },
+  {
+    "id": "bf52f2da-bf6f-429a-ae2a-ea0fa1edc1fa",
+    "name": "Dumbbell Floor Press",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd", "efe87918-5893-4f07-b13c-b850493746d5" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "4cf3af9f-f162-40f3-9e0f-61c27fed6c5e",
+    "name": "One-Arm Push-Up",
+    "muscles": [ "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "a3b78f02-e175-484f-ba42-e2df413258ed", "f156ee55-1292-4f60-b3c2-888efb7dd197" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "b33af80a-8608-4ef9-a792-a18c7eadb676",
+    "name": "Barbell deadlift",
+    "muscles": [ "326bbce1-b660-4559-8fb0-67a7c59e1a4a", "c8f7e75d-95fc-4b8c-815c-c67fa2da8975", "5a778ec8-1224-4796-b472-326886715cf5", "78f7f381-80cd-4a48-ab89-5d58a54a8b50", "e322933a-a4ca-42f9-adbd-cb9340cc4d89" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "405e7cdb-7999-4c77-85fe-ee5b672a35c0",
+    "name": "Reverse-grip bent-over row",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "70da1002-465a-4e77-93df-7ddd9ee21e1e", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "b1ce8082-2b1a-4956-b3de-e687e3e16902",
+    "name": "Bent Over Barbell Row",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "70da1002-465a-4e77-93df-7ddd9ee21e1e", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "de1c2ba1-6536-45ef-a592-40656e95ae64",
+    "name": "Superman",
+    "muscles": [ "2146c3a3-e656-49be-8288-4e65c35f92e1", "0177b55c-bbba-4098-8173-bc9191091871", "70da1002-465a-4e77-93df-7ddd9ee21e1e", "241100a6-7a94-4862-bbdb-a45ce5652af7", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "f156ee55-1292-4f60-b3c2-888efb7dd197", "a3b78f02-e175-484f-ba42-e2df413258ed" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "fe86b6df-40bf-4eae-8cf1-1a4608272fac",
+    "name": "Single-arm kettlebell push-press",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "792efd62-cc4f-458b-b0f6-c3e6735eb24d" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "ea83a9c3-0f86-43f9-be3f-364b728919e3",
+    "name": "Single-arm lateral raise",
+    "muscles": [ "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "792efd62-cc4f-458b-b0f6-c3e6735eb24d" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "33e31d12-f529-4cdf-b033-e48f6949de25",
+    "name": "Alternating standing shoulder press",
+    "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac", "792efd62-cc4f-458b-b0f6-c3e6735eb24d" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "048cd2bd-0bc3-4b6a-986d-ed31a6f007a2",
+    "name": "Bent-over dumbbell rear delt row",
+    "muscles": [ "70da1002-465a-4e77-93df-7ddd9ee21e1e", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "241100a6-7a94-4862-bbdb-a45ce5652af7" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "5a149e4a-b553-43ea-b045-94fbe7e97b7a",
+    "name": "Standing dumbbell shrug",
+    "muscles": [ "b3b12bf1-6606-4528-bb1c-31d858ff30bc" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "74ff6501-0384-412b-a259-781f71f7e519",
+    "name": "Standing dumbbell upright row",
+    "muscles": [ "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "b3b12bf1-6606-4528-bb1c-31d858ff30bc", "efe87918-5893-4f07-b13c-b850493746d5" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "0595fd44-7f19-404f-966b-74a8445c1dfc",
+    "name": "Single-arm dumbbell triceps extension",
+    "muscles": [ "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "0d204816-2de6-4a25-913a-93f4ac4566b0",
+    "name": "Dumbbell V-Sit Cross Jab",
+    "muscles": [ "a3b78f02-e175-484f-ba42-e2df413258ed", "f156ee55-1292-4f60-b3c2-888efb7dd197", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5" ],
+    "tags": [ "GoodForHome" ]
+  }
+]

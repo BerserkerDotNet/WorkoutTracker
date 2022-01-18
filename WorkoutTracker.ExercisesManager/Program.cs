@@ -1,46 +1,115 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using WorkoutTracker.Models;
 
-const string exercisesFileName = @"exercises.csv";
+// TODO: Build muscles list
+// TODO: Update exercises list to reflect muscles correctly
 
-var lines = await File.ReadAllLinesAsync(Path.Combine("Assets", exercisesFileName));
+await UpdateMuscleDb();
 
-foreach (var line in lines)
+static async Task UpdateExerciseDb()
 {
-    var properties = line.Split(",", StringSplitOptions.RemoveEmptyEntries);
+    const string exercisesFileName = @"exercises.json";
+    const string musclesFileName = @"muscles.json";
 
-    Console.WriteLine($"Processing '{properties[1]}'");
-    var imagePath = Path.Combine("Assets", $"{properties[1]}.jpg");
-    if (!File.Exists(imagePath))
+    var exercisesString = await File.ReadAllTextAsync(Path.Combine("Assets", exercisesFileName));
+    var musclesString = await File.ReadAllTextAsync(Path.Combine("Assets", musclesFileName));
+
+    var muscles = JsonConvert.DeserializeObject<Muscle[]>(musclesString);
+    var exercises = JsonConvert.DeserializeObject<Exercise[]>(exercisesString);
+    var distinctExercises = new HashSet<Guid>();
+
+    foreach (var exercise in exercises)
     {
-        Console.WriteLine($"Image not found for '{properties[1]}'");
-        continue;
+        if (distinctExercises.Contains(exercise.Id))
+        {
+            throw new Exception("Duplicate exercise ID detected");
+        }
+
+        distinctExercises.Add(exercise.Id);
     }
 
-    var imageBytes = await File.ReadAllBytesAsync(imagePath);
-    var tags = properties.Length >= 4 ? properties[3] : string.Empty;
-    var exercise = new Exercise
+    var exercisesWithoutMuscleGroups = exercises.Where(e => e.Muscles.Length == 0 || e.Muscles.Any(m => !muscles.Any(mu => mu.Id == m)));
+    if (exercisesWithoutMuscleGroups.Any())
     {
-        Id = Guid.Parse(properties[0]),
-        Name = properties[1],
-        Icon = imageBytes,
-        Muscles = properties[2].Split(';'),
-        Tags = tags
-    };
+        throw new Exception("Invalid muscle groups detected");
+    }
 
-    using (var client = new HttpClient())
+    foreach (var exercise in exercises)
     {
-        
-        var json = JsonConvert.SerializeObject(exercise);
-        var response = await client.PostAsync("http://localhost:7071/api/Exercise", new StringContent(json, Encoding.UTF8, "application/json"));
-        if (!response.IsSuccessStatusCode)
+        Console.WriteLine($"Processing exercise '{exercise.Name}'");
+        var imagePath = Path.Combine("Assets", "exercises", $"{exercise.Name}.jpg");
+        if (!File.Exists(imagePath))
         {
-            Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");
+            Console.WriteLine($"Image not found for '{exercise.Name}'");
+            continue;
+        }
+
+        var imageBytes = await File.ReadAllBytesAsync(imagePath);
+        exercise.Icon = imageBytes;
+
+        using (var client = new HttpClient())
+        {
+
+            var json = JsonConvert.SerializeObject(exercise);
+            var response = await client.PostAsync("http://localhost:7071/api/Exercise", new StringContent(json, Encoding.UTF8, "application/json"));
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");
+            }
         }
     }
+
 }
 
+
+static async Task UpdateMuscleDb()
+{
+    const string musclesFileName = @"muscles.json";
+
+    var musclesString = await File.ReadAllTextAsync(Path.Combine("Assets", musclesFileName));
+
+    var muscles = JsonConvert.DeserializeObject<Muscle[]>(musclesString);
+    var distinctMuscles = new HashSet<Guid>();
+
+    foreach (var muscle in muscles)
+    {
+        if (distinctMuscles.Contains(muscle.Id))
+        {
+            throw new Exception("Duplicate muscle ID detected");
+        }
+
+        distinctMuscles.Add(muscle.Id);
+    }
+
+    foreach (var muscle in muscles)
+    {
+        Console.WriteLine($"Processing exercise '{muscle.Name}'");
+        var imagePath = Path.Combine("Assets", "muscles", $"{muscle.Image}");
+        if (!File.Exists(imagePath))
+        {
+            Console.WriteLine($"Image not found for '{muscle.Name}'");
+            continue;
+        }
+
+        var imageBytes = await File.ReadAllBytesAsync(imagePath);
+        muscle.ImageRaw = imageBytes;
+
+        using (var client = new HttpClient())
+        {
+            var json = JsonConvert.SerializeObject(muscle);
+            var response = await client.PostAsync("http://localhost:7071/api/Muscle", new StringContent(json, Encoding.UTF8, "application/json"));
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");
+            }
+        }
+    }
+
+}

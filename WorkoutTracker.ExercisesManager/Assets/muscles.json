@@ -1,0 +1,134 @@
+[
+  {
+    "id": "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac",
+    "name": "Pectoralis major",
+    "musclegroup": "Chest",
+    "image": "Pectoralis major.png"
+  },
+  {
+    "id": "792efd62-cc4f-458b-b0f6-c3e6735eb24d",
+    "name": "Serratus anterior",
+    "musclegroup": "Chest",
+    "image": "Serratus anterior.png"
+  },
+  {
+    "id": "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5",
+    "name": "Anterior deltoid (Front deltoid)",
+    "musclegroup": "Shoulder",
+    "image": "shoulder.png"
+  },
+  {
+    "id": "57ebdabc-7507-4b2b-8322-dc3da9b58a8c",
+    "name": "Lateral deltoid",
+    "musclegroup": "Shoulder",
+    "image": "shoulder.png"
+  },
+  {
+    "id": "70da1002-465a-4e77-93df-7ddd9ee21e1e",
+    "name": "Posterior deltoid (Rear deltoid)",
+    "musclegroup": "Shoulder",
+    "image": "shoulder.png"
+  },
+  {
+    "id": "d75935e1-aaf2-42ab-b224-12c9fa3ab0cd",
+    "name": "Triceps",
+    "musclegroup": "Triceps",
+    "image": "triceps.png"
+  },
+  {
+    "id": "a3b78f02-e175-484f-ba42-e2df413258ed",
+    "name": "Rectus Abdominus",
+    "musclegroup": "Core",
+    "image": "abdominal.png"
+  },
+  {
+    "id": "f156ee55-1292-4f60-b3c2-888efb7dd197",
+    "name": "Obliques",
+    "musclegroup": "Core",
+    "image": "Obliques.png"
+  },
+  {
+    "id": "efe87918-5893-4f07-b13c-b850493746d5",
+    "name": "Biceps brachii (Short head)",
+    "musclegroup": "Biceps",
+    "image": "biceps.png"
+  },
+  {
+    "id": "8d5a0324-c6c3-4dc0-8331-84f9636a4d88",
+    "name": "Biceps brachii (Long head)",
+    "musclegroup": "Biceps",
+    "image": "biceps.png"
+  },
+  {
+    "id": "2146c3a3-e656-49be-8288-4e65c35f92e1",
+    "name": "Latissimus dorsi",
+    "musclegroup": "Back",
+    "image": "latissimus dorsi.png"
+  },
+  {
+    "id": "0177b55c-bbba-4098-8173-bc9191091871",
+    "name": "Teres major",
+    "musclegroup": "Back",
+    "image": "teres major.png"
+  },
+  {
+    "id": "cfd15288-e475-4f42-bf5b-543c4b549254",
+    "name": "Teres minor",
+    "musclegroup": "Back",
+    "image": "teres major.png"
+  },
+  {
+    "id": "241100a6-7a94-4862-bbdb-a45ce5652af7",
+    "name": "Infraspinatus",
+    "musclegroup": "Back",
+    "image": "Infraspinatus.png"
+  },
+  {
+    "id": "b3b12bf1-6606-4528-bb1c-31d858ff30bc",
+    "name": "Trapezius",
+    "musclegroup": "Back",
+    "image": "trapezius.png"
+  },
+  {
+    "id": "e9aae9da-db47-4c71-a187-198879c6b88a",
+    "name": "Brachialis",
+    "musclegroup": "Arm",
+    "image": "arm flexors.png"
+  },
+  {
+    "id": "0fd01b78-7f7d-41ab-98a2-b51f2e8e6b62",
+    "name": "Brachioradialis",
+    "musclegroup": "Arm",
+    "image": "arm flexors.png"
+  },
+  {
+    "id": "326bbce1-b660-4559-8fb0-67a7c59e1a4a",
+    "name": "Gluteus maximus",
+    "musclegroup": "Legs",
+    "image": "gluteus maximus.png"
+  },
+  {
+    "id": "c8f7e75d-95fc-4b8c-815c-c67fa2da8975",
+    "name": "Erector spinae",
+    "musclegroup": "Back",
+    "image": "erector spinae.png"
+  },
+  {
+    "id": "5a778ec8-1224-4796-b472-326886715cf5",
+    "name": "Adductor magnus",
+    "musclegroup": "Legs",
+    "image": "erector spinae.png"
+  },
+  {
+    "id": "78f7f381-80cd-4a48-ab89-5d58a54a8b50",
+    "name": "Quadriceps",
+    "musclegroup": "Legs",
+    "image": "Quadriceps.png"
+  },
+  {
+    "id": "e322933a-a4ca-42f9-adbd-cb9340cc4d89",
+    "name": "Hamstring",
+    "musclegroup": "Legs",
+    "image": "hamstring.png"
+  }
+]

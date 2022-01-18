@@ -11,9 +11,9 @@ using Newtonsoft.Json;
 
 namespace WorkoutTracker.Functions
 {
-    public static class ExerciseOperations
+    public static class MuscleOperations
     {
-        [FunctionName("Exercise")]
+        [FunctionName("Muscle")]
         public static Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
             ILogger log)
@@ -34,16 +34,16 @@ namespace WorkoutTracker.Functions
         private static async Task<IActionResult> Get(HttpRequest request, ILogger log)
         {
             var id = request.Query["id"];
-            var container = await CosmosUtils.GetContainer<Exercise>();
+            var container = await CosmosUtils.GetContainer<Muscle>();
 
             if (string.IsNullOrEmpty(id))
             {
-                var items = container.GetItemLinqQueryable<Exercise>(allowSynchronousQueryExecution: true);
+                var items = container.GetItemLinqQueryable<Muscle>(allowSynchronousQueryExecution: true);
                 return new OkObjectResult(items);
             }
             else
             {
-                var item = await container.ReadItemAsync<Exercise>(id, new PartitionKey(id));
+                var item = await container.ReadItemAsync<Muscle>(id, new PartitionKey(id));
                 return new OkObjectResult(item.Resource);
             }
         }
@@ -56,17 +56,17 @@ namespace WorkoutTracker.Functions
                 return new BadRequestObjectResult("Id of an item is required.");
             }
 
-            var container = await CosmosUtils.GetContainer<Exercise>();
-            var response = await container.DeleteItemAsync<Exercise>(id, new PartitionKey(id));
+            var container = await CosmosUtils.GetContainer<Muscle>();
+            var response = await container.DeleteItemAsync<Muscle>(id, new PartitionKey(id));
             return new StatusCodeResult((int)response.StatusCode);
         }
 
         private static async Task<IActionResult> Create(HttpRequest request, ILogger log)
         {
             var requestBody = await new StreamReader(request.Body).ReadToEndAsync();
-            var entry = JsonConvert.DeserializeObject<Exercise>(requestBody);
-            var container = await CosmosUtils.GetContainer<Exercise>();
-            var response = await container.UpsertItemAsync(entry);
+            var entry = JsonConvert.DeserializeObject<Muscle>(requestBody);
+            var container = await CosmosUtils.GetContainer<Muscle>();
+            var response = await container.CreateItemAsync(entry);
 
             if (response.StatusCode != System.Net.HttpStatusCode.Created)
             {
