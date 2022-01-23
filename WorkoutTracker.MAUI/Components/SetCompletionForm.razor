@@ -9,9 +9,6 @@
 <FieldSetItem Label="Notes:">
 	<textarea rows="4" class="form-control" @bind="notes" />
 </FieldSetItem>
-<FieldSetItem Label="Rate:">
-	<Rating MaxStars="5" @bind-Value="rating" />
-</FieldSetItem>
 
 <div class="row mt-3">
 	<div class="col-12">
@@ -26,7 +23,6 @@
 	private int duration = 0;
 	private int repetitions = 0;
 	private string notes = "";
-	private int rating = 0;
 
 	[Parameter]
 	public int SetNumber { get; set; }
@@ -35,7 +31,13 @@
 	public int CurrentDuration { get; set; }
 
 	[Parameter]
-	public EventCallback<SetDetail> SaveDetails { get; set; }
+	public int CurrentRestTime { get; set; }
+
+	[Parameter]
+	public double CurrentWeight { get; set; }
+
+	[Parameter]
+	public EventCallback<Set> SaveSet { get; set; }
 
 	protected override void OnParametersSet()
 	{
@@ -45,11 +47,19 @@
 
 	private async Task Save()
 	{
-		await SaveDetails.InvokeAsync(new SetDetail(duration, repetitions, rating, notes));
+		await SaveSet.InvokeAsync(new Set
+		{
+			CompletionTime = DateTime.UtcNow,
+			Duration = TimeSpan.FromSeconds(duration),
+			RestTime = TimeSpan.FromSeconds(CurrentRestTime),
+			Repetitions = repetitions,
+			Weight = CurrentWeight,
+			Note = notes,
+		});
 	}
 
 	private async Task Cancel()
 	{
-		await SaveDetails.InvokeAsync(null);
+		await SaveSet.InvokeAsync(null);
 	}
 }

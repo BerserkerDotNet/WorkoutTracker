@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using System.Linq;
 using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Data.Actions;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Components.Connected
 {
@@ -14,7 +13,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapDispatchToProps(IStore<RootState> store, ExerciseListProps props)
         {
-            props.Edit = EventCallback.Factory.Create<Exercise>(this, e =>
+            props.Edit = EventCallback.Factory.Create<ExerciseViewModel>(this, e =>
             {
                 Navigation.NavigateTo($"/editexercise/{e.Id}");
             });
@@ -22,7 +21,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapStateToProps(RootState state, ExerciseListProps props)
         {
-            props.List = state?.Exercises?.List?.Values ?? Enumerable.Empty<Exercise>();
+            props.List = state?.Exercises?.List?.Values ?? Enumerable.Empty<ExerciseViewModel>();
         }
 
         protected override async Task Init(IStore<RootState> store)

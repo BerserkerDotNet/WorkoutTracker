@@ -7,7 +7,7 @@
         <label>Key:</label>
         <input type="password" class="form-control" @bind="Props.Secret" />
     </div>
-    <button type="button" class="btn btn-outline-success" @onclick="() => Props.Save.InvokeAsync(new Android.EndpointConfiguration(Props.Url, Props.Secret))"><span class="oi oi-plus"></span> Save</button>
+    <button type="button" class="btn btn-outline-success" @onclick="() => Props.Save.InvokeAsync(new EndpointConfiguration(Props.Url, Props.Secret))"><span class="oi oi-plus"></span> Save</button>
 </form>
 
 @code{

@@ -3,23 +3,20 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data.Actions
 {
-    public class SaveExerciseAction : IAsyncAction<Exercise>
+    public class SaveExerciseAction : IAsyncAction<ExerciseViewModel>
     {
-        private readonly IRepository _repository;
-        private readonly ICacheService _cacheService;
+        private readonly IWorkoutRepository _repository;
         private readonly INotificationService _notificationService;
 
-        public SaveExerciseAction(IRepository repository, ICacheService cacheService, INotificationService notificationService)
+        public SaveExerciseAction(IWorkoutRepository repository, INotificationService notificationService)
         {
             _repository = repository;
-            _cacheService = cacheService;
             _notificationService = notificationService;
         }
 
-        public async Task Execute(IDispatcher dispatcher, Exercise exercise)
+        public async Task Execute(IDispatcher dispatcher, ExerciseViewModel exercise)
         {
-            await _repository.Update(exercise);
-            _cacheService.ResetExercisesCache();
+            await _repository.UpdateExercise(exercise);
             await dispatcher.Dispatch<FetchExercisesAction>();
             _notificationService.ShowToast("Exercise updated.");
         }

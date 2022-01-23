@@ -1,15 +1,15 @@
-﻿<h3>@Props.Exercise.Name</h3>
+﻿<h3>@Props.Log.Exercise.Name</h3>
 <form>
 	<div class="row">
 		<div class="col-6">
-			<img src="data:image/png;base64, @(Convert.ToBase64String(Props.Exercise.Icon))" width="150" height="150" alt="@Props.Exercise.Name" style="text-align: center;box-shadow: 5px 5px 5px grey;border-radius: 5px;border-color: grey;border-width: 0.5px;border-style: solid;" />
+			<img src="/images/@(Props.Log.Exercise.ImagePath)" width="150" height="150" alt="@Props.Log.Exercise.Name" style="text-align: center;box-shadow: 5px 5px 5px grey;border-radius: 5px;border-color: grey;border-width: 0.5px;border-style: solid;" />
 		</div>
 		<div class="col-6">
-			<RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Set #{Props.ExerciseSetNumber}")" />
+			<RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Set #{Props.SetNumber}")" />
 			<ExerciseTimerBadge IsResting="!_isRunning" Time="_timeTracker.Elapsed" RestingTemplate="Resting for {0}" WorkingoutTemplate="In progress for {0}" />
 			<div style="padding-top: 10px">
 				<RadzenLabel Text="Weight:" />
-				<RadzenNumeric @bind-Value="logEntry.Weight" Placeholder="0" Name="Weight" class="@($"{Styles.Input} {Styles.InputWithButton}")" />
+				<RadzenNumeric @bind-Value="_weight" Placeholder="0" Name="Weight" class="@($"{Styles.Input} {Styles.InputWithButton}")" />
 				<RadzenSelectBar @bind-Value="@_weightUnits" TValue="string" class="@Styles.WeightContainer">
 					<Items>
 						<RadzenSelectBarItem Text="KG" Value="KG" Style="padding:0 1em;width:50%;text-align:center" />
@@ -22,13 +22,13 @@
 	<div class="row">
 		<div class="col-12">
 			<RadzenButton Icon="chevron_left" ButtonStyle="ButtonStyle.Secondary" Click="() => Props.Previous.InvokeAsync(Props.PreviousExerciseId.Value)" Disabled="DisablePrevious" />
-			<StartStopButton IdleText="@($"Start set #{Props.ExerciseSetNumber}")" ActiveText="@($"Complete set #{Props.ExerciseSetNumber}")" OnStart="StartSet" OnEnd="EndSet" />
+			<StartStopButton IdleText="@($"Start set #{Props.SetNumber}")" ActiveText="@($"Complete set #{Props.SetNumber}")" OnStart="StartSet" OnEnd="EndSet" />
 			<RadzenButton Icon="chevron_right" ButtonStyle="ButtonStyle.Secondary" Click="() => Props.Next.InvokeAsync(Props.NextExerciseId.Value)" Disabled="DisableNext" />
 		</div>
-		@if (Props.Sets.Any())
+		@if (Props.Log.Sets.Any())
 		{
-			int setNumber = Props.ExerciseSetNumber - 1;
-			@foreach (var set in Props.Sets)
+			int setNumber = Props.SetNumber - 1;
+			@foreach (var set in Props.Log.Sets)
 			{
 				<div class="col-12">
 					<RadzenCard>
@@ -43,12 +43,12 @@
 							<div class="col-6">
 								<div>Duration:</div>
 								<b>@set.Duration</b>
+								<div>Rest time:</div>
+								<b>@set.RestTime</b>
+							</div>
+							<div class="col-6">
 								<div class="mt-3">Notes:</div>
 								<b>@set.Note</b>
-							</div>
-							<div class="col-12">
-								<div class="mt-3">Score:</div>
-								<Rating MaxStars="5" Value="set.Score" IsReadonly="true" />
 							</div>
 						</div>
 					</RadzenCard>

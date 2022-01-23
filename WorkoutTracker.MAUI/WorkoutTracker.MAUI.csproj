@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android</TargetFrameworks>
+		<TargetFramework>net6.0-android</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<SingleProject>true</SingleProject>
 		<UseMaui>true</UseMaui>
@@ -46,6 +46,15 @@
 		<ProjectReference Include="..\..\Sharp.CSS\src\Sharp.CSS.Blazor\Sharp.CSS.Blazor.csproj" />
 		<ProjectReference Include="..\..\Sharp.CSS\src\Sharp.CSS.Generators\Sharp.CSS.Generators.csproj" referenceOutputAssembly="false" OutputItemType="Analyzer" />
 		<ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <_MauiCompileToAdd Remove="Platforms\Android\LocalConfigurationService.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="Platforms\Android\LocalConfigurationService.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="wwwroot\images\" />
 	</ItemGroup>
 
 </Project>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Android;
 using WorkoutTracker.MAUI.Data.Actions;
+using WorkoutTracker.MAUI.ViewModels;
 using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Components.Connected
@@ -23,10 +24,10 @@ namespace WorkoutTracker.MAUI.Components.Connected
             props.OpenLog = EventCallback.Factory.Create(this, () => Navigation.NavigateTo($"/log"));
             props.Rebuild = EventCallback.Factory.Create(this, async () =>
             {
-                await store.Dispatch<BuildExerciseScheduleAction, IEnumerable<Exercise>>(store.State.Exercises.List.Values);
+                await store.Dispatch<BuildExerciseScheduleAction, IEnumerable<ExerciseViewModel>>(store.State.Exercises.List.Values);
             });
 
-            props.Replace = EventCallback.Factory.Create<Exercise>(this, async e =>
+            props.Replace = EventCallback.Factory.Create<ExerciseViewModel>(this, async e =>
             {
                 var state = store.State.Exercises;
                 await store.Dispatch<ReplaceExerciseAction, ReplaceExerciseRequest>( new ReplaceExerciseRequest(e, state.Schedule, state.List.Values));
@@ -35,10 +36,10 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapStateToProps(RootState state, ExerciseScheduleProps props)
         {
-            props.Schedule = state?.Exercises?.Schedule ?? Enumerable.Empty<Exercise>();
+            props.Schedule = state?.Exercises?.Schedule ?? Enumerable.Empty<ExerciseViewModel>();
             if (state is object && state.Exercises is object && state.Exercises.Log is object)
             {
-                props.ExerciseCount = state.Exercises.Log.GroupBy(g => g.ExerciseId).ToDictionary(k => k.Key, v => v.Count());
+                props.ExerciseCount = state.Exercises.Log.GroupBy(g => g.Exercise.Id).ToDictionary(k => k.Key, v => v.Count());
             }
         }
 
@@ -61,7 +62,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
                 await store.Dispatch<FetchExercisesAction>();
             }
 
-            await store.Dispatch<BuildExerciseScheduleAction, IEnumerable<Exercise>>(store.State.Exercises.List.Values);
+            await store.Dispatch<BuildExerciseScheduleAction, IEnumerable<ExerciseViewModel>>(store.State.Exercises.List.Values);
         }
     }
 }

@@ -17,9 +17,9 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapDispatchToProps(IStore<RootState> store, EditExerciseProps props)
         {
-            props.Save = EventCallback.Factory.Create<Exercise>(this, async exercise =>
+            props.Save = EventCallback.Factory.Create<ExerciseViewModel>(this, async exercise =>
             {
-                await store.Dispatch<SaveExerciseAction, Exercise>(exercise);
+                await store.Dispatch<SaveExerciseAction, ExerciseViewModel>(exercise);
                 Navigation.NavigateTo($"/library");
             });
 

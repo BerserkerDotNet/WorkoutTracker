@@ -15,9 +15,9 @@ namespace WorkoutTracker.Functions
 {
     public static class ExerciseLogOperations
     {
-        [FunctionName("ExerciseLog")]
+        [FunctionName(EntityPluralNames.ExerciseLogEntryPluralName)]
         public static Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
             ILogger log)
         {
             switch (request.Method)
@@ -71,7 +71,7 @@ namespace WorkoutTracker.Functions
             var requestBody = await new StreamReader(request.Body).ReadToEndAsync();
             var entry = JsonConvert.DeserializeObject<ExerciseLogEntry>(requestBody);
             var container = await CosmosUtils.GetContainer<ExerciseLogEntry>();
-            var response = await container.CreateItemAsync(entry);
+            var response = await container.UpsertItemAsync(entry);
 
             if (response.StatusCode != System.Net.HttpStatusCode.Created)
             {

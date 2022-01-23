@@ -11,7 +11,8 @@ using WorkoutTracker.Models;
 // TODO: Build muscles list
 // TODO: Update exercises list to reflect muscles correctly
 
-await UpdateMuscleDb();
+//await UpdateMuscleDb();
+await UpdateExerciseDb();
 
 static async Task UpdateExerciseDb()
 {
@@ -44,21 +45,20 @@ static async Task UpdateExerciseDb()
     foreach (var exercise in exercises)
     {
         Console.WriteLine($"Processing exercise '{exercise.Name}'");
-        var imagePath = Path.Combine("Assets", "exercises", $"{exercise.Name}.jpg");
-        if (!File.Exists(imagePath))
+        var imagePath = $"exercises/{exercise.Name.Replace(" ", "_")}.jpg";
+        if (!File.Exists(Path.Combine("Assets", imagePath)))
         {
             Console.WriteLine($"Image not found for '{exercise.Name}'");
             continue;
         }
 
-        var imageBytes = await File.ReadAllBytesAsync(imagePath);
-        exercise.Icon = imageBytes;
+        exercise.ImagePath = imagePath;
 
         using (var client = new HttpClient())
         {
 
             var json = JsonConvert.SerializeObject(exercise);
-            var response = await client.PostAsync("http://localhost:7071/api/Exercise", new StringContent(json, Encoding.UTF8, "application/json"));
+            var response = await client.PostAsync("http://localhost:7071/api/Exercises", new StringContent(json, Encoding.UTF8, "application/json"));
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");
@@ -90,21 +90,20 @@ static async Task UpdateMuscleDb()
 
     foreach (var muscle in muscles)
     {
-        Console.WriteLine($"Processing exercise '{muscle.Name}'");
-        var imagePath = Path.Combine("Assets", "muscles", $"{muscle.Image}");
+        Console.WriteLine($"Processing muscle '{muscle.Name}'");
+        var imagePath = Path.Combine("Assets", $"{muscle.ImagePath}").Replace(" ", "_");
         if (!File.Exists(imagePath))
         {
             Console.WriteLine($"Image not found for '{muscle.Name}'");
             continue;
         }
 
-        var imageBytes = await File.ReadAllBytesAsync(imagePath);
-        muscle.ImageRaw = imageBytes;
+        muscle.ImagePath = muscle.ImagePath.Replace(" ", "_");
 
         using (var client = new HttpClient())
         {
             var json = JsonConvert.SerializeObject(muscle);
-            var response = await client.PostAsync("http://localhost:7071/api/Muscle", new StringContent(json, Encoding.UTF8, "application/json"));
+            var response = await client.PostAsync("http://localhost:7071/api/Muscles", new StringContent(json, Encoding.UTF8, "application/json"));
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");
@@ -112,4 +111,71 @@ static async Task UpdateMuscleDb()
         }
     }
 
+}
+
+static async Task TestExerciseLogsUpsert() 
+{
+    var log = new ExerciseLogEntry
+    {
+        Date = DateTime.UtcNow,
+        Id = Guid.NewGuid(),
+        ExerciseId = Guid.NewGuid(),
+        Sets = new Set[] { }
+    };
+
+    using (var client = new HttpClient())
+    {
+        var json = JsonConvert.SerializeObject(log);
+        var response = await client.PostAsync("http://localhost:7071/api/ExerciseLog", new StringContent(json, Encoding.UTF8, "application/json"));
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");
+        }
+
+        var logUpdate = new ExerciseLogEntry
+        {
+            Id = log.Id,
+            Sets = new Set[] 
+            {
+                new Set 
+                {
+                    CompletionTime = DateTime.UtcNow,
+                    Duration = TimeSpan.FromSeconds(60),
+                    Note = "Test",
+                    Repetitions = 10,
+                    RestTime = TimeSpan.FromSeconds(20),
+                    Weight = 10
+                }
+            }
+        };
+
+        var response2 = await client.PostAsync("http://localhost:7071/api/ExerciseLog", new StringContent(JsonConvert.SerializeObject(logUpdate), Encoding.UTF8, "application/json"));
+        if (!response2.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");
+        }
+
+        var logUpdate2 = new ExerciseLogEntry
+        {
+            Id = log.Id,
+            Sets = new Set[]
+            {
+                new Set
+                {
+                    CompletionTime = DateTime.UtcNow,
+                    Duration = TimeSpan.FromSeconds(45),
+                    Note = "Test 2",
+                    Repetitions = 5,
+                    RestTime = TimeSpan.FromSeconds(10),
+                    Weight = 5
+                }
+            }
+        };
+
+        var response3 = await client.PostAsync("http://localhost:7071/api/ExerciseLog", new StringContent(JsonConvert.SerializeObject(logUpdate2), Encoding.UTF8, "application/json"));
+        if (!response3.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Response does not indicate success. {response.StatusCode} {response.ReasonPhrase}");
+        }
+    }
 }

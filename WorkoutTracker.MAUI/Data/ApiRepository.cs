@@ -7,7 +7,7 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data
 {
-    public class ApiRepository : IRepository
+    public class ApiRepository
     {
         private readonly HttpClient _client;
 

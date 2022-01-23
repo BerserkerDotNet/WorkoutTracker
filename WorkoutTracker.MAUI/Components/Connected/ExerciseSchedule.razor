@@ -12,7 +12,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div style="width: calc(100% - 5px);">
-					<img src="data:image/png;base64, @(Convert.ToBase64String(item.Icon))" alt="@item.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
+					<img src="/images/@(item.ImagePath)" alt="@item.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
 				</div>
 			</div>
 			<div class="col-md-12">
@@ -33,7 +33,7 @@
 	[Parameter]
 	public ExerciseScheduleProps Props { get; set; }
 
-	public async Task OnSwiped(Exercise item)
+	public async Task OnSwiped(ExerciseViewModel item)
 	{
 		await Props.Replace.InvokeAsync(item);
 	}

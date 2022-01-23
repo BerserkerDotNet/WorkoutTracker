@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Text.Json;
+using WorkoutTracker.MAUI.ViewModels;
 
 namespace WorkoutTracker.MAUI.Android
 {
     public class AndroidCacheService : ICacheService
     {
-        private string exercisesFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "exercises.json");
+        private IEnumerable<ExerciseViewModel> _exercisesInMemoryCache;
+        private string exercisesFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "exercises.json");
 
-        public async Task SaveExercises(IEnumerable<Exercise> exercises)
+        public async Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
         {
             using (var writer = File.CreateText(exercisesFile))
             {
@@ -19,10 +21,17 @@ namespace WorkoutTracker.MAUI.Android
             }
         }
 
-        public async Task<IEnumerable<Exercise>> GetExercises()
+        public async Task<IEnumerable<ExerciseViewModel>> GetExercises()
         {
+            if (_exercisesInMemoryCache is object) 
+            {
+                return _exercisesInMemoryCache;
+            }
+
             var json = await File.ReadAllTextAsync(exercisesFile);
-            return JsonSerializer.Deserialize<IEnumerable<Exercise>>(json);
+            _exercisesInMemoryCache = JsonSerializer.Deserialize<IEnumerable<ExerciseViewModel>>(json);
+
+            return _exercisesInMemoryCache;
         }
 
         public void ResetExercisesCache()
@@ -35,55 +44,4 @@ namespace WorkoutTracker.MAUI.Android
             return File.Exists(exercisesFile);
         }
     }
-
-    public class LocalConfigurationService : IConfigurationService
-    {
-        private string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "local.config.json");
-
-        public EndpointConfiguration GetEndpointConfiguration()
-        {
-            if (!IsConfigurationAvailable())
-            {
-                throw new Exception("Configuration is missing.");
-            }
-
-            var json = File.ReadAllText(configFile);
-            return JsonSerializer.Deserialize<EndpointConfiguration>(json);
-        }
-
-        public async Task<EndpointConfiguration> GetEndpointConfigurationAsync()
-        {
-            if (!IsConfigurationAvailable()) 
-            {
-                throw new Exception("Configuration is missing.");
-            }
-
-            var json = await File.ReadAllTextAsync(configFile);
-            return JsonSerializer.Deserialize<EndpointConfiguration>(json);
-        }
-
-        public async Task SaveEndpointConfiguration(EndpointConfiguration config)
-        {
-            using (var writer = File.CreateText(configFile))
-            {
-                var json = JsonSerializer.Serialize(config);
-                await writer.WriteLineAsync(json);
-            }
-        }
-
-        public bool IsConfigurationAvailable() => File.Exists(configFile);
-    }
-
-    public interface IConfigurationService
-    {
-        Task<EndpointConfiguration> GetEndpointConfigurationAsync();
-
-        EndpointConfiguration GetEndpointConfiguration();
-
-        Task SaveEndpointConfiguration(EndpointConfiguration config);
-
-        bool IsConfigurationAvailable();
-    }
-
-    public record EndpointConfiguration(string Url, string Secret);
 }

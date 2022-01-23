@@ -2,27 +2,16 @@
     <div class="row">
         <div class="col-md-12">
             <div style="width: calc(100% - 5px);">
-                <img src="data:image/png;base64, @(Convert.ToBase64String(Exercise.Icon))" alt="@Exercise.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
+                <img src="/images/@LogEntry.Exercise.ImagePath" alt="@LogEntry.Exercise.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
             </div>
 		</div>
         <div class="col-md-12">
             <h3 class="text-center">
-                @Exercise.Name&nbsp;
+                @LogEntry.Exercise.Name&nbsp;
                 @TitleBadge
             </h3>
-    @if (LogEntry is object)
-    {
         <div>Date:</div>
         <b>@LogEntry.Date.ToShortDateString()</b>
-        <div style="margin-top:20px">Repetitions:</div>
-        <b>@LogEntry.Repetitions</b>
-        <div style="margin-top:20px">Weight:</div>
-        <b>@(LogEntry.Weight ?? 0)</b>
-        <div style="margin-top:20px">Duration:</div>
-        <b>@LogEntry.Duration.ToString("g")</b>
-        <div style="margin-top:20px">Rating:</div>
-        <Rating MaxStars="5" Value="@LogEntry.Score" IsReadonly="true" />
-    }
 		</div>
         <div class="col action-buttons">
             @Actions
@@ -32,11 +21,9 @@
 </RadzenCard>
 
 @code {
+    
     [Parameter]
-    public Exercise Exercise { get; set; }
-
-    [Parameter]
-    public ExerciseLogEntry LogEntry { get; set; }
+    public LogEntryViewModel LogEntry { get; set; }
 
     [Parameter]
     public RenderFragment Actions { get; set; }

@@ -10,7 +10,8 @@ namespace WorkoutTracker.MAUI.Data.Actions
 
         public Task Execute(IDispatcher dispatcher, ReplaceExerciseRequest request)
         {
-            if (request.AllExercises is null)
+            // Will not be necessary
+            /*if (request.AllExercises is null)
             {
                 return Task.CompletedTask;
             }
@@ -32,7 +33,7 @@ namespace WorkoutTracker.MAUI.Data.Actions
             var idx = Array.IndexOf(currentSchedule, exercise);
             currentSchedule[idx] = newExercise;
 
-            dispatcher.Dispatch(new ReceiveExerciseScheduleAction(currentSchedule));
+            dispatcher.Dispatch(new ReceiveExerciseScheduleAction(currentSchedule));*/
 
             return Task.CompletedTask;
         }

@@ -2,7 +2,7 @@
 
 namespace WorkoutTracker.Models
 {
-    [PluralName("Exercises")]
+    [PluralName(EntityPluralNames.ExercisePluralName)]
     public class Exercise : EntityBase
     {
         public string Name { get; set; }
@@ -13,7 +13,7 @@ namespace WorkoutTracker.Models
 
         public string TutorialUrl { get; set; }
 
-        public byte[] Icon { get; set; }
+        public string ImagePath { get; set; }
 
         public Guid[] Muscles { get; set; }
 

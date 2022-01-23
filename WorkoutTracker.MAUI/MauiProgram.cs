@@ -33,7 +33,7 @@ namespace WorkoutTracker.MAUI
                 cfg.DefaultRequestHeaders.Add("x-functions-key", config.Secret);
             }).ConfigurePrimaryHttpMessageHandler(() => new AndroidClientHandler());
 
-            builder.Services.AddSingleton<IRepository, ApiRepository>();
+            builder.Services.AddSingleton<IWorkoutRepository, CachedWorkoutRepository>();
             builder.Services.AddSingleton<IConfigurationService, LocalConfigurationService>();
             builder.Services.AddSingleton<INotificationService, AndroidNotificationService>();
             builder.Services.AddSingleton<ICacheService, AndroidCacheService>();

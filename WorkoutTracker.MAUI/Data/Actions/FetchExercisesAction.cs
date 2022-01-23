@@ -1,32 +1,20 @@
 ﻿using System.Threading.Tasks;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data.Actions
 {
     public class FetchExercisesAction : IAsyncAction
     {
-        private readonly IRepository _repository;
-        private readonly ICacheService _cacheService;
+        private readonly IWorkoutRepository _repository;
 
-        public FetchExercisesAction(IRepository repository, ICacheService cacheService)
+        public FetchExercisesAction(IWorkoutRepository repository)
         {
             _repository = repository;
-            _cacheService = cacheService;
         }
 
         public async Task Execute(IDispatcher dispatcher)
         {
-            if (_cacheService.IsExercisesCached())
-            {
-                var exercises = await _cacheService.GetExercises();
-                dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
-            }
-            else
-            {
-                var exercises = await _repository.GetAll<Exercise>();
-                await _cacheService.SaveExercises(exercises);
-                dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
-            }
+            var exercises = await _repository.GetExercises();
+            dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
         }
     }
 }

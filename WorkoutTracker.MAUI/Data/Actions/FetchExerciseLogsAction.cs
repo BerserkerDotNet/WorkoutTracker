@@ -1,21 +1,20 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data.Actions
 {
     public class FetchExerciseLogsAction : IAsyncAction
     {
-        private readonly IRepository _repository;
+        private readonly IWorkoutRepository _repository;
 
-        public FetchExerciseLogsAction(IRepository repository)
+        public FetchExerciseLogsAction(IWorkoutRepository repository)
         {
             _repository = repository;
         }
 
         public async Task Execute(IDispatcher dispatcher)
         {
-            var logEntryChunk = await _repository.GetAll<ExerciseLogEntry>();
+            var logEntryChunk = await _repository.GetLogs();
             dispatcher.Dispatch(new ReceiveExerciseLogsAction(logEntryChunk.OrderByDescending(i => i.Date)));
         }
     }

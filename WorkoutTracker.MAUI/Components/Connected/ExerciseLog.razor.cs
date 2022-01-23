@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Data.Actions;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Components.Connected
 {
@@ -20,10 +19,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapStateToProps(RootState state, ExercisesLogProps props)
         {
-            var lookup = state?.Exercises?.List ?? new Dictionary<Guid, Exercise>();
-            var log = state?.Exercises?.Log ?? Enumerable.Empty<ExerciseLogEntry>();
-
-            props.Log = log.Select(e => new LogRecord(lookup[e.ExerciseId], e)).ToArray();
+            props.Log = new List<LogEntryViewModel>(state?.Exercises?.Log ?? Enumerable.Empty<LogEntryViewModel>());
         }
 
         protected override async Task Init(IStore<RootState> store)
@@ -32,11 +28,6 @@ namespace WorkoutTracker.MAUI.Components.Connected
             if (state?.Log is object)
             {
                 return;
-            }
-
-            if (state?.List is null)
-            {
-                await store.Dispatch<FetchExercisesAction>();
             }
 
             await store.Dispatch<FetchExerciseLogsAction>();

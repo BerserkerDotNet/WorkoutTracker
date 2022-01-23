@@ -151,13 +151,13 @@
   },
   {
     "id": "ad514683-3fb4-4f41-a33c-9e74b450a9f7",
-    "name": "Side Lateral Raise,Shoulders",
+    "name": "Side Lateral Raise",
     "muscles": [ "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "792efd62-cc4f-458b-b0f6-c3e6735eb24d" ],
     "tags": [ "GoodForHome" ]
   },
   {
     "id": "d547182e-76a7-4436-b5a4-fe27ca0c8d3d",
-    "name": "Dumbbell front raise,Shoulders",
+    "name": "Dumbbell front raise",
     "muscles": [ "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5", "57ebdabc-7507-4b2b-8322-dc3da9b58a8c", "792efd62-cc4f-458b-b0f6-c3e6735eb24d", "85c4e31a-c1aa-4b8f-9ed0-c588f83359ac" ],
     "tags": [ "GoodForHome" ]
   },

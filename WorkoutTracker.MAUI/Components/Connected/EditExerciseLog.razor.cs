@@ -20,12 +20,8 @@ namespace WorkoutTracker.MAUI.Components.Connected
         private bool _isRunning = false;
         private CancellationTokenSource _source;
         private string _weightUnits = "KG";
-        private ExerciseLogEntry logEntry = new ExerciseLogEntry 
-        {
-            Repetitions = 0,
-            Weight = 0,
-            Duration = TimeSpan.Zero,
-        };
+        private int _currentRestTime = 0;
+        private int _weight = 0;
 
         private TimeSpan duration = TimeSpan.Zero;
 
@@ -58,26 +54,16 @@ namespace WorkoutTracker.MAUI.Components.Connected
             Task.Factory.StartNew(async () => await StartCounting(_source.Token));
         }
 
-        private async Task SaveAndNew(SetDetail details)
+        private async Task SaveAndNew(Set set)
         {
-            var weightInKG = _weightUnits == "LB" ? Math.Ceiling((double)logEntry.Weight * 0.453592d) : logEntry.Weight;
-                await Props.Save.InvokeAsync(new ExerciseLogEntry
-                {
-                    Id = Guid.NewGuid(),
-                    ExerciseId = Props.Exercise.Id,
-                    Duration = TimeSpan.FromSeconds(details.Duration),
-                    Weight = weightInKG,
-                    Repetitions = details.Repetitions,
-                    Score = details.Rating,
-                    Note = details.Notes
-
-                });
-                logEntry.Repetitions = 0;
-                logEntry.Note = string.Empty;
+            Props.Log.Sets = Props.Log.Sets.Union(new[] { set }); // TODO: Change this!
+            
+            await Props.Save.InvokeAsync(Props.Log);
         }
 
         private void StartSet()
         {
+            _currentRestTime = (int)_timeTracker.Elapsed.TotalSeconds;
             _timeTracker.Restart();
             _isRunning = true;
         }
@@ -85,9 +71,11 @@ namespace WorkoutTracker.MAUI.Components.Connected
         private async Task EndSet()
         {
             _isRunning = false;
+            var restTime = _currentRestTime;
             var exerciseDuration = (int)_timeTracker.Elapsed.TotalSeconds;
+            _currentRestTime = 0;
             _timeTracker.Restart();
-            var details = await ShowSetCompletionDialog(exerciseDuration);
+            var details = await ShowSetCompletionDialog(exerciseDuration, restTime);
             if (details is null) 
             {
                 return;
@@ -141,17 +129,20 @@ namespace WorkoutTracker.MAUI.Components.Connected
             }, new DialogOptions() { ShowTitle = showHeader, ShowClose = showHeader, CloseDialogOnOverlayClick = closeOnDismiss, Style = DefaultDialogStyle });
         }
 
-        private async Task<SetDetail> ShowSetCompletionDialog(int duration) 
+        private async Task<Set> ShowSetCompletionDialog(int duration, int restTime) 
         {
-            return await DialogService.OpenAsync($"Details of set {Props.ExerciseSetNumber}", ds =>
+            var weightInKG = _weightUnits == "LB" ? Math.Ceiling(_weight * 0.453592d) : _weight;
+            return await DialogService.OpenAsync($"Details of set {Props.SetNumber}", ds =>
             {
                 var seq = 0;
                 RenderFragment content = b =>
                 {
                     b.OpenComponent<SetCompletionForm>(seq++);
-                    b.AddAttribute(seq++, nameof(SetCompletionForm.SetNumber), Props.ExerciseSetNumber);
+                    b.AddAttribute(seq++, nameof(SetCompletionForm.SetNumber), Props.SetNumber);
                     b.AddAttribute(seq++, nameof(SetCompletionForm.CurrentDuration), duration);
-                    b.AddAttribute(seq++, nameof(SetCompletionForm.SaveDetails), EventCallback.Factory.Create<SetDetail>(this, d => ds.Close(d)));
+                    b.AddAttribute(seq++, nameof(SetCompletionForm.CurrentRestTime), restTime);
+                    b.AddAttribute(seq++, nameof(SetCompletionForm.CurrentWeight), weightInKG);
+                    b.AddAttribute(seq++, nameof(SetCompletionForm.SaveSet), EventCallback.Factory.Create<Set>(this, d => ds.Close(d)));
                     b.CloseComponent();
                 };
 
@@ -175,9 +166,9 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapDispatchToProps(IStore<RootState> store, EditExerciseLogProps props)
         {
-            props.Save = EventCallback.Factory.Create<ExerciseLogEntry>(this, async e =>
+            props.Save = EventCallback.Factory.Create<LogEntryViewModel>(this, async e =>
             {
-                await store.Dispatch<SaveExerciseLogEntryAction, ExerciseLogEntry>(e);
+                await store.Dispatch<SaveExerciseLogEntryAction, LogEntryViewModel>(e);
             });
 
             props.Cancel = EventCallback.Factory.Create(this, () => Navigation.NavigateTo($"/"));
@@ -195,21 +186,27 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapStateToProps(RootState state, EditExerciseLogProps props)
         {
-            props.Exercise = state.Exercises.List[ExerciseId];
             var nextId = state.Exercises.Schedule.SkipWhile(s => s.Id != ExerciseId).Take(2).Last().Id;
             props.NextExerciseId = nextId == ExerciseId ? null : nextId;
 
             var prevId = state.Exercises.Schedule.TakeWhile(s => s.Id != ExerciseId).LastOrDefault()?.Id;
             props.PreviousExerciseId = prevId;
-            if (state is object && state.Exercises is object && state.Exercises.Log is object)
+            var log = state?.Exercises?.Log?.SingleOrDefault(g => g.Date.Date == DateTime.UtcNow.Date && g.Exercise.Id == ExerciseId);
+            if (log is object)
             {
-                props.Sets = state.Exercises.Log.Where(g => g.ExerciseId == ExerciseId).OrderByDescending(s => s.Date).ToArray();
-                props.ExerciseSetNumber = props.Sets.Count() + 1;
+                props.Log = log;
+                props.SetNumber = log.Sets.Count() + 1;
             }
             else
             {
-                props.Sets = Enumerable.Empty<ExerciseLogEntry>();
-                props.ExerciseSetNumber = 1;
+                props.Log = new LogEntryViewModel
+                {
+                    Id = Guid.NewGuid(),
+                    Exercise = state.Exercises.List[ExerciseId],
+                    Sets = Enumerable.Empty<Set>(),
+                    Date = DateTime.UtcNow
+                };
+                props.SetNumber = 1;
             }
 
             _props = props;

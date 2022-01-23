@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using WorkoutTracker.MAUI.ViewModels;
 using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI
@@ -8,9 +9,9 @@ namespace WorkoutTracker.MAUI
     {
         bool IsExercisesCached();
 
-        Task<IEnumerable<Exercise>> GetExercises();
+        Task<IEnumerable<ExerciseViewModel>> GetExercises();
 
-        Task SaveExercises(IEnumerable<Exercise> exercises);
+        Task SaveExercises(IEnumerable<ExerciseViewModel> exercises);
 
         void ResetExercisesCache();
     }

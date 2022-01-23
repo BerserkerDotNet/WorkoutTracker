@@ -1,23 +1,22 @@
 ﻿using System.Threading.Tasks;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data.Actions
 {
-    public class SaveExerciseLogEntryAction : IAsyncAction<ExerciseLogEntry>
+    public class SaveExerciseLogEntryAction : IAsyncAction<LogEntryViewModel>
     {
-        private readonly IRepository _repository;
+        private readonly IWorkoutRepository _repository;
         private readonly INotificationService _notificationService;
 
-        public SaveExerciseLogEntryAction(IRepository repository, INotificationService notificationService)
+        public SaveExerciseLogEntryAction(IWorkoutRepository repository, INotificationService notificationService)
         {
             _repository = repository;
             _notificationService = notificationService;
         }
 
-        public async Task Execute(IDispatcher dispatcher, ExerciseLogEntry entry)
+        public async Task Execute(IDispatcher dispatcher, LogEntryViewModel record)
         {
-            await _repository.Create(entry);
-            dispatcher.Dispatch(new AddExerciseLogEntryAction(entry));
+            await _repository.AddLogRecord(record);
+            dispatcher.Dispatch(new AddExerciseLogEntryAction(record));
             _notificationService.ShowToast("Log entry saved.");
         }
     }
