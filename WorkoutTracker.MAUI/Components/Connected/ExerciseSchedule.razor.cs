@@ -41,6 +41,10 @@ namespace WorkoutTracker.MAUI.Components.Connected
             {
                 props.ExerciseCount = state.Exercises.Log.GroupBy(g => g.Exercise.Id).ToDictionary(k => k.Key, v => v.Count());
             }
+            else 
+            {
+                props.ExerciseCount = new Dictionary<Guid, int>();
+            }
         }
 
         protected override async Task Init(IStore<RootState> store)

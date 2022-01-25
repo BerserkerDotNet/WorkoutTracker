@@ -1,40 +1,44 @@
 ﻿<h2>Today's schedule</h2>
 
+<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Repeat" FullWidth="true" OnClick="Props.Rebuild">Reschedule</MudButton>
 @if (!Props.Schedule.Any())
 {
-	<div>Loading...</div>
+	<MudCard>
+		<MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="300px" />
+		<MudCardContent>
+			<MudSkeleton Width="30%" Height="42px;" />
+			<MudSkeleton Width="80%" />
+			<MudSkeleton Width="100%" />
+		</MudCardContent>
+		<MudCardActions>
+			<MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+			<MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+		</MudCardActions>
+	</MudCard>
 }
 
-<RadzenButton Click="Props.Rebuild" Text="Reshuffle schedule" Icon="published_with_changes" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 100%" />
 @foreach (var item in Props.Schedule)
 {
-	<RadzenCard @onclick="() => Props.Start.InvokeAsync(item.Id)" @onswiped-right="() => OnSwiped(item)" @onswiped-left="() => OnSwiped(item)" data-swipe-threshold="100" Style="margin-bottom:10px">
-		<div class="row">
-			<div class="col-md-12">
-				<div style="width: calc(100% - 5px);">
-					<img src="/images/@(item.ImagePath)" alt="@item.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
-				</div>
-			</div>
-			<div class="col-md-12">
-				<h3 class="text-center">
-					@item.Name &nbsp;
-					@if (Props.ExerciseCount is object && Props.ExerciseCount.ContainsKey(item.Id))
-					{
-						<RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@(Props.ExerciseCount[item.Id].ToString())" />
-					}
-				</h3>
-			</div>
+	<MudCard Class="mb-4" Outlined="true">
+		<div style="width: calc(100% - 5px);">
+			<img src="/images/@(item.ImagePath)" alt="@item.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
 		</div>
-	</RadzenCard>
-
+		<MudCardContent>
+			<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
+			<MudText Typo="Typo.body2">@item.Description</MudText>
+		</MudCardContent>
+		<MudCardActions>
+			<div class="d-flex align-center justify-space-between mt-6">
+				<MudBadge Origin="Origin.TopRight" Overlap="true" Bordered="true" Content="@(Props.ExerciseCount.ContainsKey(item.Id) ? Props.ExerciseCount[item.Id] : 1)" Color="Color.Secondary" Class="mx-6 my-4">
+					<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="() => Props.Start.InvokeAsync(item.Id)">Start</MudButton>
+				</MudBadge>
+				<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Refresh" Color="Color.Warning" OnClick="() => Props.Replace.InvokeAsync(item)">Change</MudButton>
+			</div>
+		</MudCardActions>
+	</MudCard>
 }
 
 @code {
 	[Parameter]
 	public ExerciseScheduleProps Props { get; set; }
-
-	public async Task OnSwiped(ExerciseViewModel item)
-	{
-		await Props.Replace.InvokeAsync(item);
-	}
 }

@@ -1,31 +1,24 @@
-﻿@inject EditExerciseLogStyles Styles
-
-<FieldSetItem Label="Repetetions:">
-	<RadzenNumeric @bind-Value="repetitions" Placeholder="0" Name="Reps" class="@Styles.Input" />
-</FieldSetItem>
-<FieldSetItem Label="Duration:">
-	<RadzenNumeric @bind-Value="duration" Placeholder="0" Name="Duration" class="@Styles.Input" />
-</FieldSetItem>
-<FieldSetItem Label="Notes:">
-	<textarea rows="4" class="form-control" @bind="notes" />
-</FieldSetItem>
-
-<div class="row mt-3">
-	<div class="col-12">
-		<RadzenButton Text="Save" Click="Save" />
-		<RadzenButton Text="Cancel" Click="Cancel" ButtonStyle="ButtonStyle.Secondary" class="ml-3" />
-	</div>
-</div>
-
+﻿<MudDialog>
+	<DialogContent>
+		<MudNumericField @bind-Value="repetitions" Label="Repetetions:" Variant="Variant.Outlined" Min="0" />
+		<MudNumericField @bind-Value="duration" Label="Duration:" Variant="Variant.Outlined" Min="0" />
+		<MudNumericField @bind-Value="restTime" Label="Rest time:" Variant="Variant.Outlined" Min="0" />
+		<MudTextField T="string" Label="Notes:" Variant="Variant.Outlined" @bind-Text="@notes" Lines="4" />
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+		<MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+	</DialogActions>
+</MudDialog>
 
 @code {
 
 	private int duration = 0;
+	private int restTime = 0;
 	private int repetitions = 0;
 	private string notes = "";
 
-	[Parameter]
-	public int SetNumber { get; set; }
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
 	[Parameter]
 	public int CurrentDuration { get; set; }
@@ -36,30 +29,28 @@
 	[Parameter]
 	public double CurrentWeight { get; set; }
 
-	[Parameter]
-	public EventCallback<Set> SaveSet { get; set; }
-
 	protected override void OnParametersSet()
 	{
 		duration = CurrentDuration;
+		restTime = CurrentRestTime;
 		base.OnParametersSet();
 	}
 
-	private async Task Save()
+	private void Save()
 	{
-		await SaveSet.InvokeAsync(new Set
-		{
-			CompletionTime = DateTime.UtcNow,
-			Duration = TimeSpan.FromSeconds(duration),
-			RestTime = TimeSpan.FromSeconds(CurrentRestTime),
-			Repetitions = repetitions,
-			Weight = CurrentWeight,
-			Note = notes,
-		});
+		MudDialog.Close(DialogResult.Ok(new Set
+			{
+				CompletionTime = DateTime.UtcNow,
+				Duration = TimeSpan.FromSeconds(duration),
+				RestTime = TimeSpan.FromSeconds(restTime),
+				Repetitions = repetitions,
+				Weight = CurrentWeight,
+				Note = notes,
+			}));
 	}
 
-	private async Task Cancel()
+	private void Cancel()
 	{
-		await SaveSet.InvokeAsync(null);
+		MudDialog.Close(DialogResult.Cancel());
 	}
 }

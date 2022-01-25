@@ -1,8 +1,8 @@
-﻿<RadzenBadge BadgeStyle="_badgeStyle" Text="@_formattedString" />
+﻿<MudChip Icon="@Icons.Material.Filled.Timer" Color="@_chipColor">@_formattedString</MudChip>
 
 @code{
 
-	private BadgeStyle _badgeStyle = BadgeStyle.Secondary;
+	private Color _chipColor = Color.Info;
 	private string _formattedString = "";
 
 	[Parameter]
@@ -19,7 +19,7 @@
 
 	protected override void OnParametersSet()
 	{
-		_badgeStyle = IsResting ? BadgeStyle.Secondary : BadgeStyle.Light;
+		_chipColor = IsResting ? Color.Info : Color.Secondary;
 		var formattedTime = Time.ToString(@"mm\:ss");
 		_formattedString = IsResting ? string.Format(RestingTemplate, formattedTime) : string.Format(WorkingoutTemplate, formattedTime);
 	}

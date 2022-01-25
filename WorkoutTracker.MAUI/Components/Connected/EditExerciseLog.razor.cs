@@ -1,7 +1,5 @@
 ﻿using BlazorState.Redux.Blazor;
 using Microsoft.AspNetCore.Components;
-using Radzen;
-using Radzen.Blazor;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -18,6 +16,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
         const string LB = "LB";
         private Stopwatch _timeTracker;
         private bool _isRunning = false;
+        private bool isSavingData = false;
         private CancellationTokenSource _source;
         private string _weightUnits = "KG";
         private int _currentRestTime = 0;
@@ -29,13 +28,10 @@ namespace WorkoutTracker.MAUI.Components.Connected
         public EditExerciseLogProps Props { get; set; }
 
         [Inject]
-		public EditExerciseLogStyles Styles { get; set; }
+        public IDialogService DialogService { get; set; }
 
         [Inject]
-        public FieldSetItemStyles FieldSetStyles { get; set; }
-
-        [Inject]
-        public DialogService DialogService { get; set; }
+        public ISnackbar Snackbar { get; set; }
 
         private bool DisablePrevious => !Props.PreviousExerciseId.HasValue || _isRunning;
 
@@ -75,23 +71,31 @@ namespace WorkoutTracker.MAUI.Components.Connected
             var exerciseDuration = (int)_timeTracker.Elapsed.TotalSeconds;
             _currentRestTime = 0;
             _timeTracker.Restart();
-            var details = await ShowSetCompletionDialog(exerciseDuration, restTime);
-            if (details is null) 
+            var saveDialog = ShowSetCompletionDialog(exerciseDuration, restTime);
+            var result = await saveDialog.Result;
+            if (result.Cancelled) 
             {
                 return;
             }
 
             try
             {
-                ShowMessageDialog(string.Empty, "Saving, please wait...");
-                await SaveAndNew(details);
+                isSavingData = true;
+                await SaveAndNew(result.Data as Set);
+
+                Snackbar.Add("Exercise logged.", Severity.Success);
             }
             catch (Exception ex)
             {
-                // TODO: Need to close saving and open error dialog
-                ShowMessageDialog("Error saving the record", ex.Message, closeOnDismiss: true);
+                Snackbar.Add($"Error saving exercise {ex.Message}", Severity.Error, cfg =>
+                {
+                    cfg.VisibleStateDuration = 10000;
+                });
             }
-            DialogService.Close();
+            finally 
+            {
+                isSavingData = false;
+            }
         }
 
         private async Task StartCounting(CancellationToken token)
@@ -108,46 +112,16 @@ namespace WorkoutTracker.MAUI.Components.Connected
             }
         }
 
-        private void ShowMessageDialog(string title, string message, bool closeOnDismiss = false) 
+        private IDialogReference ShowSetCompletionDialog(int duration, int restTime) 
         {
-            var showHeader = !string.IsNullOrEmpty(title);
-            DialogService.Open(title, ds =>
+            var weightInKG = _weightUnits == LB ? Math.Ceiling(_weight * 0.453592d) : _weight;
+            var parameters = new DialogParameters
             {
-                var seq = 0;
-                RenderFragment content = b =>
-                {
-                    b.OpenElement(seq++, "div");
-                    b.AddAttribute(seq++, "class", "row");
-                    b.OpenElement(seq++, "div");
-                    b.AddAttribute(seq++, "class", "col-md-12");
-                    b.AddContent(seq++, message);
-                    b.CloseElement();
-                    b.CloseElement();
-                };
-
-                return content;
-            }, new DialogOptions() { ShowTitle = showHeader, ShowClose = showHeader, CloseDialogOnOverlayClick = closeOnDismiss, Style = DefaultDialogStyle });
-        }
-
-        private async Task<Set> ShowSetCompletionDialog(int duration, int restTime) 
-        {
-            var weightInKG = _weightUnits == "LB" ? Math.Ceiling(_weight * 0.453592d) : _weight;
-            return await DialogService.OpenAsync($"Details of set {Props.SetNumber}", ds =>
-            {
-                var seq = 0;
-                RenderFragment content = b =>
-                {
-                    b.OpenComponent<SetCompletionForm>(seq++);
-                    b.AddAttribute(seq++, nameof(SetCompletionForm.SetNumber), Props.SetNumber);
-                    b.AddAttribute(seq++, nameof(SetCompletionForm.CurrentDuration), duration);
-                    b.AddAttribute(seq++, nameof(SetCompletionForm.CurrentRestTime), restTime);
-                    b.AddAttribute(seq++, nameof(SetCompletionForm.CurrentWeight), weightInKG);
-                    b.AddAttribute(seq++, nameof(SetCompletionForm.SaveSet), EventCallback.Factory.Create<Set>(this, d => ds.Close(d)));
-                    b.CloseComponent();
-                };
-
-                return content;
-            }, new DialogOptions() { Style = DefaultDialogStyle });
+                { nameof(SetCompletionForm.CurrentDuration), duration},
+                { nameof(SetCompletionForm.CurrentRestTime), restTime},
+                { nameof(SetCompletionForm.CurrentWeight), weightInKG},
+            };
+            return DialogService.Show<SetCompletionForm>($"Details of set {Props.SetNumber}", parameters);
         }
     }
 
@@ -225,41 +199,6 @@ namespace WorkoutTracker.MAUI.Components.Connected
         {
             MapStateToProps(Store.State, _props);
             this.StateHasChanged();
-        }
-    }
-
-    public class EditExerciseLogStylesModule : IStylesModule
-    {
-        public void Configure(SharpCssConfigurator configurator)
-        {
-            configurator.RegisterStyles<EditExerciseLogStyles>(new
-            {
-                InputWithButton = new StyleSet
-                {
-                    MarginRight = 10
-                },
-                Input = new StyleSet
-                {
-                    Width = "100%"
-                },
-                WeightContainer = new StyleSet
-                {
-                    MinWidth = 112,
-                    Width = "100%",
-                    Display = "flex",
-                    JustifyContent = "space-evenly"
-                },
-                WeightButton = new StyleSet
-                {
-                    Padding = "0 1em",
-                    Width = "50%",
-                    TextAlign= "center"
-                },
-                TimerButton = new StyleSet
-                {
-                    MinWidth = 95
-                }
-            });
         }
     }
 }

@@ -1,11 +1,18 @@
 ﻿<h2>Exercise history</h2>
 <Virtualize Items="Props.Log" Context="logRecord">
-    <ExerciseCard LogEntry="logRecord">
-        <Actions>
-            @*<button @onclick:preventDefault @onclick="() => EditExercise(logRecord.Entry)" class="btn btn-outline-warning"><span class="oi oi-pencil"></span> Edit</button>*@
-            <button @onclick:preventDefault @onclick="() => Props.Delete.InvokeAsync(logRecord.Id)" class="btn btn-outline-danger"><span class="oi oi-trash"></span> Delete</button>
-        </Actions>
-    </ExerciseCard>
+	<MudCard Class="mb-4" Outlined="true">
+		<div style="width: calc(100% - 5px);">
+			<img src="/images/@(logRecord.Exercise.ImagePath)" alt="@logRecord.Exercise.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
+		</div>
+		<MudCardContent>
+			<MudText Typo="Typo.h5">@logRecord.Exercise.Name</MudText>
+			<MudText Typo="Typo.body2">@logRecord.Exercise.Description</MudText>
+			<MudText Typo="Typo.body2">@logRecord.Date.ToShortDateString()</MudText>
+		</MudCardContent>
+		<MudCardActions>
+			<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => Props.Delete.InvokeAsync(logRecord.Id)" />
+		</MudCardActions>
+	</MudCard>
 </Virtualize>
 
 @code

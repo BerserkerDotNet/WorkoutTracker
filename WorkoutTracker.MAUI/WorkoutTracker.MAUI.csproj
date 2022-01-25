@@ -40,11 +40,9 @@
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="BlazorState.Redux" Version="1.1.1" />
-		<PackageReference Include="Radzen.Blazor" Version="3.13.10" />
+		<PackageReference Include="MudBlazor" Version="6.0.5" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\Sharp.CSS\src\Sharp.CSS.Blazor\Sharp.CSS.Blazor.csproj" />
-		<ProjectReference Include="..\..\Sharp.CSS\src\Sharp.CSS.Generators\Sharp.CSS.Generators.csproj" referenceOutputAssembly="false" OutputItemType="Analyzer" />
 		<ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />
 	</ItemGroup>
 	<ItemGroup>

@@ -1,63 +1,71 @@
-﻿<h3>@Props.Log.Exercise.Name</h3>
-<form>
-	<div class="row">
-		<div class="col-6">
-			<img src="/images/@(Props.Log.Exercise.ImagePath)" width="150" height="150" alt="@Props.Log.Exercise.Name" style="text-align: center;box-shadow: 5px 5px 5px grey;border-radius: 5px;border-color: grey;border-width: 0.5px;border-style: solid;" />
+﻿<MudText Typo="Typo.h5">@Props.Log.Exercise.Name</MudText>
+
+<MudGrid Spacing="2" Justify="Justify.Center">
+	<MudItem xs="6">
+		<img src="/images/@(Props.Log.Exercise.ImagePath)" width="150" height="150" alt="@Props.Log.Exercise.Name" style="text-align: center;box-shadow: 5px 5px 5px grey;border-radius: 5px;border-color: grey;border-width: 0.5px;border-style: solid;" />
+	</MudItem>
+	<MudItem xs="6">
+		<ExerciseTimerBadge IsResting="!_isRunning" Time="_timeTracker.Elapsed" RestingTemplate="Resting for {0}" WorkingoutTemplate="In progress for {0}" />
+		<MudNumericField Label="Weight:" @bind-Value="_weight" />
+		<MudSelect Label="Units" T="string" @bind-Value="_weightUnits">
+			<MudSelectItem Value="@("KG")" />
+			<MudSelectItem Value="@("LB")" />
+		</MudSelect>
+	</MudItem>
+	<MudItem xs="12">
+		<div class="d-flex align-center justify-space-between mt-6">
+			<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.SkipPrevious" Color="Color.Default" OnClick="() => Props.Previous.InvokeAsync(Props.PreviousExerciseId.Value)" Disabled="@DisablePrevious" />
+			<MudBadge Origin="Origin.TopRight" Overlap="true" Bordered="true" Content="@Props.SetNumber" Color="Color.Secondary">
+				@if (_isRunning)
+				{
+					<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.Pause" Color="Color.Primary" OnClick="EndSet" />
+				}
+				else
+				{
+					<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="StartSet" />
+				}
+			</MudBadge>
+			<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.SkipNext" Color="Color.Default" OnClick="() => Props.Next.InvokeAsync(Props.NextExerciseId.Value)" Disabled="@DisableNext" />
 		</div>
-		<div class="col-6">
-			<RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Set #{Props.SetNumber}")" />
-			<ExerciseTimerBadge IsResting="!_isRunning" Time="_timeTracker.Elapsed" RestingTemplate="Resting for {0}" WorkingoutTemplate="In progress for {0}" />
-			<div style="padding-top: 10px">
-				<RadzenLabel Text="Weight:" />
-				<RadzenNumeric @bind-Value="_weight" Placeholder="0" Name="Weight" class="@($"{Styles.Input} {Styles.InputWithButton}")" />
-				<RadzenSelectBar @bind-Value="@_weightUnits" TValue="string" class="@Styles.WeightContainer">
-					<Items>
-						<RadzenSelectBarItem Text="KG" Value="KG" Style="padding:0 1em;width:50%;text-align:center" />
-						<RadzenSelectBarItem Text="LB" Value="LB" Style="padding:0 1em;width:50%;text-align:center" />
-					</Items>
-				</RadzenSelectBar>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-12">
-			<RadzenButton Icon="chevron_left" ButtonStyle="ButtonStyle.Secondary" Click="() => Props.Previous.InvokeAsync(Props.PreviousExerciseId.Value)" Disabled="DisablePrevious" />
-			<StartStopButton IdleText="@($"Start set #{Props.SetNumber}")" ActiveText="@($"Complete set #{Props.SetNumber}")" OnStart="StartSet" OnEnd="EndSet" />
-			<RadzenButton Icon="chevron_right" ButtonStyle="ButtonStyle.Secondary" Click="() => Props.Next.InvokeAsync(Props.NextExerciseId.Value)" Disabled="DisableNext" />
-		</div>
+	</MudItem>
+	<MudItem xs="12">
+		<MudDivider Class="my-2"/>
 		@if (Props.Log.Sets.Any())
 		{
-			int setNumber = Props.SetNumber - 1;
-			@foreach (var set in Props.Log.Sets)
+			@for (var setIdx = Props.Log.Sets.Count() - 1; setIdx >= 0; setIdx--)
 			{
-				<div class="col-12">
-					<RadzenCard>
-						<h5 class="h5">Set #@(setNumber--)</h5>
-						<div class="row">
-							<div class="col-6">
-								<div>Weigth:</div>
-								<b>@set.Weight KG</b>
-								<div class="mt-3">Repetitions:</div>
-								<b>@set.Repetitions</b>
-							</div>
-							<div class="col-6">
-								<div>Duration:</div>
-								<b>@set.Duration</b>
-								<div>Rest time:</div>
-								<b>@set.RestTime</b>
-							</div>
-							<div class="col-6">
-								<div class="mt-3">Notes:</div>
-								<b>@set.Note</b>
-							</div>
-						</div>
-					</RadzenCard>
-				</div>
+				var setNumber = setIdx + 1;
+				var set = Props.Log.Sets.ElementAt(setIdx);
+				<MudCard Class="mb-4">
+					<MudCardHeader>
+						<CardHeaderContent>
+							<MudText Typo="Typo.h6">Set #@setNumber details</MudText>
+						</CardHeaderContent>
+					</MudCardHeader>
+					<MudCardContent>
+						<MudGrid Spacing="2" Justify="Justify.Center">
+							<MudItem xs="6">
+								<MudText Typo="Typo.body2">Weigth: <b>@set.Weight KG</b></MudText>
+								<MudText Typo="Typo.body2">Repetitions: <b>@set.Repetitions</b></MudText>
+							</MudItem>
+							<MudItem xs="6">
+								<MudText Typo="Typo.body2">Duration: <b>@set.Duration</b></MudText>
+								<MudText Typo="Typo.body2">Rest time: <b>@set.RestTime</b></MudText>
+							</MudItem>
+							<MudItem xs="12">
+								<MudText Typo="Typo.body2">@set.Note</MudText>
+							</MudItem>
+						</MudGrid>
+					</MudCardContent>
+				</MudCard>
 			}
 		}
 		else
 		{
 			<div style="width:100%;text-align:center;margin-top:15px">Log a set to see results</div>
 		}
-	</div>
-</form>
+	</MudItem>
+</MudGrid>
+<MudOverlay Visible="isSavingData" DarkBackground="true">
+	<MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>

@@ -1,27 +1,28 @@
 ﻿@inherits LayoutComponentBase
+<div class="content content px-4">
+	<MudThemeProvider />
+	<MudDialogProvider />
+	<MudSnackbarProvider />
 
-
-<RadzenDialog />
-
-<RadzenHeader>
-	<ChildContent>
-		<div class="sidebar">
+	<MudLayout>
+		<MudAppBar>
+			<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+			Workout Tracker
+		</MudAppBar>
+		<MudDrawer @bind-Open="@_drawerOpen">
 			<NavMenu />
-		</div>
-	</ChildContent>
-</RadzenHeader>
-<div style="width:100%">
-	<RadzenBody Expanded="true">
-		<ChildContent>
-			<RadzenContentContainer Name="main">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-12 px-3 px-lg-5">
-							@Body
-						</div>
-					</div>
-				</div>
-			</RadzenContentContainer>
-		</ChildContent>
-	</RadzenBody>
+		</MudDrawer>
+		<MudMainContent>
+			@Body
+		</MudMainContent>
+	</MudLayout>
 </div>
+
+@code {
+	bool _drawerOpen = true;
+
+	void DrawerToggle()
+	{
+		_drawerOpen = !_drawerOpen;
+	}
+}

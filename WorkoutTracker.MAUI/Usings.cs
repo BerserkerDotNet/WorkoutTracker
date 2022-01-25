@@ -4,6 +4,4 @@ global using WorkoutTracker.MAUI.ViewModels;
 global using WorkoutTracker.MAUI.Interfaces;
 global using WorkoutTracker.MAUI.Data.Props;
 global using BlazorState.Redux.Interfaces;
-global using Sharp.CSS.Blazor;
-global using Sharp.CSS.Types.Generated;
-global using Sharp.CSS.CssStyleSets;
+global using MudBlazor;
