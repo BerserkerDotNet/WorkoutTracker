@@ -2,6 +2,8 @@
 
 namespace WorkoutTracker.MAUI.ViewModels
 {
+    public record ScheduleViewModel(string Category, int CurrentIndex, IEnumerable<ExerciseViewModel> Exercises);
+
     public class ExerciseViewModel
     {
         public Guid Id { get; set; }

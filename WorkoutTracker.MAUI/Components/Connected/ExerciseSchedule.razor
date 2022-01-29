@@ -1,6 +1,10 @@
 ﻿<h2>Today's schedule</h2>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Repeat" FullWidth="true" OnClick="Props.Rebuild">Reschedule</MudButton>
+<MudMenu Class="mb-2" StartIcon="@Icons.Filled.Schedule" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="Exercise profile" Color="Color.Primary" Variant="Variant.Filled"  >
+    <MudMenuItem OnClick="() => Props.Rebuild.InvokeAsync(ExerciseProfile.UpperBody)" >Upper body</MudMenuItem>
+    <MudMenuItem OnClick="() => Props.Rebuild.InvokeAsync(ExerciseProfile.LowerBody)" >Lower body</MudMenuItem>
+</MudMenu>
+
 @if (!Props.Schedule.Any())
 {
 	<MudCard>
@@ -17,8 +21,9 @@
 	</MudCard>
 }
 
-@foreach (var item in Props.Schedule)
+@foreach (var scheduleItem in Props.Schedule)
 {
+	var item = scheduleItem.Exercise;
 	<MudCard Class="mb-4" Outlined="true">
 		<div style="width: calc(100% - 5px);">
 			<img src="/images/@(item.ImagePath)" alt="@item.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
@@ -28,11 +33,13 @@
 			<MudText Typo="Typo.body2">@item.Description</MudText>
 		</MudCardContent>
 		<MudCardActions>
-			<div class="d-flex align-center justify-space-between mt-6">
-				<MudBadge Origin="Origin.TopRight" Overlap="true" Bordered="true" Content="@(Props.ExerciseCount.ContainsKey(item.Id) ? Props.ExerciseCount[item.Id] : 1)" Color="Color.Secondary" Class="mx-6 my-4">
-					<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="() => Props.Start.InvokeAsync(item.Id)">Start</MudButton>
+			<div class="d-flex align-center justify-space-between" style="width:100%">
+				<MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="() => Props.Previous.InvokeAsync(scheduleItem.Category)" />
+				<MudBadge Origin="Origin.TopRight" Content="@(Props.ExerciseCount.ContainsKey(item.Id) ? Props.ExerciseCount[item.Id] : 1)" Color="Color.Primary" Class="mx-6 my-4">
+					<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="() => Props.Start.InvokeAsync(scheduleItem)">Start</MudButton>
 				</MudBadge>
-				<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Refresh" Color="Color.Warning" OnClick="() => Props.Replace.InvokeAsync(item)">Change</MudButton>
+				<MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next.InvokeAsync(scheduleItem.Category)" />
+				@*<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Refresh" Color="Color.Warning" OnClick="() => Props.Replace.InvokeAsync(item)">Change</MudButton>*@
 			</div>
 		</MudCardActions>
 	</MudCard>

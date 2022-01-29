@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using WorkoutTracker.MAUI.Data.Actions;
-using WorkoutTracker.MAUI.ViewModels;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data.Reducers
 {
-    public record ExercisesState(Dictionary<Guid, ExerciseViewModel> List, IEnumerable<LogEntryViewModel> Log, IEnumerable<ExerciseViewModel> Schedule);
+    public record ExercisesState(Dictionary<Guid, ExerciseViewModel> List, IEnumerable<LogEntryViewModel> Log, Dictionary<string, ScheduleViewModel> Schedule);
 
     public class ExercisesReducer : IReducer<ExercisesState>
     {
@@ -25,6 +23,9 @@ namespace WorkoutTracker.MAUI.Data.Reducers
                 case AddExerciseLogEntryAction a:
                     var log = state.Log ?? Enumerable.Empty<LogEntryViewModel>();
                     return state with { Log = new[] { a.Entry }.Union(log)};
+                case ReceiveNewExerciseScheduleItemAction si:
+                    state.Schedule[si.ScheduleItem.Category] = si.ScheduleItem; // This is mutating schedule, re-create instead?
+                    return state with { Schedule = state.Schedule };
                 default:
                     return state;
             }

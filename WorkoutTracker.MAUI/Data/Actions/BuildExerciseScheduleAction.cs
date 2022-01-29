@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WorkoutTracker.MAUI.ViewModels;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data.Actions
 {
-    public class BuildExerciseScheduleAction : IAsyncAction<IEnumerable<ExerciseViewModel>>
+    public class BuildUpperBodyExerciseScheduleAction : IAsyncAction<IEnumerable<ExerciseViewModel>>
     {
         private readonly Random _random = new Random();
 
@@ -21,18 +19,16 @@ namespace WorkoutTracker.MAUI.Data.Actions
             _random.Shuffle(categoriesToPick);
             categoriesToPick = categoriesToPick.Union(new[] { "Core" }).ToArray(); // Core is always last
 
-            var randomSet = new List<ExerciseViewModel>(categoriesToPick.Length);
+            var randomSet = new Dictionary<string, ScheduleViewModel>(categoriesToPick.Length);
 
             foreach (var category in categoriesToPick)
             {
-                var exercisesByCategory = allExercises.Where(e => e.Muscles.First().MuscleGroup == category);
-                var count = exercisesByCategory.Count();
-
-                var pickedExercise = exercisesByCategory.ElementAt(_random.Next(0, count));
-                randomSet.Add(pickedExercise);
+                var exercisesByCategory = allExercises.Where(e => e.Muscles.First().MuscleGroup == category).ToArray();
+                var index = _random.Next(0, exercisesByCategory.Count());
+                randomSet.Add(category, new ScheduleViewModel(category, index, exercisesByCategory));
             }
 
-            dispatcher.Dispatch(new ReceiveExerciseScheduleAction(randomSet.ToArray()));
+            dispatcher.Dispatch(new ReceiveExerciseScheduleAction(randomSet));
 
             return Task.CompletedTask;
         }

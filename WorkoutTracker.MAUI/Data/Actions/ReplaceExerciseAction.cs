@@ -1,39 +1,25 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.MAUI.Data.Actions
 {
-    public class ReplaceExerciseAction : IAsyncAction<ReplaceExerciseRequest>
+    public class MoveToPreviousExerciseAction : IAsyncAction<ScheduleViewModel>
     {
-        private readonly Random _random = new Random();
-
-        public Task Execute(IDispatcher dispatcher, ReplaceExerciseRequest request)
+        public Task Execute(IDispatcher dispatcher, ScheduleViewModel request)
         {
-            // Will not be necessary
-            /*if (request.AllExercises is null)
-            {
-                return Task.CompletedTask;
-            }
+            var newRequest = request with { CurrentIndex = request.CurrentIndex == 0 ? request.Exercises.Count() - 1 : request.CurrentIndex - 1 };
+            dispatcher.Dispatch(new ReceiveNewExerciseScheduleItemAction(newRequest));
 
-            var exercise = request.ExerciseToReplace;
-            var categories = exercise.Muscles;
-            var exercises = request.AllExercises.Where(e => e.Id != exercise.Id && categories.Any(c => e.Muscles.Contains(c)));
-            Exercise newExercise = null;
-            while (true) 
-            {
-                newExercise = exercises.ElementAt(_random.Next(0, exercises.Count()));
-                if (!request.CurrentSchedule.Any(s => s.Id == newExercise.Id)) 
-                {
-                    break;
-                }
-            }
+            return Task.CompletedTask;
+        }
+    }
 
-            var currentSchedule = request.CurrentSchedule.ToArray();
-            var idx = Array.IndexOf(currentSchedule, exercise);
-            currentSchedule[idx] = newExercise;
-
-            dispatcher.Dispatch(new ReceiveExerciseScheduleAction(currentSchedule));*/
+    public class MoveToNextExerciseAction : IAsyncAction<ScheduleViewModel>
+    {
+        public Task Execute(IDispatcher dispatcher, ScheduleViewModel request)
+        {
+            var newRequest = request with { CurrentIndex = request.CurrentIndex == request.Exercises.Count() - 1 ? 0 : request.CurrentIndex + 1 };
+            dispatcher.Dispatch(new ReceiveNewExerciseScheduleItemAction(newRequest));
 
             return Task.CompletedTask;
         }

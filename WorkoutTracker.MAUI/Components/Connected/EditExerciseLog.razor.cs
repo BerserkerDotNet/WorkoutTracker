@@ -11,14 +11,13 @@ namespace WorkoutTracker.MAUI.Components.Connected
 {
     public partial class EditExerciseLog : IDisposable
     {
-        const string DefaultDialogStyle = "min-height:auto;min-width:auto;width:auto";
         const string KG = "KG";
         const string LB = "LB";
         private Stopwatch _timeTracker;
         private bool _isRunning = false;
         private bool isSavingData = false;
         private CancellationTokenSource _source;
-        private string _weightUnits = "KG";
+        private string _weightUnits = KG;
         private int _currentRestTime = 0;
         private int _weight = 0;
 
@@ -33,9 +32,9 @@ namespace WorkoutTracker.MAUI.Components.Connected
         [Inject]
         public ISnackbar Snackbar { get; set; }
 
-        private bool DisablePrevious => !Props.PreviousExerciseId.HasValue || _isRunning;
+        private bool DisablePrevious => Props.PreviousExerciseId is null || _isRunning;
 
-        private bool DisableNext => !Props.NextExerciseId.HasValue || _isRunning;
+        private bool DisableNext => Props.NextExerciseId is null || _isRunning;
 
         public void Dispose()
         {
@@ -130,7 +129,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
         private EditExerciseLogProps _props; // TODO: workaround
 
         [Parameter]
-        public Guid Id { get; set; }
+        public string CurrentCategory { get; set; }
 
         [Parameter]
         public Guid ExerciseId { get; set; }
@@ -147,24 +146,25 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
             props.Cancel = EventCallback.Factory.Create(this, () => Navigation.NavigateTo($"/"));
 
-            props.Next = EventCallback.Factory.Create<Guid>(this, id =>
+            props.Next = EventCallback.Factory.Create<ExerciseWithCategoryViewModel>(this, item =>
             { 
-                Navigation.NavigateTo($"/editexerciselog/{Guid.Empty}/{id}");
+                Navigation.NavigateTo($"/editexerciselog/{item.Category}/{item.Exercise.Id}");
             });
 
-			props.Previous = EventCallback.Factory.Create<Guid>(this, id =>
+			props.Previous = EventCallback.Factory.Create<ExerciseWithCategoryViewModel>(this, item =>
             {
-                Navigation.NavigateTo($"/editexerciselog/{Guid.Empty}/{id}");
+                Navigation.NavigateTo($"/editexerciselog/{item.Category}/{item.Exercise.Id}");
             });
         }
 
         protected override void MapStateToProps(RootState state, EditExerciseLogProps props)
         {
-            var nextId = state.Exercises.Schedule.SkipWhile(s => s.Id != ExerciseId).Take(2).Last().Id;
-            props.NextExerciseId = nextId == ExerciseId ? null : nextId;
+            var nextSet = state.Exercises.Schedule.SkipWhile(s => s.Key != CurrentCategory).Take(2).Last().Value;
+            props.NextExerciseId = nextSet.Category == CurrentCategory ? null : new ExerciseWithCategoryViewModel(nextSet.Category, nextSet.Exercises.ElementAt(nextSet.CurrentIndex));
 
-            var prevId = state.Exercises.Schedule.TakeWhile(s => s.Id != ExerciseId).LastOrDefault()?.Id;
-            props.PreviousExerciseId = prevId;
+            var prevSet = state.Exercises.Schedule.TakeWhile(s => s.Key != CurrentCategory).LastOrDefault().Value;
+            props.PreviousExerciseId = prevSet is null || prevSet.Category == CurrentCategory ? null : new ExerciseWithCategoryViewModel(prevSet.Category, prevSet.Exercises.ElementAt(prevSet.CurrentIndex));
+
             var log = state?.Exercises?.Log?.SingleOrDefault(g => g.Date.Date == DateTime.UtcNow.Date && g.Exercise.Id == ExerciseId);
             if (log is object)
             {

@@ -130,5 +130,11 @@
     "name": "Hamstring",
     "musclegroup": "Legs",
     "imagePath": "muscles/hamstring.png"
+  },
+  {
+    "id": "58ebbca6-1dea-464f-9b94-1b528452564b",
+    "name": "Gastrocnemius",
+    "musclegroup": "Legs",
+    "imagePath": "muscles/Gastrocnemius.png"
   }
 ]

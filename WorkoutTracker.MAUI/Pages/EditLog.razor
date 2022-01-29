@@ -1,10 +1,10 @@
-﻿@page "/editexerciselog/{id:guid}/{exerciseid:guid}"
+﻿@page "/editexerciselog/{category}/{exerciseid:guid}"
 
-<EditExerciseLogConnected Id="Id" ExerciseId="ExerciseId" />
+<EditExerciseLogConnected CurrentCategory="@Category" ExerciseId="ExerciseId" />
 
 @code{
     [Parameter]
-    public Guid Id { get; set; }
+    public string Category { get; set; }
 
     [Parameter]
     public Guid ExerciseId { get; set; }

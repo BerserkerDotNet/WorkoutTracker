@@ -394,5 +394,41 @@
     "name": "Dumbbell V-Sit Cross Jab",
     "muscles": [ "a3b78f02-e175-484f-ba42-e2df413258ed", "f156ee55-1292-4f60-b3c2-888efb7dd197", "9024dbc7-defb-4aa3-8b0d-29ce21d1ece5" ],
     "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "b71b20c9-0fb4-4351-aa6f-41cffc75daed",
+    "name": "Barbell Squats",
+    "muscles": [ "326bbce1-b660-4559-8fb0-67a7c59e1a4a", "78f7f381-80cd-4a48-ab89-5d58a54a8b50", "5a778ec8-1224-4796-b472-326886715cf5" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "3b43c0ad-de13-4de8-a1f6-732038c30772",
+    "name": "Romanian deadlift",
+    "muscles": [ "e322933a-a4ca-42f9-adbd-cb9340cc4d89", "326bbce1-b660-4559-8fb0-67a7c59e1a4a" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "4444cfbe-d37b-4cef-8b70-ab2502457961",
+    "name": "Dumbbell Hamstring Curl",
+    "muscles": [ "e322933a-a4ca-42f9-adbd-cb9340cc4d89" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "2cd9381a-6e58-4f97-a0bc-9b46260e39c3",
+    "name": "Seated Calf Raise",
+    "muscles": [ "58ebbca6-1dea-464f-9b94-1b528452564b" ],
+    "tags": [ "GoodForHome" ]
+  },
+  {
+    "id": "a7b4d27f-568d-4dc3-9086-8a3c01d66904",
+    "name": "Leg press",
+    "muscles": [ "78f7f381-80cd-4a48-ab89-5d58a54a8b50", "e322933a-a4ca-42f9-adbd-cb9340cc4d89", "58ebbca6-1dea-464f-9b94-1b528452564b", "326bbce1-b660-4559-8fb0-67a7c59e1a4a" ],
+    "tags": [ ]
+  },
+  {
+    "id": "36dc40c7-b6bf-405d-a417-3f7e8e7ae297",
+    "name": "Dumbell Squat",
+    "muscles": [ "326bbce1-b660-4559-8fb0-67a7c59e1a4a", "78f7f381-80cd-4a48-ab89-5d58a54a8b50", "5a778ec8-1224-4796-b472-326886715cf5" ],
+    "tags": [ "GoodForHome" ]
   }
 ]

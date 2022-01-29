@@ -15,7 +15,7 @@ namespace WorkoutTracker.Functions
     {
         [FunctionName(EntityPluralNames.ExercisePluralName)]
         public static Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
             ILogger log)
         {
             switch (request.Method)

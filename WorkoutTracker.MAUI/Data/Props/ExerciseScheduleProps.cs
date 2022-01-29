@@ -3,17 +3,21 @@ using System.Collections.Generic;
 
 namespace WorkoutTracker.MAUI.Data.Props
 {
+    public record ExerciseWithCategoryViewModel(string Category, ExerciseViewModel Exercise);
+
     public class ExerciseScheduleProps
     {
-        public IEnumerable<ExerciseViewModel> Schedule { get; set; }
+        public IEnumerable<ExerciseWithCategoryViewModel> Schedule { get; set; }
 
         public Dictionary<Guid, int> ExerciseCount { get; set; }
 
-        public EventCallback<Guid> Start { get; set; }
+        public EventCallback<ExerciseWithCategoryViewModel> Start { get; set; }
 
-        public EventCallback<ExerciseViewModel> Replace { get; set; }
+        public EventCallback<string> Previous { get; set; }
 
-        public EventCallback Rebuild { get; set; }
+        public EventCallback<string> Next { get; set; }
+
+        public EventCallback<ExerciseProfile> Rebuild { get; set; }
 
         public EventCallback OpenLog { get; set; }
     }
@@ -29,9 +33,9 @@ namespace WorkoutTracker.MAUI.Data.Props
 
     public class EditExerciseLogProps
     {
-        public Guid? NextExerciseId { get; set; }
+        public ExerciseWithCategoryViewModel NextExerciseId { get; set; }
 
-        public Guid? PreviousExerciseId { get; set; }
+        public ExerciseWithCategoryViewModel PreviousExerciseId { get; set; }
 
         public int SetNumber { get; set; }
 
@@ -39,9 +43,9 @@ namespace WorkoutTracker.MAUI.Data.Props
 
 		public EventCallback<LogEntryViewModel> Save { get; set; }
 
-        public EventCallback<Guid> Next { get; set; }
+        public EventCallback<ExerciseWithCategoryViewModel> Next { get; set; }
 
-        public EventCallback<Guid> Previous { get; set; }
+        public EventCallback<ExerciseWithCategoryViewModel> Previous { get; set; }
 
         public EventCallback Cancel { get; set; }
     }
@@ -57,7 +61,7 @@ namespace WorkoutTracker.MAUI.Data.Props
 
     public class ExerciseListProps
     {
-        public IEnumerable<ExerciseViewModel> List { get; set; }
+        public ICollection<ExerciseViewModel> List { get; set; }
 
         public EventCallback<ExerciseViewModel> Edit { get; set; }
     }

@@ -14,7 +14,7 @@
 	</MudItem>
 	<MudItem xs="12">
 		<div class="d-flex align-center justify-space-between mt-6">
-			<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.SkipPrevious" Color="Color.Default" OnClick="() => Props.Previous.InvokeAsync(Props.PreviousExerciseId.Value)" Disabled="@DisablePrevious" />
+			<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.SkipPrevious" Color="Color.Default" OnClick="() => Props.Previous.InvokeAsync(Props.PreviousExerciseId)" Disabled="@DisablePrevious" />
 			<MudBadge Origin="Origin.TopRight" Overlap="true" Bordered="true" Content="@Props.SetNumber" Color="Color.Secondary">
 				@if (_isRunning)
 				{
@@ -25,7 +25,7 @@
 					<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="StartSet" />
 				}
 			</MudBadge>
-			<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.SkipNext" Color="Color.Default" OnClick="() => Props.Next.InvokeAsync(Props.NextExerciseId.Value)" Disabled="@DisableNext" />
+			<MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.SkipNext" Color="Color.Default" OnClick="() => Props.Next.InvokeAsync(Props.NextExerciseId)" Disabled="@DisableNext" />
 		</div>
 	</MudItem>
 	<MudItem xs="12">
