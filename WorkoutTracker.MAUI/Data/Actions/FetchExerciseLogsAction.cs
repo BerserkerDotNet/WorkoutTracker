@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace WorkoutTracker.MAUI.Data.Actions
 {
-    public class FetchExerciseLogsAction : IAsyncAction
+    public class FetchExerciseLogsAction : IAsyncAction<DateTime>
     {
         private readonly IWorkoutRepository _repository;
 
@@ -12,10 +12,10 @@ namespace WorkoutTracker.MAUI.Data.Actions
             _repository = repository;
         }
 
-        public async Task Execute(IDispatcher dispatcher)
+        public async Task Execute(IDispatcher dispatcher, DateTime date)
         {
-            var logEntryChunk = await _repository.GetLogs();
-            dispatcher.Dispatch(new ReceiveExerciseLogsAction(logEntryChunk.OrderByDescending(i => i.Date)));
+            var logEntryChunk = await _repository.GetLogs(date);
+            dispatcher.Dispatch(new ReceiveExerciseLogsAction(DateOnly.FromDateTime(date), logEntryChunk.OrderByDescending(i => i.Date)));
         }
     }
 }

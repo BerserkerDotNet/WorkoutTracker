@@ -35,7 +35,7 @@
 		<MudCardActions>
 			<div class="d-flex align-center justify-space-between" style="width:100%">
 				<MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="() => Props.Previous.InvokeAsync(scheduleItem.Category)" />
-				<MudBadge Origin="Origin.TopRight" Content="@(Props.ExerciseCount.ContainsKey(item.Id) ? Props.ExerciseCount[item.Id] : 1)" Color="Color.Primary" Class="mx-6 my-4">
+				<MudBadge Origin="Origin.TopRight" Content="@(Props.ExerciseCountLookup.ContainsKey(item.Id) ? Props.ExerciseCountLookup[item.Id] : 1)" Color="Color.Primary" Class="mx-6 my-4">
 					<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="() => Props.Start.InvokeAsync(scheduleItem)">Start</MudButton>
 				</MudBadge>
 				<MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next.InvokeAsync(scheduleItem.Category)" />

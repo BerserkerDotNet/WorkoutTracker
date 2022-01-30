@@ -36,12 +36,14 @@ namespace WorkoutTracker.Functions
         private static async Task<IActionResult> Get(HttpRequest request, ILogger log)
         {
             var id = request.Query["id"];
+            var date = !string.IsNullOrEmpty(request.Query["date"]) ? DateTime.Parse(request.Query["date"]) : DateTime.Today.ToUniversalTime();
+            var nextDay = date.AddDays(1);
             var container = await CosmosUtils.GetContainer<ExerciseLogEntry>();
 
             if (string.IsNullOrEmpty(id))
             {
                 var items = container.GetItemLinqQueryable<ExerciseLogEntry>(allowSynchronousQueryExecution: true)
-                    .Where(e => e.Date > DateTime.Today.ToUniversalTime())
+                    .Where(e => e.Date >= date && e.Date < nextDay)
                     .OrderByDescending(e => e.Date);
 
                 return new OkObjectResult(items);

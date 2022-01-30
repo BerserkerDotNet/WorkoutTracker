@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace WorkoutTracker.MAUI.ViewModels
 {
-    public record ScheduleViewModel(string Category, int CurrentIndex, IEnumerable<ExerciseViewModel> Exercises);
+    public record ScheduleViewModel(string Category, int CurrentIndex, IEnumerable<ExerciseViewModel> Exercises) 
+    {
+        public ExerciseViewModel CurrentExercise => Exercises.Count() > CurrentIndex ? Exercises.ElementAt(CurrentIndex) : null;
+        public ExerciseWithCategoryViewModel CurrentExerciseWithCategory => new ExerciseWithCategoryViewModel(Category, CurrentExercise);
+    }
 
     public class ExerciseViewModel
     {

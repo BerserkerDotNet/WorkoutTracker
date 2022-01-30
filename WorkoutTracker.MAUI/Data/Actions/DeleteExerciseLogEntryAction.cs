@@ -18,7 +18,7 @@ namespace WorkoutTracker.MAUI.Data.Actions
         {
             await _repository.DeleteLog(id);
             _notificationService.ShowToast("Log entry deleted.");
-            await dispatcher.Dispatch<FetchExerciseLogsAction>();
+            await dispatcher.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today.ToUniversalTime());
         }
     }
 }

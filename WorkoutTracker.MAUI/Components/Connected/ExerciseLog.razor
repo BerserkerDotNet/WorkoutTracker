@@ -1,11 +1,15 @@
 ﻿<h2>Exercise history</h2>
-<Virtualize Items="Props.Log" Context="logRecord">
+
+<MudDatePicker PickerVariant="PickerVariant.Static" Date="_date" MaxDate="DateTime.Today" DisableToolbar="true" DateChanged="OnDateChanged" />
+
+@foreach (var logRecord in _records)
+{
 	<MudCard Class="mb-4" Outlined="true">
 		<div style="width: calc(100% - 5px);">
 			<img src="/images/@(logRecord.Exercise.ImagePath)" alt="@logRecord.Exercise.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
 		</div>
 		<MudCardContent>
-			<MudText Typo="Typo.h5">@logRecord.Exercise.Name</MudText>
+			<MudText Align="Align.Center" Typo="Typo.h5">@logRecord.Exercise.Name</MudText>
 			<MudText Typo="Typo.body2">@logRecord.Exercise.Description</MudText>
 			<MudText Typo="Typo.body2">@logRecord.Date.ToShortDateString()</MudText>
 		</MudCardContent>
@@ -13,11 +17,37 @@
 			<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => Props.Delete.InvokeAsync(logRecord.Id)" />
 		</MudCardActions>
 	</MudCard>
-</Virtualize>
+}
+
+<MudOverlay Visible="_isLoading" DarkBackground="true">
+	<MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
 
 @code
 {
-    [Parameter]
-    public ExercisesLogProps Props { get; set; }
+	private bool _isLoading = false;
+	private IEnumerable<LogEntryViewModel> _records = Enumerable.Empty<LogEntryViewModel>();
+	private DateTime _date = DateTime.Today.ToUniversalTime();
+
+	[Parameter]
+	public ExercisesLogProps Props { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		var today = DateOnly.FromDateTime(_date);
+		_records = Props.Log.ContainsKey(today) ? Props.Log[today] : Enumerable.Empty<LogEntryViewModel>();
+		_isLoading = !Props.Log.ContainsKey(today);
+	}
+
+	private async Task OnDateChanged(DateTime? newDate)
+	{
+		_isLoading = true;
+		if (newDate.HasValue)
+		{
+			_date = newDate.Value;
+			await Props.Load.InvokeAsync(newDate.Value);
+		}
+		_isLoading = false;
+	}
 }
 

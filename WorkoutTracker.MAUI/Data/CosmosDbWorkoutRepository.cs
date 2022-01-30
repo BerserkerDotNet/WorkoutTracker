@@ -43,10 +43,10 @@ namespace WorkoutTracker.MAUI.Data
             return exerciseDtos.Select(e => MapExercise(e, musclesDictionary)).ToArray();
         }
 
-        public virtual async Task<IEnumerable<LogEntryViewModel>> GetLogs()
+        public virtual async Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date)
         {
             var exercises = await GetExercises();
-            var exerciseLogsDtos = await Get<ExerciseLogEntry>(EntityPluralNames.ExerciseLogEntryPluralName);
+            var exerciseLogsDtos = await Get<ExerciseLogEntry>($"{EntityPluralNames.ExerciseLogEntryPluralName}?date={date.ToString("yyyy-MM-dd")}"); // TODO, make a parameter on a Get function
             var exercisesDictionary = exercises.ToDictionary(k => k.Id, v => v);
 
             return exerciseLogsDtos.Select(l => MapLog(l, exercisesDictionary)).ToArray();

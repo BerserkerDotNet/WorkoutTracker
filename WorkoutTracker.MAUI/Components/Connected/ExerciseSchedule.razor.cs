@@ -1,9 +1,11 @@
 ﻿using BlazorState.Redux.Blazor;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Data.Actions;
+using static WorkoutTracker.MAUI.Data.Selectors.ScheduleSelectors;
+using static WorkoutTracker.MAUI.Data.Selectors.ExerciseHistorySelectors;
+using static WorkoutTracker.MAUI.Data.Selectors.ExerciseSelectors;
 
 namespace WorkoutTracker.MAUI.Components.Connected
 {
@@ -21,7 +23,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
             props.OpenLog = EventCallback.Factory.Create(this, () => Navigation.NavigateTo($"/log"));
             props.Rebuild = EventCallback.Factory.Create<ExerciseProfile>(this, async profile =>
             {
-                var exercises = store.State.Exercises.List.Values;
+                var exercises = SelectExercises(store.State);
                 // TODO: Should this be here?
                 if (profile == ExerciseProfile.UpperBody)
                 {
@@ -35,31 +37,19 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
             props.Previous = EventCallback.Factory.Create<string>(this, async category =>
             {
-                await store.Dispatch<MoveToPreviousExerciseAction, ScheduleViewModel>(store.State.Exercises.Schedule[category]);
+                await store.Dispatch<MoveToPreviousExerciseAction, ScheduleViewModel>(SelectScheduleByCategory(store.State, category));
             });
 
             props.Next = EventCallback.Factory.Create<string>(this, async category =>
             {
-                await store.Dispatch<MoveToNextExerciseAction, ScheduleViewModel>(store.State.Exercises.Schedule[category]);
+                await store.Dispatch<MoveToNextExerciseAction, ScheduleViewModel>(SelectScheduleByCategory(store.State, category));
             });
         }
 
         protected override void MapStateToProps(RootState state, ExerciseScheduleProps props)
         {
-            props.Schedule = Enumerable.Empty<ExerciseWithCategoryViewModel>();
-            if (state?.Exercises?.Schedule is not null)
-            {
-                props.Schedule = state.Exercises.Schedule.Select(s => new ExerciseWithCategoryViewModel(s.Key, s.Value.Exercises.ElementAt(s.Value.CurrentIndex))).ToArray();
-            }
-
-            if (state is object && state.Exercises is object && state.Exercises.Log is object)
-            {
-                props.ExerciseCount = state.Exercises.Log.ToDictionary(k => k.Exercise.Id, v => v.Sets.Count());
-            }
-            else 
-            {
-                props.ExerciseCount = new Dictionary<Guid, int>();
-            }
+            props.Schedule = SelectCurrentExercisesFromSchedule(state);
+            props.ExerciseCountLookup = SelectTodayExerciseCountLookup(state);
         }
 
         protected override async Task Init(IStore<RootState> store)
@@ -70,18 +60,13 @@ namespace WorkoutTracker.MAUI.Components.Connected
                 return;
             }
 
-            var state = store.State?.Exercises;
-            if (state?.Schedule is object && state.Schedule.Any())
+            if (SelectSchedule(store.State).Count > 0)
             {
                 return;
             }
 
-            if (state?.List is null)
-            {
-                await store.Dispatch<FetchExercisesAction>();
-            }
-
-            await store.Dispatch<BuildUpperBodyExerciseScheduleAction, IEnumerable<ExerciseViewModel>>(store.State.Exercises.List.Values);
+            await store.Dispatch<FetchExercisesAction>();
+            await store.Dispatch<BuildUpperBodyExerciseScheduleAction, IEnumerable<ExerciseViewModel>>(SelectExercises(store.State));
         }
     }
 }

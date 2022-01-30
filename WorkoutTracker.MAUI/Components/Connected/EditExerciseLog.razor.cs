@@ -1,11 +1,15 @@
 ﻿using BlazorState.Redux.Blazor;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Data.Actions;
 using WorkoutTracker.Models;
+using static WorkoutTracker.MAUI.Data.Selectors.ScheduleSelectors;
+using static WorkoutTracker.MAUI.Data.Selectors.ExerciseHistorySelectors;
+using static WorkoutTracker.MAUI.Data.Selectors.ExerciseSelectors;
 
 namespace WorkoutTracker.MAUI.Components.Connected
 {
@@ -20,8 +24,6 @@ namespace WorkoutTracker.MAUI.Components.Connected
         private string _weightUnits = KG;
         private int _currentRestTime = 0;
         private int _weight = 0;
-
-        private TimeSpan duration = TimeSpan.Zero;
 
         [Parameter]
         public EditExerciseLogProps Props { get; set; }
@@ -126,8 +128,6 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
     public class EditExerciseLogConnected : ConnectedComponent<EditExerciseLog, RootState, EditExerciseLogProps>
     {
-        private EditExerciseLogProps _props; // TODO: workaround
-
         [Parameter]
         public string CurrentCategory { get; set; }
 
@@ -159,13 +159,13 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapStateToProps(RootState state, EditExerciseLogProps props)
         {
-            var nextSet = state.Exercises.Schedule.SkipWhile(s => s.Key != CurrentCategory).Take(2).Last().Value;
-            props.NextExerciseId = nextSet.Category == CurrentCategory ? null : new ExerciseWithCategoryViewModel(nextSet.Category, nextSet.Exercises.ElementAt(nextSet.CurrentIndex));
+            var nextSet = SelectNextExerciseFromSchedule(state, CurrentCategory);
+            props.NextExerciseId = nextSet.Category == CurrentCategory ? null : nextSet.CurrentExerciseWithCategory;
 
-            var prevSet = state.Exercises.Schedule.TakeWhile(s => s.Key != CurrentCategory).LastOrDefault().Value;
-            props.PreviousExerciseId = prevSet is null || prevSet.Category == CurrentCategory ? null : new ExerciseWithCategoryViewModel(prevSet.Category, prevSet.Exercises.ElementAt(prevSet.CurrentIndex));
+            var prevSet = SelectPreviousExerciseFromSchedule(state, CurrentCategory);
+            props.PreviousExerciseId = prevSet is null || prevSet.Category == CurrentCategory ? null : prevSet.CurrentExerciseWithCategory;
 
-            var log = state?.Exercises?.Log?.SingleOrDefault(g => g.Date.Date == DateTime.UtcNow.Date && g.Exercise.Id == ExerciseId);
+            var log = SelectTodayExerciseById(state, ExerciseId);
             if (log is object)
             {
                 props.Log = log;
@@ -176,29 +176,12 @@ namespace WorkoutTracker.MAUI.Components.Connected
                 props.Log = new LogEntryViewModel
                 {
                     Id = Guid.NewGuid(),
-                    Exercise = state.Exercises.List[ExerciseId],
+                    Exercise = SelectExerciseById(state, ExerciseId),
                     Sets = Enumerable.Empty<Set>(),
                     Date = DateTime.UtcNow
                 };
                 props.SetNumber = 1;
             }
-
-            _props = props;
-        }
-
-        protected override async Task Init(IStore<RootState> store)
-        {
-            var state = store.State?.Exercises;
-            if (state?.List is null)
-            {
-                await store.Dispatch<FetchExercisesAction>();
-            }
-        }
-
-        protected override void OnParametersSet()
-        {
-            MapStateToProps(Store.State, _props);
-            this.StateHasChanged();
         }
     }
 }

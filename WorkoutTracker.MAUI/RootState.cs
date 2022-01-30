@@ -6,6 +6,10 @@ namespace WorkoutTracker.MAUI
 	public class RootState
     {
         public ExercisesState Exercises { get; set; }
+
+        public LogEntriesState ExerciseLogs { get; set; }
+
+        public ExerciseScheduleState ExerciseSchedule { get; set; }
     }
 
     [EventHandler("onswiped-right", typeof(SwipedEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
@@ -23,6 +27,4 @@ namespace WorkoutTracker.MAUI
 
         public string Direction { get; set; }
     }
-
-    public record SetDetail(int Duration, int Repetitions, int Rating, string Notes);
 }

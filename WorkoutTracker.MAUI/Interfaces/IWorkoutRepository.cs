@@ -7,7 +7,7 @@ namespace WorkoutTracker.MAUI
     {
         Task<IEnumerable<ExerciseViewModel>> GetExercises();
 
-        Task<IEnumerable<LogEntryViewModel>> GetLogs();
+        Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date);
 
         Task AddLogRecord(LogEntryViewModel model);
 

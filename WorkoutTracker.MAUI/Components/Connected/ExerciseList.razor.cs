@@ -1,9 +1,9 @@
 ﻿using BlazorState.Redux.Blazor;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Data.Actions;
+using static WorkoutTracker.MAUI.Data.Selectors.ExerciseSelectors;
 
 namespace WorkoutTracker.MAUI.Components.Connected
 {
@@ -22,13 +22,12 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         protected override void MapStateToProps(RootState state, ExerciseListProps props)
         {
-            props.List = new List<ExerciseViewModel>(state?.Exercises?.List?.Values ?? Enumerable.Empty<ExerciseViewModel>());
+            props.List = SelectExercises(state).ToList();
         }
 
         protected override async Task Init(IStore<RootState> store)
         {
-            var state = store.State?.Exercises;
-            if (state?.List is null)
+            if (!SelectExercises(store.State).Any())
             {
                 await store.Dispatch<FetchExercisesAction>();
             }

@@ -40,6 +40,8 @@ namespace WorkoutTracker.MAUI
             {
                 cfg.RegisterActionsFromAssemblyContaining<FetchExercisesAction>();
                 cfg.Map<ExercisesReducer, ExercisesState>(s => s.Exercises);
+                cfg.Map<ExerciseScheduleReducer, ExerciseScheduleState>(s => s.ExerciseSchedule);
+                cfg.Map<LogEntriesReducer, LogEntriesState>(s => s.ExerciseLogs);
             });
 
             builder.Services.AddMudServices(config =>

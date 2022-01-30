@@ -9,7 +9,7 @@ namespace WorkoutTracker.MAUI.Data.Props
     {
         public IEnumerable<ExerciseWithCategoryViewModel> Schedule { get; set; }
 
-        public Dictionary<Guid, int> ExerciseCount { get; set; }
+        public Dictionary<Guid, int> ExerciseCountLookup { get; set; }
 
         public EventCallback<ExerciseWithCategoryViewModel> Start { get; set; }
 
@@ -24,11 +24,13 @@ namespace WorkoutTracker.MAUI.Data.Props
 
     public class ExercisesLogProps
     {
-        public ICollection<LogEntryViewModel> Log { get; set; }
+        public Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> Log { get; set; }
 
         public EventCallback<Guid> Delete { get; set; }
 
         public EventCallback<LogEntryViewModel> Edit { get; set; }
+
+        public EventCallback<DateTime> Load { get; set; }
     }
 
     public class EditExerciseLogProps
