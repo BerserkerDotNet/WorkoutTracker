@@ -8,7 +8,12 @@ public static class ExerciseHistorySelectors
 
     public static Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> SelectHistory(RootState state)
     {
-        return state?.ExerciseLogs?.History ?? new Dictionary<DateOnly, IEnumerable<LogEntryViewModel>>();
+        return state.ExerciseLogs?.History ?? new Dictionary<DateOnly, IEnumerable<LogEntryViewModel>>();
+    }
+
+    public static Dictionary<Guid, LogEntryViewModel> SelectLastLogByExerciseLookup(RootState state)
+    {
+        return state.ExerciseLogs?.LastLogByExercise ?? new Dictionary<Guid, LogEntryViewModel>();
     }
 
     public static Dictionary<Guid, int> SelectTodayExerciseCountLookup(RootState state)
@@ -30,5 +35,25 @@ public static class ExerciseHistorySelectors
     public static LogEntryViewModel SelectTodayExerciseById(RootState state, Guid id)
     {
         return SelectTodayExercises(state).FirstOrDefault(e => e.Exercise.Id == id);
+    }
+
+    public static PreviousLogRecordStats SelectLastLogByExercise(RootState state, Guid id)
+    {
+        var lookup = SelectLastLogByExerciseLookup(state);
+        var record = lookup.ContainsKey(id) ? lookup[id] : null;
+        if (record is null) 
+        {
+            return null;
+        }
+
+        var maxWeightSet = record.Sets.MaxBy(s => s.Weight);
+
+        return new PreviousLogRecordStats(maxWeightSet.Weight, maxWeightSet.Repetitions);
+    }
+
+    public static bool IsLastLogByExerciseLoaded(RootState state, Guid id)
+    {
+        var lookup = SelectLastLogByExerciseLookup(state);
+        return lookup.ContainsKey(id);
     }
 }

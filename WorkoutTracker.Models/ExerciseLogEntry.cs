@@ -2,7 +2,7 @@
 
 namespace WorkoutTracker.Models
 {
-    [PluralName(EntityPluralNames.ExerciseLogEntryPluralName)]
+    [PluralName(EndpointNames.ExerciseLogEntryPluralName)]
     public class ExerciseLogEntry : EntityBase
     {
         public Guid ExerciseId { get; set; }

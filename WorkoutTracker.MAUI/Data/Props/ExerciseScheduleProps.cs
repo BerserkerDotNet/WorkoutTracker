@@ -5,6 +5,11 @@ namespace WorkoutTracker.MAUI.Data.Props
 {
     public record ExerciseWithCategoryViewModel(string Category, ExerciseViewModel Exercise);
 
+    public record PreviousLogRecordStats(double? Weight, int Repetitions) 
+    {
+        public double WeightInLB => Weight.HasValue ? Math.Floor(Weight.Value / 0.453592d) : 0.0d;
+    } 
+
     public class ExerciseScheduleProps
     {
         public IEnumerable<ExerciseWithCategoryViewModel> Schedule { get; set; }
@@ -43,7 +48,11 @@ namespace WorkoutTracker.MAUI.Data.Props
 
 		public LogEntryViewModel Log { get; set; }
 
-		public EventCallback<LogEntryViewModel> Save { get; set; }
+        public PreviousLogRecordStats PreviousLog { get; set; }
+
+        public bool PreviousLogLoading { get; set; }
+
+        public EventCallback<LogEntryViewModel> Save { get; set; }
 
         public EventCallback<ExerciseWithCategoryViewModel> Next { get; set; }
 

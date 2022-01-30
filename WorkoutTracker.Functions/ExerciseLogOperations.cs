@@ -15,7 +15,7 @@ namespace WorkoutTracker.Functions
 {
     public static class ExerciseLogOperations
     {
-        [FunctionName(EntityPluralNames.ExerciseLogEntryPluralName)]
+        [FunctionName(EndpointNames.ExerciseLogEntryPluralName)]
         public static Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
             ILogger log)

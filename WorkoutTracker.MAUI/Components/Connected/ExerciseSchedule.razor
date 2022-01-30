@@ -25,8 +25,8 @@
 {
 	var item = scheduleItem.Exercise;
 	<MudCard Class="mb-4" Outlined="true">
-		<div style="width: calc(100% - 5px);">
-			<img src="/images/@(item.ImagePath)" alt="@item.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
+		<div style="text-align:center">
+			<img src="/images/@(item.ImagePath)" height="200" alt="@item.Name" />
 		</div>
 		<MudCardContent>
 			<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
@@ -39,7 +39,6 @@
 					<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="() => Props.Start.InvokeAsync(scheduleItem)">Start</MudButton>
 				</MudBadge>
 				<MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next.InvokeAsync(scheduleItem.Category)" />
-				@*<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Refresh" Color="Color.Warning" OnClick="() => Props.Replace.InvokeAsync(item)">Change</MudButton>*@
 			</div>
 		</MudCardActions>
 	</MudCard>

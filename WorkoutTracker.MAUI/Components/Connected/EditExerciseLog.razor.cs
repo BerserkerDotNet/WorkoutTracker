@@ -21,7 +21,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
         private bool _isRunning = false;
         private bool isSavingData = false;
         private CancellationTokenSource _source;
-        private string _weightUnits = KG;
+        private string _weightUnits = LB;
         private int _currentRestTime = 0;
         private int _weight = 0;
 
@@ -182,6 +182,19 @@ namespace WorkoutTracker.MAUI.Components.Connected
                 };
                 props.SetNumber = 1;
             }
+
+            props.PreviousLog = SelectLastLogByExercise(state, ExerciseId);
+            props.PreviousLogLoading = !IsLastLogByExerciseLoaded(state, ExerciseId);
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            if (!IsLastLogByExerciseLoaded(Store.State, ExerciseId))
+            {
+                await Store.Dispatch<FetchLastWorkoutByExerciseAction, Guid>(ExerciseId);
+            }
+
+            await base.OnParametersSetAsync();
         }
     }
 }

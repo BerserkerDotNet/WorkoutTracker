@@ -13,7 +13,7 @@ namespace WorkoutTracker.Functions
 {
     public static class MuscleOperations
     {
-        [FunctionName(EntityPluralNames.MusclePluralName)]
+        [FunctionName(EndpointNames.MusclePluralName)]
         public static Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
             ILogger log)

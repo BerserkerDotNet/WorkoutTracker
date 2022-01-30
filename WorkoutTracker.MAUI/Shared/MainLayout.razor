@@ -9,7 +9,7 @@
 			<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
 			Workout Tracker
 		</MudAppBar>
-		<MudDrawer @bind-Open="@_drawerOpen">
+		<MudDrawer @bind-Open="@_drawerOpen" Anchor="Anchor.Top" Elevation="1" Variant="@DrawerVariant.Temporary">
 			<NavMenu />
 		</MudDrawer>
 		<MudMainContent>

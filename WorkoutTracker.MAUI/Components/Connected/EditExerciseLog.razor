@@ -2,15 +2,34 @@
 
 <MudGrid Spacing="2" Justify="Justify.Center">
 	<MudItem xs="6">
-		<img src="/images/@(Props.Log.Exercise.ImagePath)" width="150" height="150" alt="@Props.Log.Exercise.Name" style="text-align: center;box-shadow: 5px 5px 5px grey;border-radius: 5px;border-color: grey;border-width: 0.5px;border-style: solid;" />
+		<MudPaper Class="pa-1 ma-2" Elevation="1">
+			<img src="/images/@(Props.Log.Exercise.ImagePath)" width="150" height="150" alt="@Props.Log.Exercise.Name" />
+		</MudPaper>
 	</MudItem>
 	<MudItem xs="6">
-		<ExerciseTimerBadge IsResting="!_isRunning" Time="_timeTracker.Elapsed" RestingTemplate="Resting for {0}" WorkingoutTemplate="In progress for {0}" />
+		<ExerciseTimerBadge IsResting="!_isRunning" Time="_timeTracker.Elapsed" RestingTemplate="Resting {0}" WorkingoutTemplate="Exercising {0}" />
 		<MudNumericField Label="Weight:" @bind-Value="_weight" />
 		<MudSelect Label="Units" T="string" @bind-Value="_weightUnits">
-			<MudSelectItem Value="@("KG")" />
 			<MudSelectItem Value="@("LB")" />
+			<MudSelectItem Value="@("KG")" />
 		</MudSelect>
+	</MudItem>
+	<MudItem xs="12">
+		@if (!Props.PreviousLogLoading && Props.PreviousLog is object)
+		{
+			<MudAlert Severity="Severity.Info" Variant="Variant.Outlined" >Previous max weight is <b>@Props.PreviousLog.WeightInLB</b> LB with <b>@Props.PreviousLog.Repetitions</b> repetitions.</MudAlert>
+		}
+		else if (!Props.PreviousLogLoading && Props.PreviousLog is null)
+		{
+			<MudAlert Severity="Severity.Info" Variant="Variant.Outlined" >Looks like you haven't log this exercise before.</MudAlert>
+		}
+		else
+		{
+			<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+			<MudText Align="Align.Center" Typo="Typo.subtitle1" Color="Color.Dark">
+				Loading previous data on exercise, hang on.
+			</MudText>
+		}
 	</MudItem>
 	<MudItem xs="12">
 		<div class="d-flex align-center justify-space-between mt-6">
@@ -62,7 +81,7 @@
 		}
 		else
 		{
-			<div style="width:100%;text-align:center;margin-top:15px">Log a set to see results</div>
+			<MudAlert Severity="Severity.Normal">Log a set to see results</MudAlert>
 		}
 	</MudItem>
 </MudGrid>

@@ -26,18 +26,18 @@ namespace WorkoutTracker.MAUI.Data
                 Date = model.Date,
                 Sets = model.Sets.ToArray()
             };
-            await Create(logEntry, EntityPluralNames.ExerciseLogEntryPluralName); // Works by upserting the record
+            await Create(logEntry, EndpointNames.ExerciseLogEntryPluralName); // Works by upserting the record
         }
 
         public virtual Task DeleteLog(Guid id)
         {
-            return Delete<ExerciseLogEntry>(id, EntityPluralNames.ExerciseLogEntryPluralName);
+            return Delete<ExerciseLogEntry>(id, EndpointNames.ExerciseLogEntryPluralName);
         }
 
         public virtual async Task<IEnumerable<ExerciseViewModel>> GetExercises()
         {
-            var exerciseDtos = await Get<Exercise>(EntityPluralNames.ExercisePluralName);
-            var muscleDtos = await Get<Muscle>(EntityPluralNames.MusclePluralName);
+            var exerciseDtos = await GetMultiple<Exercise>(EndpointNames.ExercisePluralName);
+            var muscleDtos = await GetMultiple<Muscle>(EndpointNames.MusclePluralName);
 
             var musclesDictionary = muscleDtos.ToDictionary(k => k.Id, MapMuscle);
             return exerciseDtos.Select(e => MapExercise(e, musclesDictionary)).ToArray();
@@ -45,11 +45,17 @@ namespace WorkoutTracker.MAUI.Data
 
         public virtual async Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date)
         {
-            var exercises = await GetExercises();
-            var exerciseLogsDtos = await Get<ExerciseLogEntry>($"{EntityPluralNames.ExerciseLogEntryPluralName}?date={date.ToString("yyyy-MM-dd")}"); // TODO, make a parameter on a Get function
-            var exercisesDictionary = exercises.ToDictionary(k => k.Id, v => v);
+            var exercisesDictionary = await GetExercisesLookup();
+            var exerciseLogsDtos = await GetMultiple<ExerciseLogEntry>($"{EndpointNames.ExerciseLogEntryPluralName}?date={date.ToString("yyyy-MM-dd")}"); // TODO, make a parameter on a Get function
 
             return exerciseLogsDtos.Select(l => MapLog(l, exercisesDictionary)).ToArray();
+        }
+
+        public virtual async Task<LogEntryViewModel> GetPreviousWorkoutStatsBy(Guid exerciseId)
+        {
+            var exercisesDictionary = await GetExercisesLookup();
+            var exerciseLog = await Get<ExerciseLogEntry>($"{EndpointNames.GetPreviousWorkoutStatsByExercise}?exerciseId={exerciseId}");
+            return MapLog(exerciseLog, exercisesDictionary);
         }
 
         public virtual Task UpdateExercise(ExerciseViewModel exercise)
@@ -57,35 +63,59 @@ namespace WorkoutTracker.MAUI.Data
             throw new NotImplementedException();
         }
 
-        private async Task<IEnumerable<T>> Get<T>(string pluralName)
-             where T : EntityBase
+        private async Task<T> Get<T>(string endpoint)
+            where T : EntityBase
         {
-            var response = await _client.GetAsync(pluralName);
+            var response = await _client.GetAsync(endpoint);
             if (!response.IsSuccessStatusCode)
             {
-                throw new DataFetchException($"Failed to fetch {pluralName}. Reason: {response.StatusCode} - {response.ReasonPhrase}.");
+                throw new DataFetchException($"Failed to fetch {endpoint}. Reason: {response.StatusCode} - {response.ReasonPhrase}.");
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent) 
+            {
+                return null;
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(content);
+        }
+
+        private async Task<IEnumerable<T>> GetMultiple<T>(string endpoint)
+             where T : EntityBase
+        {
+            var response = await _client.GetAsync(endpoint);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new DataFetchException($"Failed to fetch {endpoint}. Reason: {response.StatusCode} - {response.ReasonPhrase}.");
             }
 
             var content = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<IEnumerable<T>>(content);
         }
 
-        private async Task Create<T>(T entity, string pluralName)
+        private async Task Create<T>(T entity, string endpoint)
             where T : EntityBase
         {
             var content = JsonConvert.SerializeObject(entity);
-            var response = await _client.PostAsync(pluralName, new StringContent(content, System.Text.Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync(endpoint, new StringContent(content, System.Text.Encoding.UTF8, "application/json"));
             if (!response.IsSuccessStatusCode)
             {
                 var message = await response.Content.ReadAsStringAsync();
-                throw new DataPersistanceException($"Failed to create {pluralName} record. Reason: {response.StatusCode} - {response.ReasonPhrase}. {message}");
+                throw new DataPersistanceException($"Failed to create {endpoint} record. Reason: {response.StatusCode} - {response.ReasonPhrase}. {message}");
             }
         }
 
-        public Task Delete<T>(Guid id, string pluralName)
+        public Task Delete<T>(Guid id, string endpoint)
             where T : EntityBase
         {
-            return _client.DeleteAsync($"{pluralName}?id={id}");
+            return _client.DeleteAsync($"{endpoint}?id={id}");
+        }
+
+        private async Task<Dictionary<Guid, ExerciseViewModel>> GetExercisesLookup() 
+        {
+            var exercises = await GetExercises();
+            return exercises.ToDictionary(k => k.Id, v => v);
         }
 
         private MuscleViewModel MapMuscle(Muscle muscle) 
@@ -116,6 +146,11 @@ namespace WorkoutTracker.MAUI.Data
 
         private LogEntryViewModel MapLog(ExerciseLogEntry logEntry, Dictionary<Guid, ExerciseViewModel> exercisesDictionary)
         {
+            if (logEntry is null) 
+            {
+                return null;
+            }
+
             return new LogEntryViewModel
             {
                 Id = logEntry.Id,

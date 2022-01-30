@@ -1,6 +1,6 @@
 ﻿namespace WorkoutTracker.Models
 {
-    [PluralName(EntityPluralNames.MusclePluralName)]
+    [PluralName(EndpointNames.MusclePluralName)]
     public class Muscle : EntityBase
     {
         public string Name { get; set; }

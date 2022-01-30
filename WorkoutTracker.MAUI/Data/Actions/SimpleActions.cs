@@ -7,5 +7,6 @@ namespace WorkoutTracker.MAUI.Data.Actions
     public record ReceiveExerciseScheduleAction(Dictionary<string, ScheduleViewModel> Schedule) : IAction;
     public record ReceiveNewExerciseScheduleItemAction(ScheduleViewModel ScheduleItem) : IAction;
     public record AddExerciseLogEntryAction(LogEntryViewModel Entry) : IAction;
+    public record ReceiveLastWorkoutLogByExerciseAction(Guid ExerciseId, LogEntryViewModel Entry) : IAction;
     public record ForceStateChange() : IAction;
 }
