@@ -17,11 +17,11 @@
 	<MudItem xs="12">
 		@if (!Props.PreviousLogLoading && Props.PreviousLog is object)
 		{
-			<MudAlert Severity="Severity.Info" Variant="Variant.Outlined" >Previous max weight is <b>@Props.PreviousLog.WeightInLB</b> LB with <b>@Props.PreviousLog.Repetitions</b> repetitions.</MudAlert>
+			<MudAlert Severity="Severity.Info" Variant="Variant.Outlined">Previous max weight is <b>@Props.PreviousLog.WeightInLB</b> LB with <b>@Props.PreviousLog.Repetitions</b> repetitions.</MudAlert>
 		}
 		else if (!Props.PreviousLogLoading && Props.PreviousLog is null)
 		{
-			<MudAlert Severity="Severity.Info" Variant="Variant.Outlined" >Looks like you haven't log this exercise before.</MudAlert>
+			<MudAlert Severity="Severity.Info" Variant="Variant.Outlined">Looks like you haven't log this exercise before.</MudAlert>
 		}
 		else
 		{
@@ -48,36 +48,32 @@
 		</div>
 	</MudItem>
 	<MudItem xs="12">
-		<MudDivider Class="my-2"/>
+		<MudDivider Class="my-2" />
 		@if (Props.Log.Sets.Any())
 		{
-			@for (var setIdx = Props.Log.Sets.Count() - 1; setIdx >= 0; setIdx--)
-			{
-				var setNumber = setIdx + 1;
-				var set = Props.Log.Sets.ElementAt(setIdx);
-				<MudCard Class="mb-4">
-					<MudCardHeader>
-						<CardHeaderContent>
-							<MudText Typo="Typo.h6">Set #@setNumber details</MudText>
-						</CardHeaderContent>
-					</MudCardHeader>
-					<MudCardContent>
-						<MudGrid Spacing="2" Justify="Justify.Center">
-							<MudItem xs="6">
-								<MudText Typo="Typo.body2">Weigth: <b>@set.Weight KG</b></MudText>
-								<MudText Typo="Typo.body2">Repetitions: <b>@set.Repetitions</b></MudText>
-							</MudItem>
-							<MudItem xs="6">
-								<MudText Typo="Typo.body2">Duration: <b>@set.Duration</b></MudText>
-								<MudText Typo="Typo.body2">Rest time: <b>@set.RestTime</b></MudText>
-							</MudItem>
-							<MudItem xs="12">
-								<MudText Typo="Typo.body2">@set.Note</MudText>
-							</MudItem>
-						</MudGrid>
-					</MudCardContent>
-				</MudCard>
-			}
+			<MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start">
+				@for (var setIdx = Props.Log.Sets.Count() - 1; setIdx >= 0; setIdx--)
+				{
+					var setNumber = setIdx + 1;
+					var set = Props.Log.Sets.ElementAt(setIdx);
+					<MudTimelineItem Size="Size.Medium" Color="Color.Info" Elevation="25">
+						<ItemDot>
+							<MudText>@setNumber</MudText>
+						</ItemDot>
+						<ItemContent>
+							<MudCard Elevation="25">
+								<MudCardContent>
+									<MudText Typo="Typo.body2">Weigth: <b>@set.Weight KG</b></MudText>
+									<MudText Typo="Typo.body2">Repetitions: <b>@set.Repetitions</b></MudText>
+									<MudText Typo="Typo.body2">Duration: <b>@set.Duration</b></MudText>
+									<MudText Typo="Typo.body2">Rest time: <b>@set.RestTime</b></MudText>
+									<MudText Typo="Typo.body2">@set.Note</MudText>
+								</MudCardContent>
+							</MudCard>
+						</ItemContent>
+					</MudTimelineItem>
+				}
+			</MudTimeline>
 		}
 		else
 		{
