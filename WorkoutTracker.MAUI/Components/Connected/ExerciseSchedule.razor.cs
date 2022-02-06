@@ -66,7 +66,10 @@ namespace WorkoutTracker.MAUI.Components.Connected
             }
 
             await store.Dispatch<FetchExercisesAction>();
-            await store.Dispatch<BuildUpperBodyExerciseScheduleAction, IEnumerable<ExerciseViewModel>>(SelectExercises(store.State));
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			store.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			await store.Dispatch<BuildUpperBodyExerciseScheduleAction, IEnumerable<ExerciseViewModel>>(SelectExercises(store.State));
         }
     }
 }

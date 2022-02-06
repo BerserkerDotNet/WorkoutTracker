@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-<div class="content content px-4">
+<div class="content">
 	<MudThemeProvider />
 	<MudDialogProvider />
 	<MudSnackbarProvider />
@@ -12,7 +12,7 @@
 		<MudDrawer @bind-Open="@_drawerOpen" Anchor="Anchor.Top" Elevation="1" Variant="@DrawerVariant.Temporary">
 			<NavMenu />
 		</MudDrawer>
-		<MudMainContent>
+		<MudMainContent Class="px-4">
 			@Body
 		</MudMainContent>
 	</MudLayout>

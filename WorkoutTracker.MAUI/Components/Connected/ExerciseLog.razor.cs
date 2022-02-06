@@ -1,6 +1,4 @@
 ﻿using BlazorState.Redux.Blazor;
-using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Data.Actions;
 using static WorkoutTracker.MAUI.Data.Selectors.ExerciseHistorySelectors;
@@ -11,12 +9,17 @@ namespace WorkoutTracker.MAUI.Components.Connected
     {
         protected override void MapDispatchToProps(IStore<RootState> store, ExercisesLogProps props)
         {
-            props.Load = EventCallback.Factory.Create<DateTime>(this, async date =>
+            props.Load = CreateCallback<DateTime>(async date =>
             {
                 await store.Dispatch<FetchExerciseLogsAction, DateTime>(date);
             });
 
-            props.Delete = EventCallback.Factory.Create<Guid>(this, async id =>
+            props.Save = CreateCallback<LogEntryViewModel>(async e =>
+            {
+                await store.Dispatch<SaveExerciseLogEntryAction, LogEntryViewModel>(e);
+            });
+
+            props.Delete = CreateCallback<Guid>(async id =>
             {
                 await store.Dispatch<DeleteExerciseLogEntryAction, Guid>(id);
             });
@@ -25,6 +28,7 @@ namespace WorkoutTracker.MAUI.Components.Connected
         protected override void MapStateToProps(RootState state, ExercisesLogProps props)
         {
             props.Log = SelectHistory(state);
+            props.SelectedDate = SelectDate(state);
         }
 
         protected override async Task Init(IStore<RootState> store)

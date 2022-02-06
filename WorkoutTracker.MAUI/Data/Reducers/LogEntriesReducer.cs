@@ -4,18 +4,21 @@ using WorkoutTracker.MAUI.Data.Actions;
 
 namespace WorkoutTracker.MAUI.Data.Reducers
 {
-    public record LogEntriesState(Dictionary<Guid, LogEntryViewModel> LastLogByExercise, Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> History);
+    public record ExerciseLogUIState(DateOnly SelectedDate, Guid? SelectedItemId = null);
+    public record LogEntriesState(Dictionary<Guid, LogEntryViewModel> LastLogByExercise, Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> History, ExerciseLogUIState UIState);
     public class LogEntriesReducer : IReducer<LogEntriesState>
     {
         public LogEntriesState Reduce(LogEntriesState state, IAction action)
         {
-            state = state ?? new LogEntriesState(new Dictionary<Guid, LogEntryViewModel>(), new Dictionary<DateOnly, IEnumerable<LogEntryViewModel>>());
+            var today = DateOnly.FromDateTime(DateTime.Today.ToUniversalTime());
+            state = state ?? new LogEntriesState(new Dictionary<Guid, LogEntryViewModel>(), new Dictionary<DateOnly, IEnumerable<LogEntryViewModel>>(), new ExerciseLogUIState(today));
 
             switch (action)
             {
                 case ReceiveExerciseLogsAction a:
                     state.History[a.Date] = a.ExerciseLogs;
-                    return state;
+                    var newUiState = state.UIState with { SelectedDate = a.Date };
+                    return state with { UIState = newUiState };
                 case ReceiveLastWorkoutLogByExerciseAction a:
                     state.LastLogByExercise[a.ExerciseId] = a.Entry;
                     return state;

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using WorkoutTracker.MAUI.Data.Reducers;
+﻿using WorkoutTracker.MAUI.Data.Reducers;
 
 namespace WorkoutTracker.MAUI
 {
@@ -12,19 +11,16 @@ namespace WorkoutTracker.MAUI
         public ExerciseScheduleState ExerciseSchedule { get; set; }
     }
 
-    [EventHandler("onswiped-right", typeof(SwipedEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
-    [EventHandler("onswiped-left", typeof(SwipedEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
-    public static class EventHandlers
+    public static class DateExetnsions 
     {
-        // This static class doesn't need to contain any members. It's just a place where we can put
-        // [EventHandler] attributes to configure event types on the Razor compiler. This affects the
-        // compiler output as well as code completions in the editor.
-    }
+        public static DateOnly ToDateOnly(this DateTime date) 
+        {
+            return DateOnly.FromDateTime(date);
+        }
 
-    public class SwipedEventArgs : EventArgs
-    {
-        public object Target { get; set; }
-
-        public string Direction { get; set; }
+        public static DateTime ToDateTime(this DateOnly date)
+        {
+            return date.ToDateTime(TimeOnly.MinValue);
+        }
     }
 }

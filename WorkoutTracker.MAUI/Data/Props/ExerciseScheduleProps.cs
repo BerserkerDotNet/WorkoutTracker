@@ -31,9 +31,11 @@ namespace WorkoutTracker.MAUI.Data.Props
     {
         public Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> Log { get; set; }
 
+        public DateOnly SelectedDate { get; set; }
+
         public EventCallback<Guid> Delete { get; set; }
 
-        public EventCallback<LogEntryViewModel> Edit { get; set; }
+        public EventCallback<LogEntryViewModel> Save { get; set; }
 
         public EventCallback<DateTime> Load { get; set; }
     }

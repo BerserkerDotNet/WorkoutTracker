@@ -21,6 +21,9 @@
 	[CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
 	[Parameter]
+	public int Repetitions { get; set; }
+
+	[Parameter]
 	public int CurrentDuration { get; set; }
 
 	[Parameter]
@@ -29,10 +32,15 @@
 	[Parameter]
 	public double CurrentWeight { get; set; }
 
+	[Parameter]
+	public string Notes { get; set; }
+
 	protected override void OnParametersSet()
 	{
 		duration = CurrentDuration;
 		restTime = CurrentRestTime;
+		repetitions = Repetitions;
+		notes = Notes;
 		base.OnParametersSet();
 	}
 

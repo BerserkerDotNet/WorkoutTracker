@@ -1,20 +1,27 @@
 ﻿<h2>Exercise history</h2>
 
-<MudDatePicker PickerVariant="PickerVariant.Static" Date="_date" MaxDate="DateTime.Today" DisableToolbar="true" DateChanged="OnDateChanged" />
+<MudDatePicker Class="d-flex align-center" PickerVariant="PickerVariant.Static" Date="_date" MaxDate="DateTime.Today" DisableToolbar="true" DateChanged="OnDateChanged" />
 
 @foreach (var logRecord in _records)
 {
-	<MudCard Class="mb-4" Outlined="true">
+	var totalDuration = Math.Ceiling(logRecord.Sets.Sum(s => s.Duration.TotalMinutes));
+	var totalRest = Math.Ceiling(logRecord.Sets.Sum(s => s.RestTime.TotalMinutes));
+
+	<MudCard Class="my-4" Elevation="3">
 		<div style="width: calc(100% - 5px);">
 			<img src="/images/@(logRecord.Exercise.ImagePath)" alt="@logRecord.Exercise.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
 		</div>
 		<MudCardContent>
 			<MudText Align="Align.Center" Typo="Typo.h5">@logRecord.Exercise.Name</MudText>
 			<MudText Typo="Typo.body2">@logRecord.Exercise.Description</MudText>
-			<MudText Typo="Typo.body2">@logRecord.Date.ToShortDateString()</MudText>
-		</MudCardContent>
+			<MudText Typo="Typo.body2">Date: @logRecord.Date.ToShortDateString()</MudText>
+			<MudText Typo="Typo.body2">Total of @logRecord.Sets.Count() set(s) with durtation of @totalDuration minutes and rest time is @totalRest minutes.</MudText>
+		</MudCardContent> 
 		<MudCardActions>
-			<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => Props.Delete.InvokeAsync(logRecord.Id)" />
+			<div class="d-flex align-center justify-space-between" style="width:100%">
+				<MudButton StartIcon="@Icons.Material.Filled.List" Color="Color.Info" OnClick="() => OnViewDetails(logRecord)">View details</MudButton>
+				<MudButton StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => OnDelete(logRecord)">Delete</MudButton>
+			</div>
 		</MudCardActions>
 	</MudCard>
 }
@@ -26,17 +33,23 @@
 @code
 {
 	private bool _isLoading = false;
+	private DateTime _date;
 	private IEnumerable<LogEntryViewModel> _records = Enumerable.Empty<LogEntryViewModel>();
-	private DateTime _date = DateTime.Today.ToUniversalTime();
+
+	[Inject]
+	public IDialogService DialogService { get; set; }
+
+	[Inject]
+	public NavigationManager Navigation { get; set; }
 
 	[Parameter]
 	public ExercisesLogProps Props { get; set; }
 
 	protected override void OnParametersSet()
 	{
-		var today = DateOnly.FromDateTime(_date);
-		_records = Props.Log.ContainsKey(today) ? Props.Log[today] : Enumerable.Empty<LogEntryViewModel>();
-		_isLoading = !Props.Log.ContainsKey(today);
+		_date = Props.SelectedDate.ToDateTime();
+		_records = Props.Log.ContainsKey(Props.SelectedDate) ? Props.Log[Props.SelectedDate] : Enumerable.Empty<LogEntryViewModel>();
+		_isLoading = !Props.Log.ContainsKey(Props.SelectedDate);
 	}
 
 	private async Task OnDateChanged(DateTime? newDate)
@@ -44,10 +57,25 @@
 		_isLoading = true;
 		if (newDate.HasValue)
 		{
-			_date = newDate.Value;
+			Props.SelectedDate = newDate.Value.ToDateOnly(); // Hack to prevent re-rendering with old props
 			await Props.Load.InvokeAsync(newDate.Value);
 		}
 		_isLoading = false;
+	}
+
+	private void OnViewDetails(LogEntryViewModel record)
+	{
+		var url = $"/logrecorddetails/{Props.SelectedDate.ToString("yyyy-MM-dd")}/{record.Id}";
+		Navigation.NavigateTo(url);
+	}
+
+	private async Task OnDelete(LogEntryViewModel record)
+	{
+		var result = await DialogService.ShowMessageBox("Delete exercise", $"Are you sure you wnat to delete {record.Exercise.Name}?", "Yes", "No");
+		if (result.HasValue && result.Value)
+		{
+			await Props.Delete.InvokeAsync(record.Id);
+		}
 	}
 }
 

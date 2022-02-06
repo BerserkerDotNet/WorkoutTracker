@@ -55,7 +55,22 @@ namespace WorkoutTracker.MAUI.Components.Connected
         {
             Props.Log.Sets = Props.Log.Sets.Union(new[] { set }); // TODO: Change this!
             
+            await SaveLog();
+        }
+
+        private async Task SaveLog()
+        {
             await Props.Save.InvokeAsync(Props.Log);
+        }
+
+        private async Task OnDeleteSet(Set set)
+        {
+            var result = await DialogService.ShowMessageBox("Delete set", $"Are you sure you wnat to delete set?", "Yes", "No");
+            if (result.HasValue && result.Value)
+            {
+                Props.Log.Sets = Props.Log.Sets.Where(s => s != set).ToArray();
+                await SaveLog();
+            }
         }
 
         private void StartSet()

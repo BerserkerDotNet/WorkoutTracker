@@ -14,8 +14,9 @@ namespace WorkoutTracker.MAUI.Data.Actions
 
         public async Task Execute(IDispatcher dispatcher, DateTime date)
         {
+            var dateKey = DateOnly.FromDateTime(date);
             var logEntryChunk = await _repository.GetLogs(date);
-            dispatcher.Dispatch(new ReceiveExerciseLogsAction(DateOnly.FromDateTime(date), logEntryChunk.OrderByDescending(i => i.Date)));
+            dispatcher.Dispatch(new ReceiveExerciseLogsAction(dateKey, logEntryChunk.OrderByDescending(i => i.Date)));
         }
     }
 }
