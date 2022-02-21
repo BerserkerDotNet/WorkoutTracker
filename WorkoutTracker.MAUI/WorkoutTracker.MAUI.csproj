@@ -41,6 +41,7 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="BlazorState.Redux" Version="1.1.*-*" />
 		<PackageReference Include="MudBlazor" Version="6.0.5" />
+		<PackageReference Include="UnitsNet" Version="4.120.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />

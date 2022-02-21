@@ -10,6 +10,7 @@ using WorkoutTracker.Models;
 using static WorkoutTracker.MAUI.Data.Selectors.ScheduleSelectors;
 using static WorkoutTracker.MAUI.Data.Selectors.ExerciseHistorySelectors;
 using static WorkoutTracker.MAUI.Data.Selectors.ExerciseSelectors;
+using UnitsNet;
 
 namespace WorkoutTracker.MAUI.Components.Connected
 {
@@ -130,7 +131,8 @@ namespace WorkoutTracker.MAUI.Components.Connected
 
         private IDialogReference ShowSetCompletionDialog(int duration, int restTime) 
         {
-            var weightInKG = _weightUnits == LB ? Math.Ceiling(_weight * 0.453592d) : _weight;
+            
+            var weightInKG = _weightUnits == LB ? Mass.FromPounds(_weight).Kilograms : _weight;
             var parameters = new DialogParameters
             {
                 { nameof(SetCompletionForm.CurrentDuration), duration},

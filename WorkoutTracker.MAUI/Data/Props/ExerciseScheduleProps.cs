@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using UnitsNet;
 
 namespace WorkoutTracker.MAUI.Data.Props
 {
@@ -7,7 +8,7 @@ namespace WorkoutTracker.MAUI.Data.Props
 
     public record PreviousLogRecordStats(double? Weight, int Repetitions) 
     {
-        public double WeightInLB => Weight.HasValue ? Math.Floor(Weight.Value / 0.453592d) : 0.0d;
+        public double WeightInLB => Weight.HasValue ? Math.Floor(Mass.FromKilograms(Weight.Value).Pounds) : 0.0d;
     } 
 
     public class ExerciseScheduleProps
