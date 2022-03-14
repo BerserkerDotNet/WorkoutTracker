@@ -1,5 +1,6 @@
 ﻿using Widget = Android.Widget;
 using AndroidApp = Android.App;
+using WorkoutTracker.Interfaces;
 
 namespace WorkoutTracker.MAUI.Android
 {

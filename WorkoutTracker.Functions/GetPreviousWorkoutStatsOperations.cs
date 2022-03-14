@@ -12,9 +12,10 @@ namespace WorkoutTracker.Functions
 {
     public static class GetPreviousWorkoutStatsOperations
     {
+        [Authorize]
         [FunctionName(EndpointNames.GetPreviousWorkoutStatsByExercise)]
         public static Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest request,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest request,
             ILogger log)
         {
             switch (request.Method)

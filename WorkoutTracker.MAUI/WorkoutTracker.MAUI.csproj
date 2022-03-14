@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-android</TargetFrameworks>
 		<OutputType>Exe</OutputType>
@@ -12,7 +11,7 @@
 		<ApplicationTitle>Workout tracker</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.WorkoutTracker</ApplicationId>
+		<ApplicationId>com.andriisnihyr.WorkoutTracker</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationVersion>1</ApplicationVersion>
@@ -37,23 +36,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="appsettings.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="appsettings.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-		<PackageReference Include="BlazorState.Redux" Version="1.1.*-*" />
-		<PackageReference Include="MudBlazor" Version="6.0.5" />
-		<PackageReference Include="UnitsNet" Version="4.120.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.41.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <_MauiCompileToAdd Remove="Platforms\Android\LocalConfigurationService.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Include="Platforms\Android\LocalConfigurationService.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="wwwroot\images\" />
+		<ProjectReference Include="..\WorkoutTracker\WorkoutTracker.csproj" />
 	</ItemGroup>
 
 </Project>

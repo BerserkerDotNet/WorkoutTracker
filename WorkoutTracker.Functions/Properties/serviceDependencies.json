@@ -6,6 +6,10 @@
     "storage1": {
       "type": "storage",
       "connectionId": "AzureWebJobsStorage"
+    },
+    "compute.function.windows1": {
+      "group": "connections",
+      "type": "compute.function.windows"
     }
   }
 }

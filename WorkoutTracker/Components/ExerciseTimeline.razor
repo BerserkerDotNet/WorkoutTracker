@@ -1,0 +1,79 @@
+﻿@if (Sets is not null && Sets.Any())
+{
+	<MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start">
+		@for (var setIdx = Sets.Count() - 1; setIdx >= 0; setIdx--)
+		{
+			var setNumber = setIdx + 1;
+			var set = Sets.ElementAt(setIdx);
+			<MudTimelineItem Size="Size.Medium" Color="Color.Info" Elevation="25">
+				<ItemDot>
+					<MudText>@setNumber</MudText>
+				</ItemDot>
+				<ItemContent>
+					<MudCard Elevation="25">
+						<MudCardContent>
+							<MudText Typo="Typo.body2">Weigth: <b>@Math.Round(set.Weight ?? 0, 1) KG</b></MudText>
+							<MudText Typo="Typo.body2">Repetitions: <b>@set.Repetitions</b></MudText>
+							<MudText Typo="Typo.body2">Duration: <b>@set.Duration</b></MudText>
+							<MudText Typo="Typo.body2">Rest time: <b>@set.RestTime</b></MudText>
+							<MudText Typo="Typo.body2">@set.Note</MudText>
+							<MudButton StartIcon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="() => OnEditSet(set)">Edit</MudButton>
+							<MudButton StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => OnDelete.InvokeAsync(set)">Delete</MudButton>
+						</MudCardContent>
+					</MudCard>
+				</ItemContent>
+			</MudTimelineItem>
+		}
+	</MudTimeline>
+}
+else
+{
+	<MudAlert Severity="Severity.Normal">Log a set to see timeline</MudAlert>
+}
+
+@code {
+
+	[Inject]
+	public IDialogService DialogService { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public IEnumerable<Set> Sets { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public EventCallback OnSave { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public EventCallback<Set> OnDelete { get; set; }
+
+	private async Task OnEditSet(Set set)
+	{
+		var parameters = new DialogParameters
+		{
+			{ nameof(SetCompletionForm.Repetitions), set.Repetitions},
+			{ nameof(SetCompletionForm.CurrentDuration), (int)set.Duration.TotalSeconds},
+			{ nameof(SetCompletionForm.CurrentRestTime), (int)set.RestTime.TotalSeconds},
+			{ nameof(SetCompletionForm.CurrentWeight), set.Weight},
+			{ nameof(SetCompletionForm.Notes), set.Note},
+		};
+
+		var dialog = DialogService.Show<SetCompletionForm>("Edit set", parameters);
+		var result = await dialog.Result;
+		if (result.Cancelled)
+		{
+			return;
+		}
+
+		var resultSet = result.Data as Set;
+
+		set.Duration = resultSet.Duration;
+		set.RestTime = resultSet.RestTime;
+		set.Repetitions = resultSet.Repetitions;
+		set.Weight = resultSet.Weight;
+		set.Note = resultSet.Note;
+
+		await OnSave.InvokeAsync();
+	}
+}

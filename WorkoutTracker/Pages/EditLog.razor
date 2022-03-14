@@ -1,0 +1,12 @@
+﻿@page "/editexerciselog/{category}/{exerciseid:guid}"
+@attribute [Authorize]
+
+<EditExerciseLogConnected CurrentCategory="@Category" ExerciseId="ExerciseId" />
+
+@code{
+    [Parameter]
+    public string Category { get; set; }
+
+    [Parameter]
+    public Guid ExerciseId { get; set; }
+}

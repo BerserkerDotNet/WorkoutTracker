@@ -1,0 +1,13 @@
+﻿@page "/logrecorddetails/{date:datetime}/{recordid:guid}"
+@attribute [Authorize]
+
+<LogRecordDetailsConnected RecordId="RecordId" Date="Date" />
+
+
+@code {
+		[Parameter]
+		public Guid RecordId { get; set; }
+
+		[Parameter]
+		public DateTime Date { get; set; }
+}

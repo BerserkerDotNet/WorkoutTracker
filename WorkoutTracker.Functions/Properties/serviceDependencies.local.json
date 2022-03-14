@@ -6,6 +6,11 @@
     "storage1": {
       "type": "storage.emulator",
       "connectionId": "AzureWebJobsStorage"
+    },
+    "compute.function.windows1": {
+      "group": "connections",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/WorkoutTrackerFunctions",
+      "type": "compute.function.windows.consumption"
     }
   }
 }

@@ -1,0 +1,23 @@
+﻿<h2>Exercises</h2>
+
+<Virtualize Items="Props.List" Context="item">
+	<MudCard Class="mb-4" Outlined="true">
+		<div style="width: calc(100% - 5px);">
+			<img src="_content/WorkoutTracker/images/@(item.ImagePath)" alt="@item.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
+		</div>
+		<MudCardContent>
+			<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
+			<MudText Typo="Typo.body2">@item.Description</MudText>
+		</MudCardContent>
+		<MudCardActions>
+			<div class="d-flex align-center justify-space-between mt-6">
+				<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Refresh" Color="Color.Warning" OnClick="() => Props.Edit.InvokeAsync(item)">Edit</MudButton>
+			</div>
+		</MudCardActions>
+	</MudCard>
+</Virtualize>
+
+@code {
+    [Parameter]
+    public ExerciseListProps Props { get; set; }
+}

@@ -1,12 +1,17 @@
-﻿using BlazorState.Redux.Extensions;
+﻿using Android.Accounts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebView.Maui;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Essentials;
 using Microsoft.Maui.Hosting;
-using MudBlazor.Services;
+using System.Reflection;
+using System.Threading;
+using WorkoutTracker.Extensions;
 using WorkoutTracker.MAUI.Android;
-using WorkoutTracker.MAUI.Data.Actions;
-using WorkoutTracker.MAUI.Data.Reducers;
 using Xamarin.Android.Net;
 
 namespace WorkoutTracker.MAUI
@@ -19,41 +24,35 @@ namespace WorkoutTracker.MAUI
             builder
                 .RegisterBlazorMauiWebView()
                 .UseMauiApp<App>()
+                .ConfigureEssentials()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                });
+                }); 
             builder.Services.AddBlazorWebView();
-            builder.Services.AddHttpClient("api", (services, cfg) =>
+            builder.Services.AddWorkoutTracker(cfg =>
             {
-                var configurationService = services.GetService<IConfigurationService>();
-                var config = configurationService.GetEndpointConfiguration();
-                cfg.BaseAddress = new Uri(config.Url);
-                cfg.DefaultRequestHeaders.Add("x-functions-key", config.Secret);
-            }).ConfigurePrimaryHttpMessageHandler(() => new AndroidClientHandler());
-
-            builder.Services.AddSingleton<IWorkoutRepository, CachedWorkoutRepository>();
-            builder.Services.AddSingleton<IConfigurationService, LocalConfigurationService>();
-            builder.Services.AddSingleton<INotificationService, AndroidNotificationService>();
-            builder.Services.AddSingleton<ICacheService, AndroidCacheService>();
-            builder.Services.AddReduxStore<RootState>(cfg =>
-            {
-                cfg.RegisterActionsFromAssemblyContaining<FetchExercisesAction>();
-                cfg.Map<ExercisesReducer, ExercisesState>(s => s.Exercises);
-                cfg.Map<ExerciseScheduleReducer, ExerciseScheduleState>(s => s.ExerciseSchedule);
-                cfg.Map<LogEntriesReducer, LogEntriesState>(s => s.ExerciseLogs);
+                cfg.WithCacheService<AndroidCacheService>();
+                cfg.WithMessageHandler<AndroidMessageHandler>();
+                cfg.WithConfigurationService<LocalConfigurationService>();
+                cfg.WithAuthenticationRedirectUrl("https://0.0.0.0");
             });
 
-            builder.Services.AddMudServices(config =>
-            {
-                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
-                config.SnackbarConfiguration.NewestOnTop = false;
-                config.SnackbarConfiguration.ShowCloseIcon = true;
-                config.SnackbarConfiguration.VisibleStateDuration = 2000;
-                config.SnackbarConfiguration.HideTransitionDuration = 500;
-                config.SnackbarConfiguration.ShowTransitionDuration = 500;
-                config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
-            });
+            builder.Services.AddRemoteAuthentication<RemoteAuthenticationState, RemoteUserAccount, EmptyOptions>();
+
+            builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<IRemoteAuthenticationService<RemoteAuthenticationState>>(s => s.GetService<AuthService>());
+            builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetService<AuthService>());
+            builder.Services.AddScoped<IAccessTokenProvider>(s => s.GetService<AuthService>());
+
+            var a = Assembly.GetExecutingAssembly();
+            using var stream = a.GetManifestResourceStream("WorkoutTracker.MAUI.appsettings.json");
+
+            var config = new ConfigurationBuilder()
+                        .AddJsonStream(stream)
+                        .Build();
+
+            builder.Configuration.AddConfiguration(config);
 
             return builder.Build();
         }

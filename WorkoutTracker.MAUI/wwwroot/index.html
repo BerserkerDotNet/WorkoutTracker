@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Workout Tracker</title>
     <base href="/" />
-    <!--<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />-->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-    <link href="css/app.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -21,45 +19,9 @@
         <a class="dismiss">🗙</a>
     </div>
 
+    <script src="_content/Microsoft.Authentication.WebAssembly.Msal/AuthenticationService.js"></script>
     <script src="_framework/blazor.webview.js" autostart="false"></script>
-    <script>
-        Blazor.registerCustomEventType('onswipedright', {
-            browserEventName: 'swiped-right',
-            createEventArgs: event => {
-                alert(event.detail);
-                return {
-                    target: event.target,
-                    direction: event.detail.dir
-                };
-            }
-        });
-                Blazor.registerCustomEventType('onswipedleft', {
-            browserEventName: 'swiped-left',
-            createEventArgs: event => {
-                alert(event.detail);
-                return {
-                    target: event.target,
-                    direction: event.detail.dir
-                };
-            }
-        });
-    </script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    <script src="scripts/swiped-events.js"></script>
-
-    <script>
-          window.getSelectedValues = function(sel) {
-            var results = [];
-            var i;
-            for (i = 0; i < sel.options.length; i++) {
-                if (sel.options[i].selected) {
-                    results[results.length] = sel.options[i].value;
-                }
-            }
-            return results;
-        };
-    </script>
-
 </body>
 
 </html>
