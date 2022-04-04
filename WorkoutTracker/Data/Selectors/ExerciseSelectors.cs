@@ -14,4 +14,11 @@ public static class ExerciseSelectors
     {
         return SelectExercises(state).FirstOrDefault(e => e.Id == id);
     }
+
+    public static IEnumerable<string> SelectTags(RootState state)
+    {
+        return SelectExercises(state)
+            .SelectMany(e => e.Tags)
+            .Distinct();
+    }
 }

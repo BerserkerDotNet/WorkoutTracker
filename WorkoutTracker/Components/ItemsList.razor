@@ -1,0 +1,32 @@
+﻿@typeparam T
+
+<MudPaper Class="pa-4 mt-4">
+	<div id="@_listId" class="ma-0" style="height:87vh;overflow: auto;">
+		<Virtualize Items="_values" Context="item">
+			@ChildContent(item)
+		</Virtualize>
+		<MudScrollToTop TopOffset="100" Selector="@($"#{_listId}")" Style="z-index:2001;">
+			<MudButton Variant="Variant.Filled" StartIcon="@Icons.Filled.ArrowUpward" Color="Color.Secondary">Go to top</MudButton>
+		</MudScrollToTop>
+	</div>
+</MudPaper>
+
+
+@code{
+
+	private string _listId = $"itemslist-{Guid.NewGuid().ToString("N")}";
+	private ICollection<T> _values = Enumerable.Empty<T>().ToList();
+
+	[Parameter]
+	[EditorRequired]
+	public IEnumerable<T> Items { get; set; }
+
+	[Parameter]
+	public RenderFragment<T> ChildContent  { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		_values = new List<T>(Items);
+	}
+
+}

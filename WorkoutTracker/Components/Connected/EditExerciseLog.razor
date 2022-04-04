@@ -3,8 +3,9 @@
 <MudGrid Spacing="2" Justify="Justify.Center">
 	<MudItem xs="6">
 		<MudPaper Class="pa-1 ma-2" Elevation="1">
-			<img src="_content/WorkoutTracker/images/@(Props.Log.Exercise.ImagePath)" width="150" height="150" alt="@Props.Log.Exercise.Name" />
+			<Image Path="@Props.Log.Exercise.ImagePath" ImageName="@Props.Log.Exercise.Name" Width="150" Height="150" />
 		</MudPaper>
+
 	</MudItem>
 	<MudItem xs="6">
 		<ExerciseTimerBadge IsResting="!_isRunning" Time="_timeTracker.Elapsed" RestingTemplate="Resting {0}" WorkingoutTemplate="Exercising {0}" />

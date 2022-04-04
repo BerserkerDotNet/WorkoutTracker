@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+﻿using Mapster;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using WorkoutTracker.Exceptions;
 using WorkoutTracker.Models;
 
@@ -36,10 +39,16 @@ namespace WorkoutTracker.Data
         public virtual async Task<IEnumerable<ExerciseViewModel>> GetExercises()
         {
             var exerciseDtos = await GetMultiple<Exercise>(EndpointNames.ExercisePluralName);
-            var muscleDtos = await GetMultiple<Muscle>(EndpointNames.MusclePluralName);
+            var muscles = await GetMuscles();
 
-            var musclesDictionary = muscleDtos.ToDictionary(k => k.Id, MapMuscle);
+            var musclesDictionary = muscles.ToDictionary(k => k.Id, m => m);
             return exerciseDtos.Select(e => MapExercise(e, musclesDictionary)).ToArray();
+        }
+
+        public async Task<IEnumerable<MuscleViewModel>> GetMuscles()
+        {
+            var muscleDtos = await GetMultiple<Muscle>(EndpointNames.MusclePluralName);
+            return muscleDtos.Select(MapMuscle).ToArray();
         }
 
         public virtual async Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date)
@@ -57,9 +66,34 @@ namespace WorkoutTracker.Data
             return MapLog(exerciseLog, exercisesDictionary);
         }
 
-        public virtual Task UpdateExercise(ExerciseViewModel exercise)
+        public virtual async Task UpdateExercise(EditExerciseViewModel exercise)
         {
-            throw new NotImplementedException();
+            var isImageUploaded = await UploadImage(exercise.ImageFile, exercise.ImagePath);
+            if (!isImageUploaded) 
+            {
+                throw new Exception("Not able to upload image. Aborting exercise update");
+            }
+
+            var exerciseDto = exercise.Adapt<Exercise>();
+
+            await Create(exerciseDto, EndpointNames.ExercisePluralName); // Works by upserting the record
+        }
+
+        public async Task UpdateMuscle(MuscleViewModel muscle, IBrowserFile imageFile)
+        {
+            var isImageUploaded = await UploadImage(imageFile, muscle.ImagePath);
+            if (!isImageUploaded)
+            {
+                throw new Exception("Not able to upload image. Aborting muscle update");
+            }
+
+            var muscleDto = muscle.Adapt<Muscle>();
+            await Create(muscleDto, EndpointNames.MusclePluralName); // Works by upserting the record
+        }
+
+        public Task DeleteExercise(Guid id)
+        {
+            return Delete<Exercise>(id, EndpointNames.ExercisePluralName);
         }
 
         private async Task<T> Get<T>(string endpoint)
@@ -113,6 +147,29 @@ namespace WorkoutTracker.Data
         {
             var client = await GetAuthenticatedClient();
             await client.DeleteAsync($"{endpoint}?id={id}");
+        }
+
+        private async Task<bool> UploadImage(IBrowserFile file, string imagePath) 
+        {
+            if (file is null) 
+            {
+                return true;
+            }
+
+            var fileContent = new StreamContent(file.OpenReadStream());
+
+            var client = await GetAuthenticatedClient();
+            using var content = new MultipartFormDataContent();
+
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+            content.Add(
+                content: fileContent,
+                name: imagePath,
+                fileName: file.Name);
+
+            var response = await client.PostAsync(EndpointNames.ExerciseImageUpload, content);
+
+            return response.IsSuccessStatusCode;
         }
 
         private async Task<HttpClient> GetAuthenticatedClient() 

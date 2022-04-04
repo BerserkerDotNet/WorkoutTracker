@@ -1,0 +1,31 @@
+﻿<div style="text-align:center">
+	<img src="https://workout-tracker-content.azureedge.net/images/@(Path)" height="@Height" width="@_width" alt="@ImageName" />
+</div>
+
+@code {
+
+	[Parameter]
+	[EditorRequired]
+	public string Path { get; set; }
+
+	[Parameter]
+	public int Height { get; set; } = 200;
+
+	[Parameter]
+	public int Width { get; set; } = 0;
+
+	[Parameter]
+	public string ImageName { get; set; }
+
+	private string _width = "auto";
+
+	protected override void OnParametersSet()
+	{
+		if (Width != 0)
+		{
+			_width = Width.ToString();
+		}
+
+		base.OnParametersSet();
+	}
+}

@@ -1,0 +1,6 @@
+﻿<MudAutocomplete @ref="_autocomplete" T="string" Label="Select tags" SearchFunc="@SearchTags" ValueChanged="TagSelected" TextChanged="OnTextChanged" />
+
+@foreach(var tag in _selectedTags)
+{
+	<MudChip Color="Color.Primary" OnClose="() => RemoveTag(tag)">@tag</MudChip>
+}

@@ -1,1 +1,42 @@
-﻿<div>Under construction</div>
+﻿<MudText Typo="Typo.h4">Editing @Props.Exercise.Name</MudText>
+
+@if (Props.IsLoading)
+{
+	<div>Loading...</div>
+}
+else
+{
+	<MudPaper Class="pa-4">
+		<MudForm @ref="@form">
+			<MudTextField T="string" Label="Name" Required="true" RequiredError="Name is required." @bind-Value="Props.Exercise.Name" />
+			<MudTextField T="string" Label="Description" Lines="3" Variant="Variant.Outlined" Adornment="Adornment.End" @bind-Value="Props.Exercise.Description" />
+			<MudTextField T="string" Label="Image path" Required="true" Variant="Variant.Outlined" Adornment="Adornment.End" @bind-Value="Props.Exercise.ImagePath" />
+			<InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
+			<MudButton HtmlTag="label"
+				   Variant="Variant.Filled"
+				   Color="Color.Primary"
+				   StartIcon="@Icons.Filled.PhotoCamera"
+				   for="fileInput">
+				Upload Image
+			</MudButton>
+			<MudSelect MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
+				   MultiSelection="true"
+				   Required="true"
+				   @bind-SelectedValues="SelectedMuscles"
+				   T="string"
+				   Label="Muscles"
+				   AdornmentIcon="@Icons.Material.Filled.Search"
+				   AnchorOrigin="Origin.BottomCenter">
+				@foreach (var muscle in Props.Muscles)
+				{
+					<MudSelectItem T="string" Value="@(muscle.Key.ToString())">@muscle.Value.MuscleGroup - @muscle.Value.Name</MudSelectItem>
+				}
+			</MudSelect>
+			<TagsSelector Tags="Props.Tags" @bind-SelectedTags="Props.Exercise.Tags" />
+		</MudForm>
+	</MudPaper>
+	<MudPaper Class="pa-4 mt-4">
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Save())">Save</MudButton>
+		<MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto" OnClick="@(async () => await Cancel())">Cancel</MudButton>
+	</MudPaper>
+}

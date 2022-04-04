@@ -1,10 +1,12 @@
 ﻿using BlazorState.Redux.Extensions;
+using Mapster;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using WorkoutTracker.Data.Actions;
 using WorkoutTracker.Data.Reducers;
 using WorkoutTracker.Data.Services;
+using WorkoutTracker.Models;
 
 namespace WorkoutTracker.Extensions;
 
@@ -12,6 +14,8 @@ public static class ServiceCollectionExtensions
 {
     public static void AddWorkoutTracker(this IServiceCollection services, Action<WorkoutTraclerConfigurator>? configure = null) 
     {
+        ConfigureMappingRules();
+
         var configuration = WorkoutTraclerConfigurator.Default;
         configure?.Invoke(configuration);
 
@@ -26,9 +30,9 @@ public static class ServiceCollectionExtensions
         }
 
         services.AddScoped<IWorkoutRepository, CachedWorkoutRepository>();
-        services.AddSingleton(typeof(ICacheService), configuration.CacheService);
-        services.AddSingleton(typeof(INotificationService), configuration.NotificationService);
-        services.AddSingleton(typeof(IConfigurationService), configuration.ConfigurationService);
+        services.AddScoped(typeof(ICacheService), configuration.CacheService);
+        services.AddScoped(typeof(INotificationService), configuration.NotificationService);
+        services.AddScoped(typeof(IConfigurationService), configuration.ConfigurationService);
         services.AddReduxStore<RootState>(cfg =>
         {
             cfg.RegisterActionsFromAssemblyContaining<FetchExercisesAction>();
@@ -47,6 +51,13 @@ public static class ServiceCollectionExtensions
             config.SnackbarConfiguration.ShowTransitionDuration = 500;
             config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
         });
+    }
+
+    private static void ConfigureMappingRules()
+    {
+        TypeAdapterConfig<ExerciseViewModel, Exercise>
+            .ForType()
+            .Map(dest => dest.Muscles, src => src.Muscles.Select(m => m.Id).ToArray());
     }
 }
 

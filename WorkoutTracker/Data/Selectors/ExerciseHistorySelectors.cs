@@ -60,7 +60,7 @@ public static class ExerciseHistorySelectors
     {
         var lookup = SelectLastLogByExerciseLookup(state);
         var record = lookup.ContainsKey(id) ? lookup[id] : null;
-        if (record is null) 
+        if (record is null || !record.Sets.Any()) 
         {
             return null;
         }

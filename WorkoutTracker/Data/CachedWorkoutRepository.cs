@@ -25,6 +25,6 @@ namespace WorkoutTracker.Data
             return exercises;
         }
 
-        public override Task UpdateExercise(ExerciseViewModel exercise) => base.UpdateExercise(exercise); // TOOD: update cache
+        public override Task UpdateExercise(EditExerciseViewModel exercise) => base.UpdateExercise(exercise); // TOOD: update cache
     }
 }

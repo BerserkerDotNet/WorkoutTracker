@@ -1,8 +1,7 @@
 ﻿using BlazorState.Redux.Blazor;
 using Microsoft.AspNetCore.Components;
-using System.Linq;
-using System.Threading.Tasks;
 using WorkoutTracker.Data.Actions;
+using static WorkoutTracker.Data.Selectors.MuscleSelectors;
 using static WorkoutTracker.Data.Selectors.ExerciseSelectors;
 
 namespace WorkoutTracker.Components.Connected
@@ -18,11 +17,22 @@ namespace WorkoutTracker.Components.Connected
             {
                 Navigation.NavigateTo($"/editexercise/{e.Id}");
             });
+
+            props.Delete = EventCallback.Factory.Create<Guid>(this, async id =>
+            {
+                await store.Dispatch<DeleteExerciseAction, Guid>(id);
+            });
+
+            props.Add = EventCallback.Factory.Create(this, e =>
+            {
+                Navigation.NavigateTo($"/editexercise/{Guid.NewGuid()}");
+            });
         }
 
         protected override void MapStateToProps(RootState state, ExerciseListProps props)
         {
             props.List = SelectExercises(state).ToList();
+            props.MuscleGroups = SelectMuscleGroups(state).ToArray();
         }
 
         protected override async Task Init(IStore<RootState> store)
@@ -30,6 +40,7 @@ namespace WorkoutTracker.Components.Connected
             if (!SelectExercises(store.State).Any())
             {
                 await store.Dispatch<FetchExercisesAction>();
+                await store.Dispatch<FetchMusclesAction>();
             }
         }
     }

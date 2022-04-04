@@ -8,9 +8,7 @@
 	var totalRest = Math.Ceiling(logRecord.Sets.Sum(s => s.RestTime.TotalMinutes));
 
 	<MudCard Class="my-4" Elevation="3">
-		<div style="width: calc(100% - 5px);">
-			<img src="_content/WorkoutTracker/images/@(logRecord.Exercise.ImagePath)" alt="@logRecord.Exercise.Name" style="width: calc(50% - 5px);margin-left:auto;margin-right:auto;display: block">
-		</div>
+		<Image Path="@logRecord.Exercise.ImagePath" ImageName="@logRecord.Exercise.Name" />
 		<MudCardContent>
 			<MudText Align="Align.Center" Typo="Typo.h5">@logRecord.Exercise.Name</MudText>
 			<MudText Typo="Typo.body2">@logRecord.Exercise.Description</MudText>

@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using WorkoutTracker.Models;
-
-namespace WorkoutTracker.Data.Actions
+﻿namespace WorkoutTracker.Data.Actions
 {
     public class DeleteExerciseLogEntryAction : IAsyncAction<Guid>
     {

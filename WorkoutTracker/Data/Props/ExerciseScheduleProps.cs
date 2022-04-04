@@ -66,17 +66,29 @@ namespace WorkoutTracker.Data.Props
 
     public class EditExerciseProps
     {
-        public ExerciseViewModel Exercise { get; set; }
+        public EditExerciseViewModel Exercise { get; set; }
 
-        public EventCallback<ExerciseViewModel> Save { get; set; }
+        public Dictionary<Guid, MuscleViewModel> Muscles { get; set; }
+
+        public IEnumerable<string> Tags { get; set; }
+
+        public bool IsLoading => !Muscles.Any();
+
+        public EventCallback<EditExerciseViewModel> Save { get; set; }
 
         public EventCallback Cancel { get; set; }
     }
 
     public class ExerciseListProps
     {
+        public IEnumerable<string> MuscleGroups { get; set; }
+
         public ICollection<ExerciseViewModel> List { get; set; }
 
         public EventCallback<ExerciseViewModel> Edit { get; set; }
+
+        public EventCallback<Guid> Delete { get; set; }
+
+        public EventCallback Add { get; set; }
     }
 }
