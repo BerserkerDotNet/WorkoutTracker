@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
 using UnitsNet;
 
 namespace WorkoutTracker.Data.Props
 {
-    public record ExerciseWithCategoryViewModel(string Category, ExerciseViewModel Exercise);
-
     public record PreviousLogRecordStats(double? Weight, int Repetitions) 
     {
         public double WeightInLB => Weight.HasValue ? Math.Floor(Mass.FromKilograms(Weight.Value).Pounds) : 0.0d;
@@ -13,15 +10,17 @@ namespace WorkoutTracker.Data.Props
 
     public class ExerciseScheduleProps
     {
-        public IEnumerable<ExerciseWithCategoryViewModel> Schedule { get; set; }
+        public ExerciseProfile SelectedProfile { get; set; }
+
+        public IEnumerable<ScheduleViewModel> Schedule { get; set; }
 
         public Dictionary<Guid, int> ExerciseCountLookup { get; set; }
 
-        public EventCallback<ExerciseWithCategoryViewModel> Start { get; set; }
+        public EventCallback<ScheduleViewModel> Start { get; set; }
 
-        public EventCallback<string> Previous { get; set; }
+        public EventCallback<ScheduleViewModel> Previous { get; set; }
 
-        public EventCallback<string> Next { get; set; }
+        public EventCallback<ScheduleViewModel> Next { get; set; }
 
         public EventCallback<ExerciseProfile> Rebuild { get; set; }
 
@@ -43,9 +42,9 @@ namespace WorkoutTracker.Data.Props
 
     public class EditExerciseLogProps
     {
-        public ExerciseWithCategoryViewModel NextExerciseId { get; set; }
+        public ScheduleViewModel NextExerciseId { get; set; }
 
-        public ExerciseWithCategoryViewModel PreviousExerciseId { get; set; }
+        public ScheduleViewModel PreviousExerciseId { get; set; }
 
         public int SetNumber { get; set; }
 
@@ -57,9 +56,9 @@ namespace WorkoutTracker.Data.Props
 
         public EventCallback<LogEntryViewModel> Save { get; set; }
 
-        public EventCallback<ExerciseWithCategoryViewModel> Next { get; set; }
+        public EventCallback<ScheduleViewModel> Next { get; set; }
 
-        public EventCallback<ExerciseWithCategoryViewModel> Previous { get; set; }
+        public EventCallback<ScheduleViewModel> Previous { get; set; }
 
         public EventCallback Cancel { get; set; }
     }
@@ -68,7 +67,7 @@ namespace WorkoutTracker.Data.Props
     {
         public EditExerciseViewModel Exercise { get; set; }
 
-        public Dictionary<Guid, MuscleViewModel> Muscles { get; set; }
+        public IEnumerable<MuscleViewModel> Muscles { get; set; }
 
         public IEnumerable<string> Tags { get; set; }
 

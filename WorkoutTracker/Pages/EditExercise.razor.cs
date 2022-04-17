@@ -1,15 +1,16 @@
-﻿using BlazorState.Redux.Blazor;
-using Mapster;
+﻿using Mapster;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using WorkoutTracker.Data.Actions;
 using static WorkoutTracker.Data.Selectors.MuscleSelectors;
 using static WorkoutTracker.Data.Selectors.ExerciseSelectors;
 
-namespace WorkoutTracker.Components.Connected
+namespace WorkoutTracker.Pages
 {
-    public class EditExerciseConnected : ConnectedComponent<EditExercise, RootState, EditExerciseProps>
+    public partial class EditExercise
     {
+        private MudForm form;
+
         [Parameter]
         public Guid ExerciseId { get; set; }
 
@@ -43,7 +44,7 @@ namespace WorkoutTracker.Components.Connected
             {
                 props.Exercise = exercise.Adapt<EditExerciseViewModel>();
             }
-            props.Muscles = SelectMusclesLookup(state);
+            props.Muscles = SelectMuscles(state);
             props.Tags = SelectTags(state);
         }
 
@@ -54,35 +55,12 @@ namespace WorkoutTracker.Components.Connected
                 await store.Dispatch<FetchMusclesAction>();
             }
         }
-    }
-
-    public partial class EditExercise 
-    {
-        [Parameter]
-        public EditExerciseProps Props { get; set; }
-
-        private IEnumerable<string> SelectedMuscles { get; set; } = new HashSet<string>();
-        private MudForm form;
-
-        protected override void OnParametersSet()
-        {
-            if (!Props.IsLoading)
-            {
-                SelectedMuscles = new HashSet<string>(Props.Exercise.Muscles.OrderBy(m => m.MuscleGroup).Select(m => m.Id.ToString()));
-            }
-        }
-
-        private string GetMultiSelectionText(List<string> selectedValues)
-        {
-            return $"Selected muscle{(selectedValues.Count > 1 ? "s" : "")}: {string.Join(", ", selectedValues.Select(x => Props.Muscles[Guid.Parse(x)].Name))}";
-        }
 
         private async Task Save()
         {
             await form.Validate();
             if (form.IsValid)
             {
-                Props.Exercise.Muscles = SelectedMuscles.Select(x => Props.Muscles[Guid.Parse(x)]);
                 await Props.Save.InvokeAsync(Props.Exercise);
             }
         }

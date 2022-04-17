@@ -1,20 +1,20 @@
-﻿using System.Threading.Tasks;
+﻿namespace WorkoutTracker.Data.Actions;
 
-namespace WorkoutTracker.Data.Actions
+public class FetchExercisesAction : IAsyncAction
 {
-    public class FetchExercisesAction : IAsyncAction
+    private readonly ICacheService _cacheService;
+    private readonly IWorkoutRepository _repository;
+
+    public FetchExercisesAction(ICacheService cacheService, IWorkoutRepository repository)
     {
-        private readonly IWorkoutRepository _repository;
+        _cacheService = cacheService;
+        _repository = repository;
+    }
 
-        public FetchExercisesAction(IWorkoutRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public async Task Execute(IDispatcher dispatcher)
-        {
-            var exercises = await _repository.GetExercises();
-            dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
-        }
+    public async Task Execute(IDispatcher dispatcher)
+    {
+        _cacheService.ResetExercisesCache();
+        var exercises = await _repository.GetExercises();
+        dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
     }
 }

@@ -19,23 +19,28 @@ public class BuildExerciseScheduleAction : IAsyncAction<ExerciseProfile>
             return;
         }
 
-        var exercises = await _repository.GetExercises();
+        var allExercises = await _repository.GetExercises();
+        
+        var exerciseFiltersToShuffle = profile.ExerciseFilters.Skip(profile.ShuffleStartIndex + 1).ToArray();
+        var shuffledFilters = _random.Shuffle(exerciseFiltersToShuffle);
+        var exerciseFilters = profile.ExerciseFilters.Take(profile.ShuffleStartIndex + 1).Concat(shuffledFilters).ToArray();
 
-        var categoriesToPick = _random.Shuffle(profile.MuscleGroups);
         if (profile.IncludeCore)
         {
-            categoriesToPick = categoriesToPick.Union(new[] { "Core" }).ToArray(); // Core is always last
+            exerciseFilters = exerciseFilters.Union(new MuscleGroupExerciseFilter[] { "Core" }).ToArray(); // Core is always last
         }
 
-        var randomSet = new Dictionary<string, ScheduleViewModel>(categoriesToPick.Length);
+        var randomSet = new List<ScheduleViewModel>(exerciseFilters.Length);
+        var exercisesToPickFrom = new List<ExerciseViewModel>(allExercises);
 
-        foreach (var category in categoriesToPick)
+        foreach (var selector in exerciseFilters)
         {
-            var exercisesByCategory = exercises.Where(e => e.Muscles.First().MuscleGroup == category).ToArray();
-            var index = _random.Next(0, exercisesByCategory.Count());
-            randomSet.Add(category, new ScheduleViewModel(category, index, exercisesByCategory));
+            var selectedExercises = exercisesToPickFrom.Where(e => selector.Match(e)).ToArray();           
+            var index = _random.Next(0, selectedExercises.Count());
+            randomSet.Add(new ScheduleViewModel(Guid.NewGuid(), index, selectedExercises));
+            exercisesToPickFrom.Remove(selectedExercises.ElementAt(index)); // At least prevent same exercise from appearing immediatly in the list
         }
 
-        dispatcher.Dispatch(new ReceiveExerciseScheduleAction(randomSet));
+        dispatcher.Dispatch(new ReceiveExerciseScheduleAction(randomSet.ToArray()));
     }
 }

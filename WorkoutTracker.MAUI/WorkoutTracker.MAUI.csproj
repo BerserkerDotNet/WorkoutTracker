@@ -15,6 +15,7 @@
 
 		<!-- Versions -->
 		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 
 		<UseInterpreter Condition="'$(TargetFramework)' == 'net6.0-android'">False</UseInterpreter>
 		<LangVersion>preview</LangVersion>

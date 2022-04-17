@@ -1,0 +1,42 @@
+﻿<MudTextField T="string" Label="Image path" Required="true" @bind-Value="_imagePath" />
+<InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
+<MudButton HtmlTag="label"
+		   Variant="Variant.Filled"
+		   Color="Color.Primary"
+		   StartIcon="@Icons.Filled.PhotoCamera"
+		   for="fileInput">
+	Upload Image
+</MudButton>
+
+@code {
+
+	private string _imagePath = "";
+
+	[Parameter]
+	public string ImagePath { get; set; }
+
+	[Parameter]
+	public EventCallback<string> ImagePathChanged { get; set; }
+
+	[Parameter]
+	public IBrowserFile ImageFile { get; set; }
+
+	[Parameter]
+	public EventCallback<IBrowserFile> ImageFileChanged { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public string ImagePathPrefix { get; set; }
+
+	private async Task UploadFiles(InputFileChangeEventArgs e)
+	{
+		ImageFile = e.File;
+		_imagePath = $"{ImagePathPrefix}/{e.File.Name}";
+
+		await ImageFileChanged.InvokeAsync(ImageFile);
+		await ImagePathChanged.InvokeAsync(_imagePath);
+
+		StateHasChanged();
+	}
+
+}

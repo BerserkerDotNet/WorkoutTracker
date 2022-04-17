@@ -1,10 +1,6 @@
 ﻿using BlazorState.Redux.Blazor;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using WorkoutTracker.Data.Actions;
 using WorkoutTracker.Models;
 using static WorkoutTracker.Data.Selectors.ScheduleSelectors;
@@ -146,10 +142,7 @@ namespace WorkoutTracker.Components.Connected
     public class EditExerciseLogConnected : ConnectedComponent<EditExerciseLog, RootState, EditExerciseLogProps>
     {
         [Parameter]
-        public string CurrentCategory { get; set; }
-
-        [Parameter]
-        public Guid ExerciseId { get; set; }
+        public Guid CurrentScheduleId { get; set; }
 
         [Inject]
         public NavigationManager Navigation { get; set; }
@@ -163,26 +156,29 @@ namespace WorkoutTracker.Components.Connected
 
             props.Cancel = EventCallback.Factory.Create(this, () => Navigation.NavigateTo($"/"));
 
-            props.Next = EventCallback.Factory.Create<ExerciseWithCategoryViewModel>(this, item =>
+            props.Next = EventCallback.Factory.Create<ScheduleViewModel>(this, item =>
             { 
-                Navigation.NavigateTo($"/editexerciselog/{item.Category}/{item.Exercise.Id}");
+                Navigation.NavigateTo($"/editexerciselog/{item.Id}");
             });
 
-			props.Previous = EventCallback.Factory.Create<ExerciseWithCategoryViewModel>(this, item =>
+			props.Previous = EventCallback.Factory.Create<ScheduleViewModel>(this, item =>
             {
-                Navigation.NavigateTo($"/editexerciselog/{item.Category}/{item.Exercise.Id}");
+                Navigation.NavigateTo($"/editexerciselog/{item.Id}");
             });
         }
 
         protected override void MapStateToProps(RootState state, EditExerciseLogProps props)
         {
-            var nextSet = SelectNextExerciseFromSchedule(state, CurrentCategory);
-            props.NextExerciseId = nextSet.Category == CurrentCategory ? null : nextSet.CurrentExerciseWithCategory;
+            var nextSet = SelectNextExerciseFromSchedule(state, CurrentScheduleId);
+            props.NextExerciseId = nextSet.Id == CurrentScheduleId ? null : nextSet;
 
-            var prevSet = SelectPreviousExerciseFromSchedule(state, CurrentCategory);
-            props.PreviousExerciseId = prevSet is null || prevSet.Category == CurrentCategory ? null : prevSet.CurrentExerciseWithCategory;
+            var prevSet = SelectPreviousExerciseFromSchedule(state, CurrentScheduleId);
+            props.PreviousExerciseId = prevSet is null || prevSet.Id == CurrentScheduleId ? null : prevSet;
 
-            var log = SelectTodayExerciseById(state, ExerciseId);
+            var currentSchedule = SelectScheduleById(state, CurrentScheduleId);
+            var currentExerciseId = currentSchedule.CurrentExercise.Id;
+
+            var log = SelectTodayExerciseById(state, currentExerciseId);
             if (log is object)
             {
                 props.Log = log;
@@ -193,22 +189,25 @@ namespace WorkoutTracker.Components.Connected
                 props.Log = new LogEntryViewModel
                 {
                     Id = Guid.NewGuid(),
-                    Exercise = SelectExerciseById(state, ExerciseId),
+                    Exercise = SelectExerciseById(state, currentExerciseId),
                     Sets = Enumerable.Empty<Set>(),
                     Date = DateTime.UtcNow
                 };
                 props.SetNumber = 1;
             }
 
-            props.PreviousLog = SelectLastLogByExercise(state, ExerciseId);
-            props.PreviousLogLoading = !IsLastLogByExerciseLoaded(state, ExerciseId);
+            props.PreviousLog = SelectLastLogByExercise(state, currentExerciseId);
+            props.PreviousLogLoading = !IsLastLogByExerciseLoaded(state, currentExerciseId);
         }
 
         protected override async Task OnParametersSetAsync()
         {
-            if (!IsLastLogByExerciseLoaded(Store.State, ExerciseId))
+            var currentSchedule = SelectScheduleById(Store.State, CurrentScheduleId);
+            var currentExerciseId = currentSchedule.CurrentExercise.Id;
+
+            if (!IsLastLogByExerciseLoaded(Store.State, currentExerciseId))
             {
-                await Store.Dispatch<FetchLastWorkoutByExerciseAction, Guid>(ExerciseId);
+                await Store.Dispatch<FetchLastWorkoutByExerciseAction, Guid>(currentExerciseId);
             }
 
             await base.OnParametersSetAsync();

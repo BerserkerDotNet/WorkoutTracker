@@ -1,12 +1,9 @@
-﻿@page "/editexerciselog/{category}/{exerciseid:guid}"
+﻿@page "/editexerciselog/{currentscheduleid:guid}"
 @attribute [Authorize]
 
-<EditExerciseLogConnected CurrentCategory="@Category" ExerciseId="ExerciseId" />
+<EditExerciseLogConnected CurrentScheduleId="@CurrentScheduleId" />
 
 @code{
     [Parameter]
-    public string Category { get; set; }
-
-    [Parameter]
-    public Guid ExerciseId { get; set; }
+    public Guid CurrentScheduleId { get; set; }
 }

@@ -18,7 +18,7 @@
 			}
 		</MudSelect>
 
-		<MudTextField T="string" Label="Image path" Required="true" Variant="Variant.Outlined" Adornment="Adornment.End" @bind-Value="Props.Muscle.ImagePath" />
+		<MudTextField T="string" Label="Image path" Required="true" Adornment="Adornment.End" @bind-Value="Props.Muscle.ImagePath" />
 		<InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
 		<MudButton HtmlTag="label"
 				   Variant="Variant.Filled"

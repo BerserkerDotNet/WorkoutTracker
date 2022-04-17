@@ -4,10 +4,11 @@
 
 <h2>Today's schedule</h2>
 
-<MudMenu Class="mb-2" StartIcon="@Icons.Filled.Schedule" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="Exercise profile" Color="Color.Primary" Variant="Variant.Filled"  >
-    <MudMenuItem OnClick="() => Props.Rebuild.InvokeAsync(ExerciseProfile.UpperBody)" >Upper body</MudMenuItem>
-    <MudMenuItem OnClick="() => Props.Rebuild.InvokeAsync(ExerciseProfile.LowerBody)" >Lower body</MudMenuItem>
-</MudMenu>
+<MudSelect T="ExerciseProfile" Label="Profile" Class="mb-4" AnchorOrigin="Origin.BottomCenter" ValueChanged="OnProfileChanged" Value="Props.SelectedProfile" >
+	<Foreach Items="ExerciseProfile.Profiles" Context="item">
+		<MudSelectItem Value="@item">@item.Name</MudSelectItem>
+	</Foreach>
+</MudSelect>
 
 @if (!Props.Schedule.Any())
 {
@@ -27,7 +28,7 @@
 
 @foreach (var scheduleItem in Props.Schedule)
 {
-	var item = scheduleItem.Exercise;
+	var item = scheduleItem.CurrentExercise;
 	<MudCard Class="mb-4" Outlined="true">
 		<Image Path="@item.ImagePath" ImageName="@item.Name" />
 		<MudCardContent>
@@ -36,11 +37,11 @@
 		</MudCardContent>
 		<MudCardActions>
 			<div class="d-flex align-center justify-space-between" style="width:100%">
-				<MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="() => Props.Previous.InvokeAsync(scheduleItem.Category)" />
+				<MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="() => Props.Previous.InvokeAsync(scheduleItem)" />
 				<MudBadge Origin="Origin.TopRight" Content="@(Props.ExerciseCountLookup.ContainsKey(item.Id) ? Props.ExerciseCountLookup[item.Id] : 1)" Color="Color.Primary" Class="mx-6 my-4">
 					<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="() => Props.Start.InvokeAsync(scheduleItem)">Start</MudButton>
 				</MudBadge>
-				<MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next.InvokeAsync(scheduleItem.Category)" />
+				<MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next.InvokeAsync(scheduleItem)" />
 			</div>
 		</MudCardActions>
 	</MudCard>
