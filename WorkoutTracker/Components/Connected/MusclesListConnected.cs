@@ -1,27 +1,28 @@
 ﻿using Microsoft.AspNetCore.Components;
+using WorkoutTracker.Components.Presentational;
 using WorkoutTracker.Data.Actions;
-using static WorkoutTracker.Data.Selectors.MuscleSelectors;
+using WorkoutTracker.Data.Selectors;
 
-namespace WorkoutTracker.Pages;
+namespace WorkoutTracker.Components.Connected;
 
-public partial class Muscles
+public class MusclesListConnected : ConnectedComponent<MusclesList, RootState, MusclesListProps>
 {
     [Inject]
     public NavigationManager Navigation { get; set; }
 
     protected override void MapStateToProps(RootState state, MusclesListProps props)
     {
-        props.Muscles = SelectMuscles(state);
+        props.Muscles = state.SelectMuscles();
     }
 
     protected override void MapDispatchToProps(IStore<RootState> store, MusclesListProps props)
     {
-        props.Edit = CreateCallback<Guid>(id => Navigation.NavigateTo($"/editmuscle/{id}"));
+        props.Edit = Callback<Guid>(id => Navigation.NavigateTo($"/editmuscle/{id}"));
     }
 
     protected override async Task Init(IStore<RootState> store)
     {
-        if (!SelectMuscles(store.State).Any())
+        if (!store.State.SelectMuscles().Any())
         {
             await store.Dispatch<FetchMusclesAction>();
         }

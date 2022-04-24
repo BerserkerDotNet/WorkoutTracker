@@ -1,0 +1,44 @@
+﻿<MudPaper Class="pa-4">
+	<MudForm @ref="@_form">
+		<MudTextField T="string" Label="Name" Required="true" RequiredError="Name is required." @bind-Value="Props.Muscle.Name" />
+		<MudSelect Required="true"
+				   @bind-Value="Props.Muscle.MuscleGroup"
+				   T="string"
+				   Label="Muscle group"
+				   AdornmentIcon="@Icons.Material.Filled.Search"
+				   AnchorOrigin="Origin.BottomCenter">
+			@foreach (var muscleGroup in MuscleGroups.Groups)
+			{
+				<MudSelectItem T="string" Value="@muscleGroup">@muscleGroup</MudSelectItem>
+			}
+		</MudSelect>
+
+		<MudTextField T="string" Label="Image path" Required="true" Adornment="Adornment.End" @bind-Value="Props.Muscle.ImagePath" />
+		<InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
+		<MudButton HtmlTag="label"
+				   Variant="Variant.Filled"
+				   Color="Color.Primary"
+				   StartIcon="@Icons.Filled.PhotoCamera"
+				   for="fileInput">
+			Upload Image
+		</MudButton>
+	</MudForm>
+</MudPaper>
+<MudPaper Class="pa-4 mt-4">
+	<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="() => Props.Save(new Data.Actions.SaveMuscleModel(Props.Muscle, _imageFile))">Save</MudButton>
+	<MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto" OnClick="Props.Cancel">Cancel</MudButton>
+</MudPaper>
+
+@code {
+	private MudForm _form;
+	private IBrowserFile _imageFile;
+
+	[Parameter]
+	public EditMuscleFormProps Props { get; set; }
+
+	private void UploadFiles(InputFileChangeEventArgs e)
+	{
+		_imageFile = e.File;
+		Props.Muscle.ImagePath = $"muscles/{e.File.Name}";
+	}
+}

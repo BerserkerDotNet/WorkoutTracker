@@ -1,9 +1,0 @@
-﻿@page "/editexerciselog/{currentscheduleid:guid}"
-@attribute [Authorize]
-
-<EditExerciseLogConnected CurrentScheduleId="@CurrentScheduleId" />
-
-@code{
-    [Parameter]
-    public Guid CurrentScheduleId { get; set; }
-}

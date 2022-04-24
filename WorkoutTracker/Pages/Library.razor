@@ -1,4 +1,11 @@
 ﻿@page "/library"
 @attribute [Authorize]
 
-<ExerciseListConnected />
+<MudGrid>
+	<MudItem xs="12" sm="2">
+		<ExercisesFilterConnected />
+	</MudItem>
+	<MudItem xs="12" sm="10">
+		<ExercisesListConnected />
+	</MudItem>
+</MudGrid>

@@ -2,17 +2,17 @@
 
 public static class MuscleSelectors
 {
-    public static IEnumerable<MuscleViewModel> SelectMuscles(RootState state)
+    public static IEnumerable<MuscleViewModel> SelectMuscles(this RootState state)
     {
         return state.Exercises?.Muscles ?? Enumerable.Empty<MuscleViewModel>();
     }
 
-    public static MuscleViewModel SelectMuscleById(RootState state, Guid id)
+    public static MuscleViewModel SelectMuscleById(this RootState state, Guid id)
     {
         return SelectMuscles(state).FirstOrDefault(e => e.Id == id);
     }
 
-    public static IEnumerable<string> SelectMuscleGroups(RootState state)
+    public static IEnumerable<string> SelectMuscleGroups(this RootState state)
     {
         return SelectMuscles(state).Select(m => m.MuscleGroup).OrderBy(g => g).Distinct();
     }

@@ -1,0 +1,56 @@
+﻿@inject IDialogService DialogService
+
+<ItemsList Items="Props.List" Context="item">
+	<MudCard Class="mb-4" Outlined="false">
+		<Image Path="@item.ImagePath" ImageName="@item.Name" />
+		<MudCardContent>
+			<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
+			<MudText Typo="Typo.body2">@item.Description</MudText>
+
+			<MudList Clickable="true">
+				<MudListSubheader>
+					Muscles:
+				</MudListSubheader>
+				@foreach (var muscleGroup in item.Muscles.GroupBy(m => m.MuscleGroup))
+				{
+					<MudListItem Text="@muscleGroup.Key">
+						<NestedList>
+							@foreach (var muscle in muscleGroup)
+							{
+								<MudListItem>
+									@muscle.Name
+								</MudListItem>
+							}
+						</NestedList>
+					</MudListItem>
+
+				}
+			</MudList>
+
+			@foreach (var tag in item.Tags)
+			{
+				<MudChip Icon="@Icons.Material.Filled.Tag" Color="Color.Info">@tag</MudChip>
+			}
+		</MudCardContent>
+		<MudCardActions>
+			<div class="d-flex align-center justify-space-between mt-6">
+				<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="() => Props.Edit(item)">Edit</MudButton>
+				<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => OnDelete(item)">Delete</MudButton>
+			</div>
+		</MudCardActions>
+	</MudCard>
+</ItemsList>
+
+@code {
+	[Parameter]
+	public ExercisesListProps Props { get; set; }
+
+	private async Task OnDelete(ExerciseViewModel record)
+	{
+		var result = await DialogService.ShowMessageBox("Delete exercise", $"Are you sure you wnat to delete {record.Name}?", "Yes", "No");
+		if (result.HasValue && result.Value)
+		{
+			await Props.Delete(record.Id);
+		}
+	}
+}

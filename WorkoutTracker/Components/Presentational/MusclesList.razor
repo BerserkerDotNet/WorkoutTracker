@@ -1,0 +1,35 @@
+﻿@if (!Props.Muscles.Any())
+{
+	<MudCard Class="mb-4" Outlined="false">
+		<MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="300px" />
+		<MudCardContent>
+			<MudSkeleton Width="30%" Height="42px;" />
+			<MudSkeleton Width="10%" />
+		</MudCardContent>
+		<MudCardActions>
+			<MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+			<MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+		</MudCardActions>
+	</MudCard>
+}
+
+<ItemsList Items="Props.Muscles" Context="item">
+	<MudCard Class="mb-4" Outlined="false">
+		<Image Path="@item.ImagePath" ImageName="@item.Name" />
+		<MudCardContent>
+			<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
+			<MudText Typo="Typo.body2">@item.MuscleGroup</MudText>
+		</MudCardContent>
+		<MudCardActions>
+			<div class="d-flex align-center justify-space-between mt-6">
+				<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="() => Props.Edit(item.Id)">Edit</MudButton>
+				<MudButton Class="ml-2" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Delete</MudButton>
+			</div>
+		</MudCardActions>
+	</MudCard>
+</ItemsList>
+1
+@code {
+	[Parameter]
+	public MusclesListProps Props { get; set; }
+}

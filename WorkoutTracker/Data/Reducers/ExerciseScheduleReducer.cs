@@ -2,15 +2,17 @@
 
 namespace WorkoutTracker.Data.Reducers
 {
-    public record ExerciseScheduleState(ScheduleViewModel[] Schedule);
+    public record ExerciseScheduleState(ScheduleViewModel[] Schedule, ExerciseProfile SelectedProfile);
     public class ExerciseScheduleReducer : IReducer<ExerciseScheduleState>
     {
         public ExerciseScheduleState Reduce(ExerciseScheduleState state, IAction action)
         {
-            state = state ?? new ExerciseScheduleState(Array.Empty<ScheduleViewModel>());
+            state = state ?? new ExerciseScheduleState(Array.Empty<ScheduleViewModel>(), ExerciseProfile.UpperBody);
 
             switch (action)
             {
+                case ExerciseProfileSelected a:
+                    return state with { SelectedProfile = a.Profile };
                 case ReceiveExerciseScheduleAction a:
                     return state with { Schedule = a.Schedule };
                 case ReceiveExerciseCurrentIndexAction si:

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace WorkoutTracker.Data.Props;
+﻿namespace WorkoutTracker.Data.Props;
 
 public class MusclesListProps
 {

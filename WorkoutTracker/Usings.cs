@@ -4,4 +4,5 @@ global using WorkoutTracker.ViewModels;
 global using WorkoutTracker.Interfaces;
 global using WorkoutTracker.Data.Props;
 global using BlazorState.Redux.Interfaces;
+global using BlazorState.Redux.Blazor;
 global using MudBlazor;

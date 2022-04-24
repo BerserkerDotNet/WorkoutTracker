@@ -1,13 +1,13 @@
 ﻿<MudTabs Outlined="true" Rounded="true" Centered="true">
 	<MudTabPanel Icon="@Icons.Material.Filled.Schedule" Text="Timeline">
-		<ExerciseTimeline Sets="Props.LogRecord.Sets" OnSave="() => Props.OnSave.InvokeAsync(Props.LogRecord)" OnDelete="OnDeleteSetInternal" />
+		<ExerciseTimeline Sets="Props.LogRecord.Sets" OnSave="() => Props.Save(Props.LogRecord)" OnDelete="OnDeleteSetInternal" />
 	</MudTabPanel>
 	<MudTabPanel Icon="@Icons.Material.Filled.PieChart" Text="Stats">
 		<MudText>Coming soon</MudText>
 	</MudTabPanel>
 </MudTabs>
 
-<MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.ArrowBack" Style="position:fixed;right:15px;bottom:15px;" OnClick="Props.OnBack" />
+<MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.ArrowBack" Style="position:fixed;right:15px;bottom:15px;" OnClick="Props.Back" />
 
 @code {
 
@@ -15,7 +15,7 @@
 	public IDialogService DialogService { get; set; }
 
 	[Parameter]
-	public LogRecordDetailsProps Props { get; set; }
+	public ExerciseHistoryDetailsProps Props { get; set; }
 
 	private async Task OnDeleteSetInternal(Set set)
 	{
@@ -23,7 +23,7 @@
 		if (result.HasValue && result.Value)
 		{
 			Props.LogRecord.Sets = Props.LogRecord.Sets.Where(s => s != set).ToArray();
-			await Props.OnSave.InvokeAsync(Props.LogRecord);
+			await Props.Save(Props.LogRecord);
 		}
 	}
 }

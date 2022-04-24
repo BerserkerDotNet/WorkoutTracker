@@ -2,17 +2,17 @@
 
 public static class ScheduleSelectors
 {
-    public static IEnumerable<ScheduleViewModel> SelectSchedule(RootState state)
+    public static IEnumerable<ScheduleViewModel> SelectSchedule(this RootState state)
     {
         return state?.ExerciseSchedule?.Schedule ?? Enumerable.Empty<ScheduleViewModel>();
     }
 
-    public static ScheduleViewModel SelectScheduleById(RootState state, Guid id)
+    public static ScheduleViewModel SelectScheduleById(this RootState state, Guid id)
     {
         return SelectSchedule(state).FirstOrDefault(s => s.Id == id);
     }
 
-    public static ScheduleViewModel SelectNextExerciseFromSchedule(RootState state, Guid currentScheduleId) 
+    public static ScheduleViewModel SelectNextExerciseFromSchedule(this RootState state, Guid currentScheduleId) 
     {
         return SelectSchedule(state)
             .SkipWhile(s => s.Id != currentScheduleId)
@@ -20,10 +20,15 @@ public static class ScheduleSelectors
             .Last();
     }
 
-    public static ScheduleViewModel SelectPreviousExerciseFromSchedule(RootState state, Guid currentScheduleId)
+    public static ScheduleViewModel SelectPreviousExerciseFromSchedule(this RootState state, Guid currentScheduleId)
     {
         return SelectSchedule(state)
             .TakeWhile(s => s.Id != currentScheduleId)
             .LastOrDefault();
+    }
+
+    public static ExerciseProfile SelectCurrentProfile(this RootState state) 
+    {
+        return state?.ExerciseSchedule?.SelectedProfile ?? ExerciseProfile.UpperBody;
     }
 }

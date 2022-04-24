@@ -1,0 +1,10 @@
+﻿@page "/trackexercise/{currentscheduleid:guid}"
+@attribute [Authorize]
+
+<TrackExerciseFormConnected CurrentScheduleId = "@CurrentScheduleId" />
+<ExerciseSetsConnected CurrentScheduleId = "@CurrentScheduleId" />
+
+@code{
+    [Parameter]
+    public Guid CurrentScheduleId { get; set; }
+}

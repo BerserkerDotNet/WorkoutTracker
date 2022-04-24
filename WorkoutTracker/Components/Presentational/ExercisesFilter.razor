@@ -1,0 +1,20 @@
+﻿<MudPaper Class="pa-4 mt-4">
+	<MudButton Class="my-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="() => Props.Add()">Add exercise</MudButton>
+	<MudTextField T="string" Label="Search" Value="Props.Filter.Name" ValueChanged="(text) => OnFilterChanged(text, Props.Filter.MuscleGroups)" />
+	<MudSelect T="string" Label="Muscle Groups" MultiSelection="true" SelectedValues="Props.Filter.MuscleGroups" SelectedValuesChanged="(groups) => OnFilterChanged(Props.Filter.Name, groups)">
+		@foreach (var muscleGroup in MuscleGroups.Groups)
+		{
+			<MudSelectItem T="string" Value="@muscleGroup">@muscleGroup</MudSelectItem>
+		}
+	</MudSelect>
+</MudPaper>
+
+@code {
+	[Parameter]
+	public ExercisesFilterProps Props { get; set; }
+
+	private void OnFilterChanged(string name, IEnumerable<string> muscleGroups)
+	{
+		Props.ApplyFilter(new ExercisesFilterViewModel(name, muscleGroups));		
+	}
+}

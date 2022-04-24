@@ -1,24 +1,9 @@
 ﻿@page "/editexercise/{exerciseid:guid}"
 @attribute [Authorize]
-@inherits ConnectedComponentBase<RootState, EditExerciseProps>
 
-<If Condition="Props.IsLoading">
-	<Then>
-		<div>Loading...</div>
-	</Then>
-	<Else>
-		<MudPaper Class="pa-4">
-			<MudForm @ref="@form">
-				<MudTextField T="string" Label="Name" Required="true" RequiredError="Name is required." @bind-Value="Props.Exercise.Name" />
-				<MudTextField T="string" Label="Description" Lines="3" Adornment="Adornment.End" @bind-Value="Props.Exercise.Description" />
-				<ImageSelector @bind-ImageFile="Props.Exercise.ImageFile" @bind-ImagePath="Props.Exercise.ImagePath" ImagePathPrefix="exercises" />
-				<MuscleSelector Muscles="Props.Muscles" @bind-SelectedMuscles="Props.Exercise.Muscles" />
-				<TagsSelector Tags="Props.Tags" @bind-SelectedTags="Props.Exercise.Tags" />
-			</MudForm>
-		</MudPaper>
-		<MudPaper Class="pa-4 mt-4">
-			<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Save())">Save</MudButton>
-			<MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto" OnClick="@(async () => await Cancel())">Cancel</MudButton>
-		</MudPaper>
-	</Else>
-</If>
+<EditExerciseConnected ExerciseId="ExerciseId" />
+
+@code {
+	[Parameter]
+	public Guid ExerciseId { get; set; }
+}

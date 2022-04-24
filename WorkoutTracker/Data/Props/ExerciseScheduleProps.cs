@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorState.Redux.Utilities;
+using Microsoft.AspNetCore.Components;
 using UnitsNet;
 
 namespace WorkoutTracker.Data.Props
@@ -10,21 +11,15 @@ namespace WorkoutTracker.Data.Props
 
     public class ExerciseScheduleProps
     {
-        public ExerciseProfile SelectedProfile { get; set; }
-
         public IEnumerable<ScheduleViewModel> Schedule { get; set; }
 
         public Dictionary<Guid, int> ExerciseCountLookup { get; set; }
 
-        public EventCallback<ScheduleViewModel> Start { get; set; }
+        public Action<ScheduleViewModel> Start { get; set; }
 
-        public EventCallback<ScheduleViewModel> Previous { get; set; }
+        public Action<ScheduleViewModel> Previous { get; set; }
 
-        public EventCallback<ScheduleViewModel> Next { get; set; }
-
-        public EventCallback<ExerciseProfile> Rebuild { get; set; }
-
-        public EventCallback OpenLog { get; set; }
+        public Action<ScheduleViewModel> Next { get; set; }
     }
 
     public class ExercisesLogProps
@@ -40,29 +35,6 @@ namespace WorkoutTracker.Data.Props
         public EventCallback<DateTime> Load { get; set; }
     }
 
-    public class EditExerciseLogProps
-    {
-        public ScheduleViewModel NextExerciseId { get; set; }
-
-        public ScheduleViewModel PreviousExerciseId { get; set; }
-
-        public int SetNumber { get; set; }
-
-		public LogEntryViewModel Log { get; set; }
-
-        public PreviousLogRecordStats PreviousLog { get; set; }
-
-        public bool PreviousLogLoading { get; set; }
-
-        public EventCallback<LogEntryViewModel> Save { get; set; }
-
-        public EventCallback<ScheduleViewModel> Next { get; set; }
-
-        public EventCallback<ScheduleViewModel> Previous { get; set; }
-
-        public EventCallback Cancel { get; set; }
-    }
-
     public class EditExerciseProps
     {
         public EditExerciseViewModel Exercise { get; set; }
@@ -73,21 +45,28 @@ namespace WorkoutTracker.Data.Props
 
         public bool IsLoading => !Muscles.Any();
 
-        public EventCallback<EditExerciseViewModel> Save { get; set; }
+        public AsyncAction<EditExerciseViewModel> Save { get; set; }
 
-        public EventCallback Cancel { get; set; }
+        public Action Cancel { get; set; }
     }
 
-    public class ExerciseListProps
+    public class ExercisesListProps
+    {
+        public ICollection<ExerciseViewModel> List { get; set; }
+
+        public Action<ExerciseViewModel> Edit { get; set; }
+
+        public AsyncAction<Guid> Delete { get; set; }
+    }
+
+    public class ExercisesFilterProps
     {
         public IEnumerable<string> MuscleGroups { get; set; }
 
-        public ICollection<ExerciseViewModel> List { get; set; }
+        public ExercisesFilterViewModel Filter { get; set; }
 
-        public EventCallback<ExerciseViewModel> Edit { get; set; }
-
-        public EventCallback<Guid> Delete { get; set; }
-
-        public EventCallback Add { get; set; }
+        public Action Add { get; set; }
+     
+        public Action<ExercisesFilterViewModel> ApplyFilter { get; set; }
     }
 }

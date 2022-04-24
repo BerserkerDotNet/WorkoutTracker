@@ -2,6 +2,11 @@
 
 namespace WorkoutTracker.ViewModels
 {
+    public record ExercisesFilterViewModel(string Name, IEnumerable<string> MuscleGroups) 
+    {
+        public static ExercisesFilterViewModel Empty = new ExercisesFilterViewModel(string.Empty, Enumerable.Empty<string>());
+    }
+
     public record ScheduleViewModel(Guid Id, int CurrentIndex, IEnumerable<ExerciseViewModel> Exercises) 
     {
         public ExerciseViewModel CurrentExercise => Exercises.Count() > CurrentIndex ? Exercises.ElementAt(CurrentIndex) : null;

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
-using Microsoft.Maui.Essentials;
+using Microsoft.Maui.ApplicationModel;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
