@@ -44,7 +44,7 @@
     public static ExerciseProfile ChestDay = new ExerciseProfile
     {
         Name = "Chest day",
-        ExerciseFilters = new MuscleGroupExerciseFilter[] { "Chest", "Chest", "Back", "Shoulder", "Triceps", "Biceps" },
+        ExerciseFilters = new MuscleGroupExerciseFilter[] { "Chest", "Chest", "Back", "Shoulder", "Triceps", "Triceps", "Biceps" },
         IncludeCore = false,
         ShuffleStartIndex = 1
     };
