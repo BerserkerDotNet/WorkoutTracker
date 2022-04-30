@@ -20,8 +20,18 @@
     public static ExerciseProfile LowerBody = new ExerciseProfile
     {
         Name = "Lower body",
-        ExerciseFilters = new MuscleGroupExerciseFilter[] { "Glutes", "Quads", "Quads", "Hamstrings", "Calves", "Adductors" },
-        IncludeCore = false
+        ExerciseFilters = new IExerciseFilter[] 
+        {
+            new SpecificExerciseFilter(Guid.Parse("b33af80a-8608-4ef9-a792-a18c7eadb676")), /*Deadlift*/
+            new MuscleGroupExerciseFilter("Glutes"),
+            new MuscleGroupExerciseFilter("Quads"),
+            new MuscleGroupExerciseFilter("Quads"),
+            new MuscleGroupExerciseFilter("Hamstrings"),
+            new MuscleGroupExerciseFilter("Calves"),
+            new MuscleGroupExerciseFilter("Adductors")
+        },
+        IncludeCore = false,
+        ShuffleStartIndex = 1
     };
 
     public static ExerciseProfile ShouldersDay = new ExerciseProfile

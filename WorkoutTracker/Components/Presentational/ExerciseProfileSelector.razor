@@ -1,4 +1,13 @@
-﻿<MudSelect T="ExerciseProfile" Label="Profile" Class="mb-4" AnchorOrigin="Origin.BottomCenter" ValueChanged="Props.OnProfileChanged" Value="Props.SelectedProfile" >
+﻿<MudSelect 
+	T="ExerciseProfile" 
+	Label="Profile" 
+	Class="mb-4" 
+	AnchorOrigin="Origin.BottomCenter" 
+	ValueChanged="profile => Props.SetProfile(profile)" 
+	Value="Props.SelectedProfile" 
+	Adornment="Adornment.End" 
+	AdornmentIcon="@Icons.Material.Filled.Refresh"
+	OnAdornmentClick="() => Props.GenerateSchedule()">
 	<Foreach Items="ExerciseProfile.Profiles" Context="item">
 		<MudSelectItem Value="@item">@item.Name</MudSelectItem>
 	</Foreach>

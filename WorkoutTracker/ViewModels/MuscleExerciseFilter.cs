@@ -9,3 +9,11 @@
         return idx == 0;
     }
 }
+
+public record SpecificExerciseFilter(Guid ExerciseId) : IExerciseFilter
+{
+    public bool Match(ExerciseViewModel exercise)
+    {
+        return exercise.Id == ExerciseId;
+    }
+}
