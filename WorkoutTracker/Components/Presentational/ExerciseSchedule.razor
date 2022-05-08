@@ -1,41 +1,64 @@
-﻿@if (!Props.Schedule.Any())
-{
-	<MudCard>
-		<MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="300px" />
-		<MudCardContent>
-			<MudSkeleton Width="30%" Height="42px;" />
-			<MudSkeleton Width="80%" />
-			<MudSkeleton Width="100%" />
-		</MudCardContent>
-		<MudCardActions>
-			<MudSkeleton Width="64px" Height="40px" Class="ml-2" />
-			<MudSkeleton Width="105px" Height="40px" Class="ml-3" />
-		</MudCardActions>
-	</MudCard>
-}
+﻿<If Condition="!Props.Schedule.Any()">
+	<Then>
+		<MudCard>
+			<MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="300px" />
+			<MudCardContent>
+				<MudSkeleton Width="30%" Height="42px;" />
+				<MudSkeleton Width="80%" />
+				<MudSkeleton Width="100%" />
+			</MudCardContent>
+			<MudCardActions>
+				<MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+				<MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+			</MudCardActions>
+		</MudCard>
+	</Then>
+	<Else>
+		<MudPaper Class="d-flex justify-center flex-grow-1 gap-4" Elevation="0">
+			<MudButton 
+				Class="mb-5" 
+				Size="@Size.Large" 
+				StartIcon="@Icons.Material.Filled.PlayArrow" 
+				Color="Color.Success" 
+				OnClick="() => Props.Start(Props.Schedule)">
+				Begin workout
+			</MudButton>
+		</MudPaper>
+		<Foreach Items="Props.Schedule" Context="scheduleItem">
+			@{
+				var item = scheduleItem.CurrentExercise;
+			}
+			<MudCard Class="mb-4" Outlined="true">
+				<Image Path="@item.ImagePath" ImageName="@item.Name" />
+				<MudCardContent>
+					<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
+					<MudText Typo="Typo.body2">@item.Description</MudText>
+					<MudNumericField T="int" Min="1" Max="50" Step="1" Label="# of sets" Value="scheduleItem.TargetSets" ValueChanged="value => SetsChanged(scheduleItem, value)" />
+					<MudNumericField T="double" Min="10" Max="180" Step="10" Label="Target rest time(s)" Value="scheduleItem.TargetRest.TotalSeconds" ValueChanged="value => RestChanged(scheduleItem, value)" />
+				</MudCardContent>
+				<MudCardActions>
+					<div class="d-flex align-center justify-space-between" style="width:100%">
+						<MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="() => Props.Previous(scheduleItem)">Replace</MudButton>
+						<MudButton EndIcon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next(scheduleItem)">Replace</MudButton>
+					</div>
+				</MudCardActions>
+			</MudCard>
+		</Foreach>
 
-@foreach (var scheduleItem in Props.Schedule)
-{
-	var item = scheduleItem.CurrentExercise;
-	<MudCard Class="mb-4" Outlined="true">
-		<Image Path="@item.ImagePath" ImageName="@item.Name" />
-		<MudCardContent>
-			<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
-			<MudText Typo="Typo.body2">@item.Description</MudText>
-		</MudCardContent>
-		<MudCardActions>
-			<div class="d-flex align-center justify-space-between" style="width:100%">
-				<MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="() => Props.Previous(scheduleItem)" />
-				<MudBadge Origin="Origin.TopRight" Content="@(Props.ExerciseCountLookup.ContainsKey(item.Id) ? Props.ExerciseCountLookup[item.Id] : 1)" Color="Color.Primary" Class="mx-6 my-4">
-					<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="() => Props.Start(scheduleItem)">Start</MudButton>
-				</MudBadge>
-				<MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next(scheduleItem)" />
-			</div>
-		</MudCardActions>
-	</MudCard>
-}
+	</Else>
+</If>
 
 @code {
 	[Parameter]
 	public ExerciseScheduleProps Props { get; set; }
+
+	private void SetsChanged(ScheduleViewModel model, int value)
+	{
+		model.TargetSets = value;
+	}
+
+	private void RestChanged(ScheduleViewModel model, double value)
+	{
+		model.TargetRest = TimeSpan.FromSeconds(value);
+	}
 }

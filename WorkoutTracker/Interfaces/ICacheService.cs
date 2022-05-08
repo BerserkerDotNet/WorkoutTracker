@@ -4,13 +4,13 @@ namespace WorkoutTracker
 {
     public interface ICacheService
     {
-        bool IsExercisesCached();
+        Task<bool> IsExercisesCached();
 
         Task<IEnumerable<ExerciseViewModel>> GetExercises();
 
         Task SaveExercises(IEnumerable<ExerciseViewModel> exercises);
 
-        void ResetExercisesCache();
+        Task ResetExercisesCache();
 
         Task<AccessToken> GetToken();
 

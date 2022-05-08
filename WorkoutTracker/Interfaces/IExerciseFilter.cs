@@ -1,4 +1,6 @@
-﻿public interface IExerciseFilter
+﻿public interface IExerciseSelector
 {
-    bool Match(ExerciseViewModel exercise);
+    ExerciseDescriptor Select(IEnumerable<ExerciseViewModel> exercises);
 }
+
+public record ExerciseDescriptor(IEnumerable<ExerciseViewModel> MatchedExercises, int? TargetSets = null, TimeSpan? TargetRestTime = null);

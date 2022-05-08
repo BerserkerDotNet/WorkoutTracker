@@ -13,9 +13,7 @@ namespace WorkoutTracker.Data.Props
     {
         public IEnumerable<ScheduleViewModel> Schedule { get; set; }
 
-        public Dictionary<Guid, int> ExerciseCountLookup { get; set; }
-
-        public Action<ScheduleViewModel> Start { get; set; }
+        public Action<IEnumerable<ScheduleViewModel>> Start { get; set; }
 
         public Action<ScheduleViewModel> Previous { get; set; }
 

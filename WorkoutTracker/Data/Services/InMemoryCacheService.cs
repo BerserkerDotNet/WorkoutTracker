@@ -24,14 +24,16 @@ namespace WorkoutTracker.Data.Services
             return Task.FromResult(Enumerable.Empty<ExerciseViewModel>());
         }
 
-        public void ResetExercisesCache()
+        public Task ResetExercisesCache()
         {
             _exercisesInMemoryCache = null;
+
+            return Task.CompletedTask;
         }
 
-        public bool IsExercisesCached()
+        public Task<bool> IsExercisesCached()
         {
-            return _exercisesInMemoryCache is object;
+            return Task.FromResult(_exercisesInMemoryCache is object);
         }
 
         public Task<AccessToken> GetToken()

@@ -15,7 +15,7 @@
 		<PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="6.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="BlazorState.Redux" Version="1.1.*-*" />
-		<PackageReference Include="MudBlazor" Version="6.0.5" />
+		<PackageReference Include="MudBlazor" Version="6.0.9" />
 		<PackageReference Include="UnitsNet" Version="4.120.0" />
 		<PackageReference Include="Mapster" Version="7.3.0" />
 	</ItemGroup>

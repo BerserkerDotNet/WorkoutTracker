@@ -1,5 +1,6 @@
 ﻿<MudDialog>
 	<DialogContent>
+		<WeightSelector @bind-Weight="CurrentWeight" Variant="Variant.Outlined" />
 		<MudNumericField @bind-Value="repetitions" Label="Repetetions:" Variant="Variant.Outlined" Min="0" />
 		<MudNumericField @bind-Value="duration" Label="Duration:" Variant="Variant.Outlined" Min="0" />
 		<MudNumericField @bind-Value="restTime" Label="Rest time:" Variant="Variant.Outlined" Min="0" />
@@ -30,7 +31,7 @@
 	public int CurrentRestTime { get; set; }
 
 	[Parameter]
-	public double CurrentWeight { get; set; }
+	public Mass CurrentWeight { get; set; }
 
 	[Parameter]
 	public string Notes { get; set; }
@@ -52,7 +53,7 @@
 				Duration = TimeSpan.FromSeconds(duration),
 				RestTime = TimeSpan.FromSeconds(restTime),
 				Repetitions = repetitions,
-				Weight = CurrentWeight,
+				Weight = CurrentWeight.Kilograms,
 				Note = notes,
 			}));
 	}

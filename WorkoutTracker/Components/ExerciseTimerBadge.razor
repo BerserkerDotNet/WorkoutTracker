@@ -1,4 +1,4 @@
-﻿<MudChip Size="Size.Large" Icon="@Icons.Material.Filled.Timer" Color="@_chipColor">@_formattedString</MudChip>
+﻿<MudChip Label="true" Size="Size.Large" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Timer" Color="@_chipColor" Class="mx-0" Style="width:100%">@_formattedString</MudChip>
 
 @code{
 
@@ -6,20 +6,28 @@
 	private string _formattedString = "";
 
 	[Parameter]
+	[EditorRequired]
 	public bool IsResting { get; set; }
 
 	[Parameter]
+	[EditorRequired]
 	public string RestingTemplate { get; set; }
 
 	[Parameter]
+	[EditorRequired]
 	public string WorkingoutTemplate { get; set; }
 
 	[Parameter]
+	public TimeSpan TargetRestTime { get; set; } = TimeSpan.MaxValue;
+
+	[Parameter]
+	[EditorRequired]
 	public TimeSpan Time { get; set; }
 
 	protected override void OnParametersSet()
 	{
 		_chipColor = IsResting ? Color.Info : Color.Secondary;
+		_chipColor = IsResting && TargetRestTime < Time ? Color.Warning : _chipColor;
 		var formattedTime = Time.ToString(@"mm\:ss");
 		_formattedString = IsResting ? string.Format(RestingTemplate, formattedTime) : string.Format(WorkingoutTemplate, formattedTime);
 	}

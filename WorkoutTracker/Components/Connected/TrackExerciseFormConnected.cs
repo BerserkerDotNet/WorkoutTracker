@@ -23,6 +23,8 @@ public class TrackExerciseFormConnected : ConnectedComponent<TrackExerciseForm, 
         props.PreviousExerciseId = prevSet is null || prevSet.Id == CurrentScheduleId ? null : prevSet;
 
         var currentSchedule = state.SelectScheduleById(CurrentScheduleId);
+        props.CurrentSchedule = currentSchedule;
+
         var currentExerciseId = currentSchedule.CurrentExercise.Id;
 
         var log = state.SelectTodayExerciseById(currentExerciseId);
@@ -42,6 +44,9 @@ public class TrackExerciseFormConnected : ConnectedComponent<TrackExerciseForm, 
             };
             props.SetNumber = 1;
         }
+
+        props.PreviousLog = state.SelectLastLogByExercise(currentExerciseId);
+        props.PreviousLogLoading = !state.IsLastLogByExerciseLoaded(currentExerciseId);
     }
 
     protected override void MapDispatchToProps(IStore<RootState> store, TrackExerciseFormProps props)
@@ -49,6 +54,10 @@ public class TrackExerciseFormConnected : ConnectedComponent<TrackExerciseForm, 
         props.Save = CallbackAsync<LogEntryViewModel>(async e =>
         {
             await store.Dispatch<SaveExerciseLogEntryAction, LogEntryViewModel>(e);
+            if (e.Sets.Count() == props.CurrentSchedule.TargetSets && props.NextExerciseId is object) 
+            {
+                Navigation.NavigateTo($"/trackexercise/{props.NextExerciseId.Id}");
+            }
         });
 
         props.Cancel = Callback(() => Navigation.NavigateTo($"/"));
@@ -62,5 +71,23 @@ public class TrackExerciseFormConnected : ConnectedComponent<TrackExerciseForm, 
         {
             Navigation.NavigateTo($"/trackexercise/{item.Id}");
         });
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var currentSchedule = Store.State.SelectScheduleById(CurrentScheduleId);
+        if (currentSchedule is null) 
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        var currentExerciseId = currentSchedule.CurrentExercise.Id;
+        if (!Store.State.IsLastLogByExerciseLoaded(currentExerciseId))
+        {
+            await Store.Dispatch<FetchLastWorkoutByExerciseAction, Guid>(currentExerciseId);
+        }
+
+        base.OnParametersSet();
     }
 }

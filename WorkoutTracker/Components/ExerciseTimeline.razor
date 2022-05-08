@@ -28,7 +28,7 @@
 }
 else
 {
-	<MudAlert Severity="Severity.Normal">Log a set to see timeline</MudAlert>
+	<MudAlert Severity="Severity.Normal">No sets done today.</MudAlert>
 }
 
 @code {
@@ -50,12 +50,13 @@ else
 
 	private async Task OnEditSet(Set set)
 	{
+		var massInKG = new Mass(set.Weight ?? 0, MassUnit.Kilogram);
 		var parameters = new DialogParameters
 		{
 			{ nameof(SetCompletionForm.Repetitions), set.Repetitions},
 			{ nameof(SetCompletionForm.CurrentDuration), (int)set.Duration.TotalSeconds},
 			{ nameof(SetCompletionForm.CurrentRestTime), (int)set.RestTime.TotalSeconds},
-			{ nameof(SetCompletionForm.CurrentWeight), set.Weight},
+			{ nameof(SetCompletionForm.CurrentWeight), massInKG.ToUnit(MassUnit.Pound)},
 			{ nameof(SetCompletionForm.Notes), set.Note},
 		};
 

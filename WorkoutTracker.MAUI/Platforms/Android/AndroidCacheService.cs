@@ -37,14 +37,16 @@ namespace WorkoutTracker.MAUI.Android
             return _exercisesInMemoryCache;
         }
 
-        public void ResetExercisesCache()
+        public Task ResetExercisesCache()
         {
             File.Delete(exercisesFile);
+
+            return Task.CompletedTask;
         }
 
-        public bool IsExercisesCached()
+        public Task<bool> IsExercisesCached()
         {
-            return File.Exists(exercisesFile);
+            return Task.FromResult(File.Exists(exercisesFile));
         }
 
         public async Task<AccessToken> GetToken()

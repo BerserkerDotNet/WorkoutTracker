@@ -8,7 +8,13 @@ public class TrackExerciseFormProps
 
     public ScheduleViewModel PreviousExerciseId { get; set; }
 
+    public ScheduleViewModel CurrentSchedule { get; set; }
+
     public LogEntryViewModel Log { get; set; }
+
+    public PreviousLogRecordStats PreviousLog { get; set; }
+
+    public bool PreviousLogLoading { get; set; }
 
     public int SetNumber { get; set; }
 

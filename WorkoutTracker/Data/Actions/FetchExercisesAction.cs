@@ -13,7 +13,7 @@ public class FetchExercisesAction : IAsyncAction
 
     public async Task Execute(IDispatcher dispatcher)
     {
-        _cacheService.ResetExercisesCache();
+        await _cacheService.ResetExercisesCache();
         var exercises = await _repository.GetExercises();
         dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
     }

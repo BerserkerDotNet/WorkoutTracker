@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
-
-namespace WorkoutTracker.Data.Actions
+﻿namespace WorkoutTracker.Data.Actions
 {
-    public class SaveExerciseLogEntryAction : IAsyncAction<LogEntryViewModel>
+	public class SaveExerciseLogEntryAction : IAsyncAction<LogEntryViewModel>
     {
         private readonly IWorkoutRepository _repository;
 

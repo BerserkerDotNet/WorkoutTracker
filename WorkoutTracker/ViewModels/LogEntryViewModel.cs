@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using WorkoutTracker.Models;
+﻿using WorkoutTracker.Models;
 
 namespace WorkoutTracker.ViewModels
 {

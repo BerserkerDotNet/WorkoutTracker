@@ -7,8 +7,11 @@ namespace WorkoutTracker.ViewModels
         public static ExercisesFilterViewModel Empty = new ExercisesFilterViewModel(string.Empty, Enumerable.Empty<string>());
     }
 
-    public record ScheduleViewModel(Guid Id, int CurrentIndex, IEnumerable<ExerciseViewModel> Exercises) 
+    public record ScheduleViewModel(Guid Id, int CurrentIndex, int TargetSets, TimeSpan TargetRest, IEnumerable<ExerciseViewModel> Exercises) 
     {
+        public int TargetSets { get; set; } = TargetSets;
+        public TimeSpan TargetRest { get; set; } = TargetRest;
+
         public ExerciseViewModel CurrentExercise => Exercises.Count() > CurrentIndex ? Exercises.ElementAt(CurrentIndex) : null;
     }
 

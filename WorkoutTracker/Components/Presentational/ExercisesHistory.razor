@@ -1,6 +1,6 @@
 ﻿@inject IDialogService DialogService
 
-<MudDatePicker Class="d-flex align-center" PickerVariant="PickerVariant.Static" Date="Props.SelectedDate.ToDateTime()" MaxDate="DateTime.Today" DisableToolbar="true" DateChanged="OnDateChanged" />
+<MudDatePicker Class="d-flex align-center" PickerVariant="PickerVariant.Static" Date="Props.SelectedDate.ToDateTime()" MaxDate="DateTime.MaxValue" DisableToolbar="true" DateChanged="OnDateChanged" />
 
 @foreach (var logRecord in Props.Records)
 {
@@ -17,7 +17,8 @@
 		</MudCardContent> 
 		<MudCardActions>
 			<div class="d-flex align-center justify-space-between" style="width:100%">
-				<MudButton StartIcon="@Icons.Material.Filled.List" Color="Color.Info" OnClick="() => Props.ViewDetails(logRecord)">View details</MudButton>
+				<MudButton StartIcon="@Icons.Material.Filled.List" Color="Color.Info" OnClick="() => Props.ViewDetails(logRecord)">Set details</MudButton>
+				<MudButton StartIcon="@Icons.Material.Filled.MultilineChart" Color="Color.Info" OnClick="() => Props.ViewDetails(logRecord)">Historic data</MudButton>
 				<MudButton StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => OnDelete(logRecord)">Delete</MudButton>
 			</div>
 		</MudCardActions>
@@ -40,7 +41,7 @@
 
 	private async Task OnDelete(LogEntryViewModel record)
 	{
-		var result = await DialogService.ShowMessageBox("Delete exercise", $"Are you sure you wnat to delete {record.Exercise.Name}?", "Yes", "No");
+		var result = await DialogService.ShowMessageBox("Delete exercise", $"Are you sure you want to delete {record.Exercise.Name}?", "Yes", "No");
 		if (result.HasValue && result.Value)
 		{
 			await Props.Delete(record.Id);

@@ -14,7 +14,7 @@ namespace WorkoutTracker.Data
 
         public override async Task<IEnumerable<ExerciseViewModel>> GetExercises()
         {
-            if (_cacheService.IsExercisesCached()) 
+            if (await _cacheService.IsExercisesCached()) 
             {
                 return await _cacheService.GetExercises();
             }
