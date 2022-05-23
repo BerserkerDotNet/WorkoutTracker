@@ -64,13 +64,18 @@ public class TrackExerciseFormConnected : ConnectedComponent<TrackExerciseForm, 
 
         props.Next = Callback<ScheduleViewModel>(item =>
         {
+            store.Dispatch(new SetCurrentSchedule(item.Id));
             Navigation.NavigateTo($"/trackexercise/{item.Id}");
         });
 
         props.Previous = Callback<ScheduleViewModel>(item =>
         {
+            store.Dispatch(new SetCurrentSchedule(item.Id));
             Navigation.NavigateTo($"/trackexercise/{item.Id}");
         });
+
+        props.Replace = CallbackAsync<ScheduleViewModel>(async model => await store.Dispatch<MoveToNextExerciseAction, ScheduleViewModel>(model));
+        props.Swap = Callback<ScheduleViewModel>(model => store.Dispatch(new SwapExerciseSchedulesAction(model)));
     }
 
     protected override async Task OnParametersSetAsync()

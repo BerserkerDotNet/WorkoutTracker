@@ -1,6 +1,5 @@
 ﻿using BlazorState.Redux.Extensions;
 using Mapster;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using WorkoutTracker.Data.Actions;

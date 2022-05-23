@@ -11,13 +11,21 @@ namespace WorkoutTracker.Data.Props
 
     public class ExerciseScheduleProps
     {
-        public IEnumerable<ScheduleViewModel> Schedule { get; set; }
+		public Guid? CurrentScheduleId { get; set; }
+
+		public IEnumerable<ScheduleViewModel> Schedule { get; set; }
 
         public Action<IEnumerable<ScheduleViewModel>> Start { get; set; }
+
+        public Action<Guid> Resume { get; set; }
 
         public Action<ScheduleViewModel> Previous { get; set; }
 
         public Action<ScheduleViewModel> Next { get; set; }
+
+        public Action<ScheduleViewModel> MoveUp { get; set; }
+
+        public Action<ScheduleViewModel> MoveDown { get; set; }
     }
 
     public class ExercisesLogProps

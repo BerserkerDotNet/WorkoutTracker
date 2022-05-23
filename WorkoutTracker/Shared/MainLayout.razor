@@ -12,7 +12,7 @@
 			<MudText>
 				<AuthorizeView>
 					<Authorized>
-						Hello, @context.User.Identity.Name!
+						Hello, @context.User.Identity.Name!.Split(' ')[0]
 					</Authorized>
 					<NotAuthorized>
 						Log in

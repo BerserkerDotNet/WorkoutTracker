@@ -14,36 +14,46 @@
 		</MudCard>
 	</Then>
 	<Else>
-		<MudPaper Class="d-flex justify-center flex-grow-1 gap-4" Elevation="0">
-			<MudButton 
-				Class="mb-5" 
-				Size="@Size.Large" 
-				StartIcon="@Icons.Material.Filled.PlayArrow" 
-				Color="Color.Success" 
-				OnClick="() => Props.Start(Props.Schedule)">
-				Begin workout
-			</MudButton>
-		</MudPaper>
 		<Foreach Items="Props.Schedule" Context="scheduleItem">
 			@{
 				var item = scheduleItem.CurrentExercise;
 			}
-			<MudCard Class="mb-4" Outlined="true">
+			<MudCard Class="mb-4" Elevation="4">
 				<Image Path="@item.ImagePath" ImageName="@item.Name" />
 				<MudCardContent>
 					<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
-					<MudText Typo="Typo.body2">@item.Description</MudText>
+					@*<MudText Typo="Typo.caption">@item.Description</MudText>*@
 					<MudNumericField T="int" Min="1" Max="50" Step="1" Label="# of sets" Value="scheduleItem.TargetSets" ValueChanged="value => SetsChanged(scheduleItem, value)" />
 					<MudNumericField T="double" Min="10" Max="180" Step="10" Label="Target rest time(s)" Value="scheduleItem.TargetRest.TotalSeconds" ValueChanged="value => RestChanged(scheduleItem, value)" />
 				</MudCardContent>
 				<MudCardActions>
-					<div class="d-flex align-center justify-space-between" style="width:100%">
-						<MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="() => Props.Previous(scheduleItem)">Replace</MudButton>
-						<MudButton EndIcon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next(scheduleItem)">Replace</MudButton>
+					<div style="display:flex;justify-content: center;width:100%;">
+						<MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
+							<MudButton StartIcon="@Icons.Filled.ArrowBack" IconColor="Color.Warning" OnClick="() => Props.Previous(scheduleItem)">Prev</MudButton>
+							<MudButton StartIcon="@Icons.Filled.ArrowUpward" IconColor="Color.Warning" OnClick="() => Props.MoveUp(scheduleItem)">Up</MudButton>
+							<MudButton StartIcon="@Icons.Filled.ArrowDownward" IconColor="Color.Warning" OnClick="() => Props.MoveDown(scheduleItem)">Down</MudButton>
+							<MudButton EndIcon="@Icons.Filled.ArrowForward" IconColor="Color.Warning" OnClick="() => Props.Next(scheduleItem)">Next</MudButton>
+						</MudButtonGroup>
 					</div>
 				</MudCardActions>
 			</MudCard>
 		</Foreach>
+
+		<If Condition="Props.CurrentScheduleId is null">
+			<Then>
+				<ActionButton StartIcon="@Icons.Filled.PlayArrow"
+							Label="Start"
+							  Color="Color.Success"
+							  OnClick="() => Props.Start(Props.Schedule)" />
+			</Then>
+			<Else>
+				<ActionButton StartIcon="@Icons.Filled.PlayArrow"
+					Label="Resume"
+							  Color="Color.Success"
+							  OnClick="() => Props.Resume(Props.CurrentScheduleId.Value)" />
+			</Else>
+		</If>
+
 
 	</Else>
 </If>

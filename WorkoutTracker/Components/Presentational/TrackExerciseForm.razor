@@ -1,4 +1,4 @@
-﻿<MudText Typo="Typo.h5">@Props.Log.Exercise.Name</MudText>
+﻿<MudText Typo="Typo.h5" Align="Align.Center" Class="py-2">@Props.Log.Exercise.Name</MudText>
 
 <MudGrid Spacing="2" Justify="Justify.Center">
 	<MudItem xs="6">
@@ -25,21 +25,26 @@
 			</MudText>
 		}
 	</MudItem>
-	<MudItem xs="12">
-		<div class="d-flex align-center justify-space-between mt-6">
-			<MudButton StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Default" OnClick="() => Props.Previous(Props.PreviousExerciseId)" Disabled="@DisablePrevious">Prev</MudButton>
-			<MudBadge Origin="Origin.TopRight" Content="@($"{Props.SetNumber}/{Props.CurrentSchedule.TargetSets}")" Color="Color.Secondary">
-				@if (_isRunning)
-				{
-					<MudButton Size="Size.Large" StartIcon="@Icons.Material.Filled.Stop" Color="Color.Primary" OnClick="EndSet">Finish set</MudButton>
-				}
-				else
-				{
-					<MudButton IconColor="Color.Success" Size="Size.Large" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartSet">Start set</MudButton>
-				}
-			</MudBadge>
-			<MudButton EndIcon="@Icons.Material.Filled.ArrowForward" Color="Color.Default" OnClick="() => Props.Next(Props.NextExerciseId)" Disabled="@DisableNext">Next</MudButton>
-		</div>
+	<MudItem xs="12" style="display:flex;justify-content: center">
+		<MudBadge Origin="Origin.TopRight" Content="@($"{Props.SetNumber}/{Props.CurrentSchedule.TargetSets}")" Color="Color.Secondary">
+			@if (_isRunning)
+			{
+				<MudButton Size="Size.Large" StartIcon="@Icons.Material.Filled.StopCircle" IconColor="Color.Warning" Color="Color.Primary" OnClick="EndSet">Finish set</MudButton>
+			}
+			else
+			{
+				<MudButton Size="Size.Large" IconColor="Color.Success" StartIcon="@Icons.Material.Filled.PlayCircle" Color="Color.Primary" OnClick="StartSet">Start set</MudButton>
+			}
+
+		</MudBadge>
+	</MudItem>
+	<MudItem xs="12" style="display:flex;justify-content: center">
+		<MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
+			<MudButton StartIcon="@Icons.Filled.ArrowBack" IconColor="Color.Warning" OnClick="() => Props.Previous(Props.PreviousExerciseId)" Disabled="@DisablePrevious">Prev</MudButton>
+			<MudButton StartIcon="@Icons.Filled.SwapHoriz" IconColor="Color.Warning" OnClick="() => Props.Replace(Props.CurrentSchedule)" Disabled="@DisableReplace">Replace</MudButton>
+			<MudButton StartIcon="@Icons.Filled.SwapVert" IconColor="Color.Warning" OnClick="() => Props.Swap(Props.CurrentSchedule)" Disabled="@DisableSwap">Swap</MudButton>
+			<MudButton EndIcon="@Icons.Filled.ArrowForward" IconColor="Color.Warning" OnClick="() => Props.Next(Props.NextExerciseId)" Disabled="@DisableNext">Next</MudButton>
+		</MudButtonGroup>
 	</MudItem>
 	<MudItem xs="12">
 		<MudDivider Class="my-2" />

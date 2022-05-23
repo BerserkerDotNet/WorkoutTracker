@@ -12,6 +12,11 @@ public static class ScheduleSelectors
         return SelectSchedule(state).FirstOrDefault(s => s.Id == id);
     }
 
+    public static Guid? SelectCurentScheduleId(this RootState state)
+    {
+        return state?.ExerciseSchedule?.CurrentScheduleId ?? null;
+    }
+
     public static ScheduleViewModel SelectNextExerciseFromSchedule(this RootState state, Guid currentScheduleId) 
     {
         return SelectSchedule(state)

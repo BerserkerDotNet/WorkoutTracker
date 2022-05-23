@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+
+<MudFab Color="Color" StartIcon="@StartIcon" EndIcon="@EndIcon" Style="position:fixed;right:15px;bottom:15px;" OnClick="OnClick" Label="@Label" />
+
+@code {
+
+	[Parameter]
+	public string StartIcon { get; set; }
+
+	[Parameter]
+	public string EndIcon { get; set; }
+
+	[Parameter]
+	public Color Color { get; set; }
+
+	[Parameter]
+	public string Label { get; set; }
+
+	[Parameter]
+	public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

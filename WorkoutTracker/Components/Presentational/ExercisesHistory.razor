@@ -1,19 +1,37 @@
 ﻿@inject IDialogService DialogService
 
-<MudDatePicker Class="d-flex align-center" PickerVariant="PickerVariant.Static" Date="Props.SelectedDate.ToDateTime()" MaxDate="DateTime.MaxValue" DisableToolbar="true" DateChanged="OnDateChanged" />
+<MudDatePicker 
+	Class="d-flex align-center" 
+	PickerVariant="PickerVariant.Static" 
+	Date="Props.SelectedDate.ToDateTime()"
+	MaxDate="DateTime.MaxValue"
+	DisableToolbar="true" 
+	DateChanged="OnDateChanged" />
+<MudDivider Class="my-2" />
+<If Condition="!Props.Records.Any()">
+	<Then>
+		<MudAlert Severity="Severity.Normal">Looks like you didn't train on @Props.SelectedDate.ToShortDateString().</MudAlert>
+	</Then>
+	<Else>
+		@{
+			var workoutDuration = Props.Records.Sum(r => r.TotalDuration);
+			var workoutRest = Props.Records.Sum(r => r.TotalRest);
+			var workoutWeight = Props.Records.Sum(r => r.TotalWeight);
+		}
+		<MudAlert Severity="Severity.Success">You workout lasted for <b>@(workoutDuration + workoutRest)</b> minutes. Time in exercise is <b>@workoutDuration</b> minutes, rested <b>@workoutRest</b> minutes. You lifted a total of <b>@workoutWeight</b> KGs</MudAlert>
+	</Else>
+</If>
 
 @foreach (var logRecord in Props.Records)
 {
-	var totalDuration = Math.Ceiling(logRecord.Sets.Sum(s => s.Duration.TotalMinutes));
-	var totalRest = Math.Ceiling(logRecord.Sets.Sum(s => s.RestTime.TotalMinutes));
-
 	<MudCard Class="my-4" Elevation="3">
 		<Image Path="@logRecord.Exercise.ImagePath" ImageName="@logRecord.Exercise.Name" />
 		<MudCardContent>
 			<MudText Align="Align.Center" Typo="Typo.h5">@logRecord.Exercise.Name</MudText>
 			<MudText Typo="Typo.body2">@logRecord.Exercise.Description</MudText>
 			<MudText Typo="Typo.body2">Date: @logRecord.Date.ToShortDateString()</MudText>
-			<MudText Typo="Typo.body2">Total of @logRecord.Sets.Count() set(s) with durtation of @totalDuration minutes and rest time is @totalRest minutes.</MudText>
+			<MudText Typo="Typo.body2">Total of @logRecord.Sets.Count() set(s) in @logRecord.TotalDuration minutes and rested @logRecord.TotalRest minutes.</MudText>
+			<MudText Typo="Typo.body2">Weight lifted: @logRecord.TotalWeight KG.</MudText>
 		</MudCardContent> 
 		<MudCardActions>
 			<div class="d-flex align-center justify-space-between" style="width:100%">

@@ -27,7 +27,11 @@ public partial class TrackExerciseForm : IDisposable
 
     private bool DisablePrevious => Props.PreviousExerciseId is null || _isRunning;
 
+    private bool DisableSwap => Props.NextExerciseId is null || _isRunning;
+
     private bool DisableNext => Props.NextExerciseId is null || _isRunning;
+
+    private bool DisableReplace => _isRunning;
 
     public void Dispose()
     {

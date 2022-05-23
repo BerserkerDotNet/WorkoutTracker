@@ -26,7 +26,7 @@
         Name = "Double upper body",
         ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Chest", "Chest", "Back", "Back", "Shoulder", "Shoulder", "Triceps", "Triceps", "Biceps", "Biceps" },
         IncludeCore = false,
-        DefaultNumberOfSets = 3,
+        DefaultNumberOfSets = 4,
         Shuffler = new GroupShuffle(0, 2)
     };
 

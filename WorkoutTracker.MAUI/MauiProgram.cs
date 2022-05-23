@@ -25,6 +25,9 @@ namespace WorkoutTracker.MAUI
                 });
 
             builder.Services.AddMauiBlazorWebView();
+#if DEBUG
+		    builder.Services.AddBlazorWebViewDeveloperTools();
+#endif
             builder.Services.AddWorkoutTracker(cfg =>
             {
                 cfg.WithCacheService<AndroidCacheService>();

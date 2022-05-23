@@ -10,6 +10,7 @@ namespace WorkoutTracker.ViewModels
     public record ScheduleViewModel(Guid Id, int CurrentIndex, int TargetSets, TimeSpan TargetRest, IEnumerable<ExerciseViewModel> Exercises) 
     {
         public int TargetSets { get; set; } = TargetSets;
+
         public TimeSpan TargetRest { get; set; } = TargetRest;
 
         public ExerciseViewModel CurrentExercise => Exercises.Count() > CurrentIndex ? Exercises.ElementAt(CurrentIndex) : null;

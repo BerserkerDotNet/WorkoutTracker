@@ -8,6 +8,7 @@ using WorkoutTracker.Models;
 using Microsoft.Azure.Cosmos;
 using System.IO;
 using Newtonsoft.Json;
+using System;
 
 namespace WorkoutTracker.Functions
 {
@@ -15,20 +16,20 @@ namespace WorkoutTracker.Functions
     {
         [Authorize]
         [FunctionName(EndpointNames.ExercisePluralName)]
-        public static Task<IActionResult> Run(
+        public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
             ILogger log)
         {
             switch (request.Method)
             {
                 case "GET":
-                    return Get(request, log);
+                    return await Get(request, log);
                 case "POST":
-                    return Create(request, log);
+                    return await Create(request, log);
                 case "DELETE":
-                    return Delete(request, log);
+                    return await Delete(request, log);
                 default:
-                    return Task.FromResult<IActionResult>(new BadRequestObjectResult($"Method {request.Method} is not supported."));
+                    return new BadRequestObjectResult($"Method {request.Method} is not supported.");
             }
         }
 

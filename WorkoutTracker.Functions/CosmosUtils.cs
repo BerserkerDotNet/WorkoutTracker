@@ -3,6 +3,7 @@ using WorkoutTracker.Models;
 using Microsoft.Azure.Cosmos;
 using System;
 using System.Linq;
+using Azure.Identity;
 
 namespace WorkoutTracker.Functions
 {
@@ -12,8 +13,7 @@ namespace WorkoutTracker.Functions
             where T : EntityBase
         {
             var endpoint = Environment.GetEnvironmentVariable("DbEndpoint");
-            var key = Environment.GetEnvironmentVariable("DbKey");
-            CosmosClient client = new CosmosClient(endpoint, key); // TODO: dispose?
+            var client = new CosmosClient(endpoint, new DefaultAzureCredential());
             Database database = await client.CreateDatabaseIfNotExistsAsync("WorkoutTrackerData");
             return await database.CreateContainerIfNotExistsAsync(GetNameFor<T>(), "/id");
         }
