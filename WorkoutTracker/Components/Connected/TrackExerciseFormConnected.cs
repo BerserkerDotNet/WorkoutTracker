@@ -88,7 +88,7 @@ public class TrackExerciseFormConnected : ConnectedComponent<TrackExerciseForm, 
         }
 
         var currentExerciseId = currentSchedule.CurrentExercise.Id;
-        if (!Store.State.IsLastLogByExerciseLoaded(currentExerciseId))
+        if (!Store.State.IsLastLogByExerciseLoading(currentExerciseId))
         {
             await Store.Dispatch<FetchLastWorkoutByExerciseAction, Guid>(currentExerciseId);
         }

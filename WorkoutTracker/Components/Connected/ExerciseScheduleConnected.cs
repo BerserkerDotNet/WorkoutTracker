@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 using WorkoutTracker.Components.Presentational;
 using WorkoutTracker.Data.Actions;
 using WorkoutTracker.Data.Selectors;
@@ -37,8 +36,12 @@ namespace WorkoutTracker.Components.Connected
 
         protected override async Task Init(IStore<RootState> store)
         {
-            await store.Dispatch<FetchExercisesAction>();
-            await store.Dispatch<BuildExerciseScheduleAction, ExerciseProfile>(store.State.SelectCurrentProfile());
+            var state = store.State;
+            if (state.ExerciseSchedule is null)
+            {
+                await store.Dispatch<FetchExercisesAction>();
+                await store.Dispatch<BuildExerciseScheduleAction, ExerciseProfile>(state.SelectCurrentProfile());
+            }
         }
     }
 }

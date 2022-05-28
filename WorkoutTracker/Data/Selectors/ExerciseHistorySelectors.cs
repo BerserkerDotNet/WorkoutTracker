@@ -69,6 +69,12 @@ public static class ExerciseHistorySelectors
     public static bool IsLastLogByExerciseLoaded(this RootState state, Guid id)
     {
         var lookup = SelectLastLogByExerciseLookup(state);
+        return lookup.ContainsKey(id) && lookup[id] is object;
+    }
+
+    public static bool IsLastLogByExerciseLoading(this RootState state, Guid id)
+    {
+        var lookup = SelectLastLogByExerciseLookup(state);
         return lookup.ContainsKey(id);
     }
 }

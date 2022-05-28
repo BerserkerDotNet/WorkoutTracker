@@ -14,7 +14,7 @@ public class SaveExerciseAction : IAsyncAction<EditExerciseViewModel>
     public async Task Execute(IDispatcher dispatcher, EditExerciseViewModel exercise)
     {
         await _repository.UpdateExercise(exercise);
-        await dispatcher.Dispatch<FetchExercisesAction>();
+        await dispatcher.Dispatch<ReFetchExercisesAction>();
         _notificationService.ShowToast("Exercise updated.");
     }
 }

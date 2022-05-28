@@ -15,7 +15,7 @@
         {
             await _repository.DeleteExercise(id);
             _notificationService.ShowToast("Exercise deleted.");
-            await dispatcher.Dispatch<FetchExercisesAction>();
+            await dispatcher.Dispatch<ReFetchExercisesAction>();
         }
     }
 }
