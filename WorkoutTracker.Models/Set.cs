@@ -4,7 +4,9 @@ namespace WorkoutTracker.Models
 {
     public class Set
     {
-        public double? Weight { get; set; }
+        public double? WeightLB { get; set; }
+
+        public double? WeightKG { get; set; }
 
         public int Repetitions { get; set; }
 

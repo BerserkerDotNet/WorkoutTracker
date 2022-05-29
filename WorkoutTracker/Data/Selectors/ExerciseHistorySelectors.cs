@@ -61,9 +61,13 @@ public static class ExerciseHistorySelectors
             return null;
         }
 
-        var maxWeightSet = record.Sets.MaxBy(s => s.Weight);
+        var maxWeightSet = record.Sets.MaxBy(s => s.WeightLB);
 
-        return new PreviousLogRecordStats(maxWeightSet.Weight, maxWeightSet.Repetitions);
+        var showKG = state.SelectShowWeightInKG();
+        var weight = showKG ? maxWeightSet.WeightKG : maxWeightSet.WeightLB;
+        var weightUnit = showKG ? "KG" : "LB";
+
+        return new PreviousLogRecordStats(Math.Ceiling(weight ?? 0), weightUnit, maxWeightSet.Repetitions);
     }
 
     public static bool IsLastLogByExerciseLoaded(this RootState state, Guid id)

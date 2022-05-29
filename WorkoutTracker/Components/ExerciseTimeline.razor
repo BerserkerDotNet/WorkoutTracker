@@ -5,6 +5,8 @@
 		{
 			var setNumber = setIdx + 1;
 			var set = Sets.ElementAt(setIdx);
+			var weight = ShowWeightInKG ? set.WeightKG : set.WeightLB;
+			var weightUnit = ShowWeightInKG ? "KGs" : "LBs";
 			<MudTimelineItem Size="Size.Medium" Color="Color.Info" Elevation="25">
 				<ItemDot>
 					<MudText>@setNumber</MudText>
@@ -12,7 +14,7 @@
 				<ItemContent>
 					<MudCard Elevation="25">
 						<MudCardContent>
-							<MudText Typo="Typo.body2">Weigth: <b>@Math.Round(set.Weight ?? 0, 1) KG</b></MudText>
+							<MudText Typo="Typo.body2">Weigth: <b>@Math.Ceiling(weight ?? 0) @weightUnit</b></MudText>
 							<MudText Typo="Typo.body2">Repetitions: <b>@set.Repetitions</b></MudText>
 							<MudText Typo="Typo.body2">Duration: <b>@set.Duration</b></MudText>
 							<MudText Typo="Typo.body2">Rest time: <b>@set.RestTime</b></MudText>
@@ -42,6 +44,10 @@ else
 
 	[Parameter]
 	[EditorRequired]
+	public bool ShowWeightInKG { get; set; }
+
+	[Parameter]
+	[EditorRequired]
 	public EventCallback OnSave { get; set; }
 
 	[Parameter]
@@ -50,13 +56,13 @@ else
 
 	private async Task OnEditSet(Set set)
 	{
-		var massInKG = new Mass(set.Weight ?? 0, MassUnit.Kilogram);
+		var massInLB = new Mass(set.WeightLB ?? 0, MassUnit.Pound);
 		var parameters = new DialogParameters
 		{
 			{ nameof(SetCompletionForm.Repetitions), set.Repetitions},
 			{ nameof(SetCompletionForm.CurrentDuration), (int)set.Duration.TotalSeconds},
 			{ nameof(SetCompletionForm.CurrentRestTime), (int)set.RestTime.TotalSeconds},
-			{ nameof(SetCompletionForm.CurrentWeight), massInKG.ToUnit(MassUnit.Pound)},
+			{ nameof(SetCompletionForm.CurrentWeight), massInLB.ToUnit(MassUnit.Pound)},
 			{ nameof(SetCompletionForm.Notes), set.Note},
 		};
 
@@ -72,7 +78,8 @@ else
 		set.Duration = resultSet.Duration;
 		set.RestTime = resultSet.RestTime;
 		set.Repetitions = resultSet.Repetitions;
-		set.Weight = resultSet.Weight;
+		set.WeightKG = resultSet.WeightKG;
+		set.WeightLB = resultSet.WeightLB;
 		set.Note = resultSet.Note;
 
 		await OnSave.InvokeAsync();

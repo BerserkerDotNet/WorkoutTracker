@@ -11,7 +11,7 @@
 		<WeightSelector @bind-Weight="_weight" />
 		@if (!Props.PreviousLogLoading && Props.PreviousLog is object)
 		{
-			<MudChip Icon="@Icons.Filled.History" Label="true" Color="Color.Info" Class="mx-0 my-2" Style="width:100%">@Props.PreviousLog.Repetitions reps of @Props.PreviousLog.WeightInLB LB</MudChip>
+			<MudChip Icon="@Icons.Filled.History" Label="true" Color="Color.Info" Class="mx-0 my-2" Style="width:100%">@Props.PreviousLog.Repetitions reps of @Props.PreviousLog.WeightFormatted</MudChip>
 		}
 		else if (!Props.PreviousLogLoading && Props.PreviousLog is null)
 		{
@@ -48,7 +48,7 @@
 	</MudItem>
 	<MudItem xs="12">
 		<MudDivider Class="my-2" />
-		<ExerciseTimeline Sets="Props.Log.Sets" OnSave="EventCallback.Factory.Create(this, SaveLog)" OnDelete="EventCallback.Factory.Create<Set>(this, OnDeleteSet)" />
+		<ExerciseTimeline Sets="Props.Log.Sets" OnSave="EventCallback.Factory.Create(this, SaveLog)" OnDelete="EventCallback.Factory.Create<Set>(this, OnDeleteSet)" ShowWeightInKG="false" />
 	</MudItem>
 </MudGrid>
 @*TODO: Global overlay control via action?*@

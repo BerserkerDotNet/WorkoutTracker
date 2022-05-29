@@ -4,10 +4,10 @@ using UnitsNet;
 
 namespace WorkoutTracker.Data.Props
 {
-    public record PreviousLogRecordStats(double? Weight, int Repetitions) 
+    public record PreviousLogRecordStats(double Weight, string WeightUnit, int Repetitions) 
     {
-        public double WeightInLB => Weight.HasValue ? Math.Floor(Mass.FromKilograms(Weight.Value).Pounds) : 0.0d;
-    } 
+        public string WeightFormatted => $"{Weight} {WeightUnit}";
+    }
 
     public class ExerciseScheduleProps
     {

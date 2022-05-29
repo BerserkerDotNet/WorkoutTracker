@@ -9,4 +9,6 @@ public class RootState
     public LogEntriesState ExerciseLogs { get; set; }
 
     public ExerciseScheduleState ExerciseSchedule { get; set; }
+
+    public UserPreferencesState Preferences { get; set; }
 }

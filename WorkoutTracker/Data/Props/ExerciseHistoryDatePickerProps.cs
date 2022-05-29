@@ -10,6 +10,8 @@ public class ExercisesHistoryProps
 
     public bool IsLoadingRecods { get; set; }
 
+    public bool ShowWeightInKG { get; set; }
+
     public Action<LogEntryViewModel> ViewDetails { get; set; }
 
     public AsyncAction<DateOnly> SelectedDateChanged { get; set; }

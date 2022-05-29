@@ -16,6 +16,7 @@ public class ExercisesHistoryConnected : SafeConnectedComponent<ExercisesHistory
         props.SelectedDate = state.SelectDate();
         props.Records = state.SelectExercisesByDate(props.SelectedDate);
         props.IsLoadingRecods = !history.ContainsKey(props.SelectedDate);
+        props.ShowWeightInKG = state.SelectShowWeightInKG();
     }
 
     protected override void MapDispatchToProps(IStore<RootState> store, ExercisesHistoryProps props)
