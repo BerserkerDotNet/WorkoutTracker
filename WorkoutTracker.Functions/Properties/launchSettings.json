@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "WorkoutTracker.Functions": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DbEndpoint": "https://workout-tracker-data.documents.azure.com:443/",
+        "DbKey": "dzClP7ANtamvHDh0pefpj8VqIhA20XmVWOfh8IobFddK9TPQ8sJ4SvCyttQaS0b3H1wRi864Lg3C5aXTCKeV5Q==",
+        "ContentAccount": "workouttrackercontent"
+      },
+      "hotReloadEnabled": true
+    }
+  }
+}

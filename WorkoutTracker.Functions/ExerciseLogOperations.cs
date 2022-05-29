@@ -16,20 +16,29 @@ public static class ExerciseLogOperations
 {
     [Authorize]
     [FunctionName(EndpointNames.ExerciseLogEntryPluralName)]
-    public static Task<IActionResult> Run(
+    public static async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
         ILogger log)
     {
-        switch (request.Method)
+        try
         {
-            case "GET":
-                return Get(request, log);
-            case "POST":
-                return Create(request, log);
-            case "DELETE":
-                return Delete(request, log);
-            default:
-                return Task.FromResult<IActionResult>(new BadRequestObjectResult($"Method {request.Method} is not supported."));
+            log.LogInformation("Processing '{Method}' request to '{Entity}'", request.Method, EndpointNames.ExerciseLogEntryPluralName);
+            switch (request.Method)
+            {
+                case "GET":
+                    return await Get(request, log);
+                case "POST":
+                    return await Create(request, log);
+                case "DELETE":
+                    return await Delete(request, log);
+                default:
+                    return new BadRequestObjectResult($"Method {request.Method} is not supported.");
+            }
+        }
+        catch (Exception ex)
+        {
+            log.LogError(ex, "Error processing '{Method}' on '{Entity}'", request.Method, EndpointNames.ExerciseLogEntryPluralName);
+            throw;
         }
     }
 
@@ -42,6 +51,7 @@ public static class ExerciseLogOperations
 
         if (string.IsNullOrEmpty(id))
         {
+            log.LogInformation("Fetching logs for '{Date}'", date);
             var items = container.GetItemLinqQueryable<ExerciseLogEntry>(allowSynchronousQueryExecution: true)
                 .Where(e => e.Date >= date && e.Date < nextDay)
                 .OrderByDescending(e => e.Date);
@@ -50,6 +60,7 @@ public static class ExerciseLogOperations
         }
         else
         {
+            log.LogInformation("Fetching exericse log '{Id}'", id);
             var item = await container.ReadItemAsync<ExerciseLogEntry>(id, new PartitionKey(id));
             return new OkObjectResult(item.Resource);
         }
@@ -60,9 +71,11 @@ public static class ExerciseLogOperations
         var id = request.Query["id"];
         if (string.IsNullOrEmpty(id))
         {
+            log.LogWarning("Failed deleting exercise. Id of an item is required.");
             return new BadRequestObjectResult("Id of an item is required.");
         }
 
+        log.LogInformation("Deleting exercise log '{Id}'", id);
         var container = await CosmosUtils.GetContainer<ExerciseLogEntry>();
         var response = await container.DeleteItemAsync<ExerciseLogEntry>(id, new PartitionKey(id));
         return new StatusCodeResult((int)response.StatusCode);
@@ -77,9 +90,11 @@ public static class ExerciseLogOperations
 
         if (response.StatusCode != System.Net.HttpStatusCode.Created)
         {
+            log.LogError("Failed to create exercise log with '{StatusCode}'", response.StatusCode);
             return new StatusCodeResult((int)response.StatusCode);
         }
 
+        log.LogInformation("Exercise log '{Id}' is created.", response.Resource.Id);
         return new OkObjectResult(response.Resource);
     }
 }

@@ -6,7 +6,7 @@ using System.Threading;
 using WorkoutTracker.Models;
 using System.Text.Json;
 using System.Text;
-using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace WorkoutTracker.Functions;
 
@@ -14,13 +14,22 @@ public class AuthorizeAttribute : FunctionInvocationFilterAttribute
 {
     public override async Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
     {
+        var logger = executingContext.Logger;
         var request = (HttpRequest)executingContext.Arguments["request"];
+
+        if (string.Equals(request.Host.Host, "localhost", StringComparison.OrdinalIgnoreCase))
+        {
+            logger.LogWarning("Skipping auth for localhost");
+            return;
+        }
+
         try
         {
             var idClaim = request.HttpContext.User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier");
             if (idClaim is null)
             {
-                await WriteForbiddenResponse(request, $"Id claim is missing in the token.");
+                logger.LogWarning("Id claim is missing in the token.");
+                await WriteForbiddenResponse(request,"Id claim is missing in the token.");
                 return;
             }
 
@@ -31,14 +40,17 @@ public class AuthorizeAttribute : FunctionInvocationFilterAttribute
             var itemResponse = await userContainer.ReadItemAsync<User>(id, new Microsoft.Azure.Cosmos.PartitionKey(id));
             if (itemResponse.StatusCode != System.Net.HttpStatusCode.OK || itemResponse.Resource is null)
             {
+                logger.LogWarning("User is not allowed in the app. Response code '{StatusCode}'", itemResponse.StatusCode);
                 await WriteForbiddenResponse(request, "User is not allowed in the app.");
                 return;
             }
 
-            await base.OnExecutingAsync(executingContext, cancellationToken);
+            logger.LogInformation("User '{User}' is authenticated.", id);
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Error authenticating user. {Message}", ex.Message);
+
             request.HttpContext.Response.StatusCode = 500;
             await request.HttpContext.Response.Body.WriteAsync(Encoding.UTF8.GetBytes(ex.Message));
             await request.HttpContext.Response.Body.FlushAsync();

@@ -9,6 +9,6 @@ namespace WorkoutTracker.Models
 
         public Set[] Sets { get; set; }
 
-        public DateTime Date { get; set; } = DateTime.UtcNow;
+        public DateTime Date { get; set; }
     }
 }

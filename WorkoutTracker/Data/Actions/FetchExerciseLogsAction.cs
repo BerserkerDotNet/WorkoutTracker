@@ -1,4 +1,6 @@
-﻿namespace WorkoutTracker.Data.Actions;
+﻿using Newtonsoft.Json;
+
+namespace WorkoutTracker.Data.Actions;
 
 public class FetchExerciseLogsAction : TrackableAction<DateTime>
 {
@@ -13,7 +15,7 @@ public class FetchExerciseLogsAction : TrackableAction<DateTime>
     protected override async Task Execute(IDispatcher dispatcher, DateTime date, Dictionary<string, string> trackableProperties)
     {
         var dateKey = DateOnly.FromDateTime(date);
-        var logEntryChunk = await _repository.GetLogs(date);
+        var logEntryChunk = await _repository.GetLogs(date.ToUniversalTime());
         dispatcher.Dispatch(new ReceiveExerciseLogsAction(dateKey, logEntryChunk.OrderByDescending(i => i.Date)));
     }
 }

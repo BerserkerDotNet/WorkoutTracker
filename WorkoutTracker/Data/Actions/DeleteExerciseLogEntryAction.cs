@@ -14,6 +14,6 @@ public class DeleteExerciseLogEntryAction : TrackableAction<Guid>
     {
         await _repository.DeleteLog(id);
         Context.ShowToast("Log entry deleted.");
-        await dispatcher.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today.ToUniversalTime());
+        await dispatcher.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today);
     }
 }

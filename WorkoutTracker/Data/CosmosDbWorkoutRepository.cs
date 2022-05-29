@@ -58,7 +58,8 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
     public virtual async Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date)
     {
         var exercisesDictionary = await GetExercisesLookup();
-        var exerciseLogsDtos = await GetMultiple<ExerciseLogEntry>($"{EndpointNames.ExerciseLogEntryPluralName}?date={date.ToString("yyyy-MM-dd")}"); // TODO, make a parameter on a Get function
+        var dateString = date.ToString("O");
+        var exerciseLogsDtos = await GetMultiple<ExerciseLogEntry>($"{EndpointNames.ExerciseLogEntryPluralName}?date={dateString}"); // TODO, make a parameter on a Get function
 
         return exerciseLogsDtos.Select(l => MapLog(l, exercisesDictionary)).ToArray();
     }
