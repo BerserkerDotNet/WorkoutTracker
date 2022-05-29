@@ -1,20 +1,18 @@
 ﻿namespace WorkoutTracker.Data.Actions;
 
-public class ReFetchExercisesAction : IAsyncAction
+public class ReFetchExercisesAction : TrackableAction
 {
     private readonly ICacheService _cacheService;
-    private readonly IWorkoutRepository _repository;
 
-    public ReFetchExercisesAction(ICacheService cacheService, IWorkoutRepository repository)
+    public ReFetchExercisesAction(ICacheService cacheService, ApplicationContext<ReFetchExercisesAction> context)
+        : base(context)
     {
         _cacheService = cacheService;
-        _repository = repository;
     }
 
-    public async Task Execute(IDispatcher dispatcher)
+    protected override async Task Execute(IDispatcher dispatcher, Dictionary<string, string> trackableProperties)
     {
         await _cacheService.ResetExercisesCache();
-        var exercises = await _repository.GetExercises();
-        dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
+        await dispatcher.Dispatch<FetchExercisesAction>();
     }
 }

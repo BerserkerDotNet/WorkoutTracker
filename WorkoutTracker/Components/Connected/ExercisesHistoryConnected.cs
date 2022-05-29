@@ -5,12 +5,12 @@ using WorkoutTracker.Data.Selectors;
 
 namespace WorkoutTracker.Components.Connected;
 
-public class ExercisesHistoryConnected : ConnectedComponent<ExercisesHistory, RootState, ExercisesHistoryProps>
+public class ExercisesHistoryConnected : SafeConnectedComponent<ExercisesHistory, RootState, ExercisesHistoryProps>
 {
     [Inject]
     public NavigationManager Navigation { get; set; }
 
-    protected override void MapStateToProps(RootState state, ExercisesHistoryProps props)
+    protected override void MapStateToPropsSafe(RootState state, ExercisesHistoryProps props)
     {
         var history = state.SelectHistory();
         props.SelectedDate = state.SelectDate();

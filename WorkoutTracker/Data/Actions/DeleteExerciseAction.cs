@@ -1,21 +1,19 @@
-﻿namespace WorkoutTracker.Data.Actions
+﻿namespace WorkoutTracker.Data.Actions;
+
+public class DeleteExerciseAction : TrackableAction<Guid>
 {
-    public class DeleteExerciseAction : IAsyncAction<Guid>
+    private readonly IWorkoutRepository _repository;
+
+    public DeleteExerciseAction(IWorkoutRepository repository, ApplicationContext<DeleteExerciseAction> context)
+        : base(context)
     {
-        private readonly IWorkoutRepository _repository;
-        private readonly INotificationService _notificationService;
+        _repository = repository;
+    }
 
-        public DeleteExerciseAction(IWorkoutRepository repository, INotificationService notificationService)
-        {
-            _repository = repository;
-            _notificationService = notificationService;
-        }
-
-        public async Task Execute(IDispatcher dispatcher, Guid id)
-        {
-            await _repository.DeleteExercise(id);
-            _notificationService.ShowToast("Exercise deleted.");
-            await dispatcher.Dispatch<ReFetchExercisesAction>();
-        }
+    protected override async Task Execute(IDispatcher dispatcher, Guid id, Dictionary<string, string> trackableProperties)
+    {
+        await _repository.DeleteExercise(id);
+        await dispatcher.Dispatch<ReFetchExercisesAction>();
+        Context.ShowToast("Exercise deleted.");
     }
 }

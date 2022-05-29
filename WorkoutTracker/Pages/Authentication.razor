@@ -1,9 +1,28 @@
 ﻿@page "/authentication/{action}"
 @inject NavigationManager Navigation
+@inject IApplicationInsights AppInsights
 
-<RemoteAuthenticatorView Action="@Action" />
+<RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="OnLogInSucceeded" OnLogOutSucceeded="OnLogOutSucceeded" />
 
 @code{
 
-    [Parameter] public string Action { get; set; }
+    [Parameter]
+    public string Action { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    public async Task OnLogInSucceeded()
+    {
+        var user = (await AuthenticationState).User;
+
+        await AppInsights.SetAuthenticatedUserContext(user.FindFirst("preferred_username")?.Value);
+        await AppInsights.Flush();
+    }
+
+    public async Task OnLogOutSucceeded()
+    {
+        await AppInsights.ClearAuthenticatedUserContext();
+        await AppInsights.Flush();
+    }
 }

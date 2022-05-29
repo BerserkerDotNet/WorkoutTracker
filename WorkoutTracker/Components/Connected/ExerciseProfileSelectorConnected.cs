@@ -4,9 +4,9 @@ using WorkoutTracker.Data.Selectors;
 
 namespace WorkoutTracker.Components.Connected;
 
-public class ExerciseProfileSelectorConnected : ConnectedComponent<ExerciseProfileSelector, RootState, ExerciseProfileSelectorProps>
+public class ExerciseProfileSelectorConnected : SafeConnectedComponent<ExerciseProfileSelector, RootState, ExerciseProfileSelectorProps>
 {
-    protected override void MapStateToProps(RootState state, ExerciseProfileSelectorProps props)
+    protected override void MapStateToPropsSafe(RootState state, ExerciseProfileSelectorProps props)
     {
         props.SelectedProfile = state.SelectCurrentProfile();
     }

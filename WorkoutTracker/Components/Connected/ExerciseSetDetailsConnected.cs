@@ -5,7 +5,7 @@ using WorkoutTracker.Data.Selectors;
 
 namespace WorkoutTracker.Components.Connected;
 
-public class ExerciseSetDetailsConnected : ConnectedComponent<ExerciseSetDetails, RootState, ExerciseHistoryDetailsProps>
+public class ExerciseSetDetailsConnected : SafeConnectedComponent<ExerciseSetDetails, RootState, ExerciseHistoryDetailsProps>
 {
     [Inject]
     public NavigationManager Navigation { get; set; }
@@ -18,7 +18,7 @@ public class ExerciseSetDetailsConnected : ConnectedComponent<ExerciseSetDetails
     [EditorRequired]
     public DateTime Date { get; set; }
 
-    protected override void MapStateToProps(RootState state, ExerciseHistoryDetailsProps props)
+    protected override void MapStateToPropsSafe(RootState state, ExerciseHistoryDetailsProps props)
     {
         props.LogRecord = state.SelectExerciseLog(Date.ToDateOnly(), RecordId); // TODO: Handle null and also load exercise initally
     }

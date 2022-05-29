@@ -93,15 +93,6 @@ public partial class TrackExerciseForm : IDisposable
         {
             isSavingData = true;
             await SaveAndNew(result.Data as Set);
-
-            Snackbar.Add("Exercise logged.", Severity.Success);
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Error saving exercise {ex.Message}", Severity.Error, cfg =>
-            {
-                cfg.VisibleStateDuration = 10000;
-            });
         }
         finally
         {

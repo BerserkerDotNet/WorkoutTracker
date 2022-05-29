@@ -1,18 +1,21 @@
-﻿namespace WorkoutTracker.Data.Actions
+﻿namespace WorkoutTracker.Data.Actions;
+
+public class SaveExerciseLogEntryAction : TrackableAction<LogEntryViewModel>
 {
-	public class SaveExerciseLogEntryAction : IAsyncAction<LogEntryViewModel>
+    private readonly IWorkoutRepository _repository;
+
+    public SaveExerciseLogEntryAction(IWorkoutRepository repository, ApplicationContext<SaveExerciseLogEntryAction> context)
+        : base(context)
     {
-        private readonly IWorkoutRepository _repository;
+        _repository = repository;
+    }
 
-        public SaveExerciseLogEntryAction(IWorkoutRepository repository)
-        {
-            _repository = repository;
-        }
+    protected override async Task Execute(IDispatcher dispatcher, LogEntryViewModel record, Dictionary<string, string> trackableProperties)
+    {
+        trackableProperties.Add(nameof(record.Id), record.Id.ToString());
 
-        public async Task Execute(IDispatcher dispatcher, LogEntryViewModel record)
-        {
-            await _repository.AddLogRecord(record);
-            dispatcher.Dispatch(new AddExerciseLogEntryAction(record));
-        }
+        await _repository.AddLogRecord(record);
+        dispatcher.Dispatch(new AddExerciseLogEntryAction(record));
+        Context.ShowToast("Entry saved.");
     }
 }

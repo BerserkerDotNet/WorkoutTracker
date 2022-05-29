@@ -5,12 +5,12 @@ using WorkoutTracker.Data.Selectors;
 
 namespace WorkoutTracker.Components.Connected;
 
-public class ExercisesListConnected : ConnectedComponent<ExercisesList, RootState, ExercisesListProps>
+public class ExercisesListConnected : SafeConnectedComponent<ExercisesList, RootState, ExercisesListProps>
 {
     [Inject]
     public NavigationManager Navigation { get; set; }
 
-    protected override void MapStateToProps(RootState state, ExercisesListProps props)
+    protected override void MapStateToPropsSafe(RootState state, ExercisesListProps props)
     {
         props.List = state.SelectFilteredExercises().ToList();
     }

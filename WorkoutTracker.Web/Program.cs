@@ -9,7 +9,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddStorage();
-builder.Services.AddWorkoutTracker(cfg => 
+builder.Services.AddWorkoutTracker(builder.Configuration, cfg => 
 {
     cfg.WithCacheService<LocalStorageCacheService>();
 });

@@ -1,22 +1,29 @@
-﻿namespace WorkoutTracker.Data.Actions;
+﻿using Microsoft.Extensions.Logging;
 
-public class BuildExerciseScheduleAction : IAsyncAction<ExerciseProfile>
+namespace WorkoutTracker.Data.Actions;
+
+public class BuildExerciseScheduleAction : TrackableAction<ExerciseProfile>
 {
     private readonly Random _random = new Random();
     private readonly IWorkoutRepository _repository;
 
-    public BuildExerciseScheduleAction(IWorkoutRepository repository)
+    public BuildExerciseScheduleAction(IWorkoutRepository repository, ApplicationContext<BuildExerciseScheduleAction> context)
+        : base(context)
     {
         _repository = repository;
     }
 
-    public async Task Execute(IDispatcher dispatcher, ExerciseProfile profile)
+    protected override async Task Execute(IDispatcher dispatcher, ExerciseProfile profile, Dictionary<string, string> trackableProperties)
     {
+        trackableProperties.Add("Profile", profile.Name);
+
         if (profile is null)
         {
+            Context.LogWarning("Profile is empty");
             return;
         }
 
+        Context.LogInformation("Building schedule for {Profile}", profile.Name);
         var allExercises = await _repository.GetExercises();
         var exerciseFilters = profile.Shuffler.Shuffle(profile.ExerciseSelectors);
 
@@ -31,8 +38,9 @@ public class BuildExerciseScheduleAction : IAsyncAction<ExerciseProfile>
         foreach (var selector in exerciseFilters)
         {
             var descriptor = selector.Select(exercisesToPickFrom);
-            if (descriptor is null) 
+            if (descriptor is null)
             {
+                Context.LogWarning("Didn't find any exercises matching {Selector} in {Profile}", selector.GetType().Name, profile.Name);
                 continue;
             }
 
@@ -44,6 +52,7 @@ public class BuildExerciseScheduleAction : IAsyncAction<ExerciseProfile>
             exercisesToPickFrom.Remove(exercises.ElementAt(index)); // At least prevent same exercise from appearing immediatly in the list
         }
 
+        dispatcher.Dispatch(new SetCurrentSchedule(null));
         dispatcher.Dispatch(new ReceiveExerciseScheduleAction(randomSet.ToArray()));
     }
 }

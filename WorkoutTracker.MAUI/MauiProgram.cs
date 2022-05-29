@@ -24,11 +24,21 @@ namespace WorkoutTracker.MAUI
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
 
+
+            var a = Assembly.GetExecutingAssembly();
+            using var stream = a.GetManifestResourceStream("WorkoutTracker.MAUI.appsettings.json");
+
+            var config = new ConfigurationBuilder()
+                        .AddJsonStream(stream)
+                        .Build();
+
+            builder.Configuration.AddConfiguration(config);
+
             builder.Services.AddMauiBlazorWebView();
 #if DEBUG
 		    builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
-            builder.Services.AddWorkoutTracker(cfg =>
+            builder.Services.AddWorkoutTracker(config, cfg =>
             {
                 cfg.WithCacheService<AndroidCacheService>();
                 cfg.WithMessageHandler<AndroidMessageHandler>();
@@ -42,15 +52,6 @@ namespace WorkoutTracker.MAUI
             builder.Services.AddScoped<IRemoteAuthenticationService<RemoteAuthenticationState>>(s => s.GetService<AuthService>());
             builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetService<AuthService>());
             builder.Services.AddScoped<IAccessTokenProvider>(s => s.GetService<AuthService>());
-
-            var a = Assembly.GetExecutingAssembly();
-            using var stream = a.GetManifestResourceStream("WorkoutTracker.MAUI.appsettings.json");
-
-            var config = new ConfigurationBuilder()
-                        .AddJsonStream(stream)
-                        .Build();
-
-            builder.Configuration.AddConfiguration(config);
 
             return builder.Build();
         }

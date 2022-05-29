@@ -5,7 +5,7 @@ using WorkoutTracker.Data.Selectors;
 
 namespace WorkoutTracker.Components.Connected;
 
-public class EditMuscleFormConnected : ConnectedComponent<EditMuscleForm, RootState, EditMuscleFormProps>
+public class EditMuscleFormConnected : SafeConnectedComponent<EditMuscleForm, RootState, EditMuscleFormProps>
 {
     [Inject]
     public NavigationManager Navigation { get; set; }
@@ -14,7 +14,7 @@ public class EditMuscleFormConnected : ConnectedComponent<EditMuscleForm, RootSt
     [EditorRequired]
     public Guid MuscleId { get; set; }
 
-    protected override void MapStateToProps(RootState state, EditMuscleFormProps props)
+    protected override void MapStateToPropsSafe(RootState state, EditMuscleFormProps props)
     {
         props.Muscle = state.SelectMuscleById(MuscleId);
     }

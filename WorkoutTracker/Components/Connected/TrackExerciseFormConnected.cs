@@ -6,7 +6,7 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker.Components.Connected;
 
-public class TrackExerciseFormConnected : ConnectedComponent<TrackExerciseForm, RootState, TrackExerciseFormProps>
+public class TrackExerciseFormConnected : SafeConnectedComponent<TrackExerciseForm, RootState, TrackExerciseFormProps>
 {
     [Parameter]
     public Guid CurrentScheduleId { get; set; }
@@ -14,7 +14,7 @@ public class TrackExerciseFormConnected : ConnectedComponent<TrackExerciseForm, 
     [Inject]
     public NavigationManager Navigation { get; set; }
 
-    protected override void MapStateToProps(RootState state, TrackExerciseFormProps props)
+    protected override void MapStateToPropsSafe(RootState state, TrackExerciseFormProps props)
     {
         var nextSet = state.SelectNextExerciseFromSchedule(CurrentScheduleId);
         props.NextExerciseId = nextSet.Id == CurrentScheduleId ? null : nextSet;

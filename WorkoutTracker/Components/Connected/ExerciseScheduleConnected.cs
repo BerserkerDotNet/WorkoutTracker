@@ -5,12 +5,12 @@ using WorkoutTracker.Data.Selectors;
 
 namespace WorkoutTracker.Components.Connected
 {
-    public class ExerciseScheduleConnected : ConnectedComponent<ExerciseSchedule, RootState, ExerciseScheduleProps>
+    public class ExerciseScheduleConnected : SafeConnectedComponent<ExerciseSchedule, RootState, ExerciseScheduleProps>
     {
         [Inject]
         public NavigationManager Navigation { get; set; }
 
-        protected override void MapStateToProps(RootState state, ExerciseScheduleProps props)
+        protected override void MapStateToPropsSafe(RootState state, ExerciseScheduleProps props)
         {
             props.Schedule = state.SelectSchedule();
             props.CurrentScheduleId = state.SelectCurentScheduleId();
