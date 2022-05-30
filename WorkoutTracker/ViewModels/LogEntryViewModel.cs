@@ -16,8 +16,8 @@ namespace WorkoutTracker.ViewModels
 
         public double TotalRest => Math.Ceiling(Sets.Sum(s => s.RestTime.TotalMinutes));
 
-        public double TotalWeightKG => Math.Ceiling(Sets.Sum(s => s.WeightKG ?? 0));
+        public double TotalWeightKG => Math.Ceiling(Sets.Sum(s => (s.WeightKG ?? 0) * s.Repetitions));
 
-        public double TotalWeightLB => Math.Ceiling(Sets.Sum(s => s.WeightLB ?? 0));
+        public double TotalWeightLB => Math.Ceiling(Sets.Sum(s => (s.WeightLB ?? 0) * s.Repetitions));
     }
 }

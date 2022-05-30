@@ -11,9 +11,5 @@ namespace WorkoutTracker
         Task SaveExercises(IEnumerable<ExerciseViewModel> exercises);
 
         Task ResetExercisesCache();
-
-        Task<AccessToken> GetToken();
-
-        Task SaveToken(AccessToken token);
     }
 }

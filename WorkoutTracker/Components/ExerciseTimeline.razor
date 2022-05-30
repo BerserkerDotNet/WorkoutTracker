@@ -5,8 +5,10 @@
 		{
 			var setNumber = setIdx + 1;
 			var set = Sets.ElementAt(setIdx);
-			var weight = ShowWeightInKG ? set.WeightKG : set.WeightLB;
-			var weightUnit = ShowWeightInKG ? "KGs" : "LBs";
+			var primaryWeight = ShowWeightInKG ? set.WeightKG : set.WeightLB;
+			var secondaryWeight = ShowWeightInKG ? set.WeightLB : set.WeightKG;
+			var primaryWeightUnit = ShowWeightInKG ? "KG" : "LB";
+			var secondaryWeightUnit = ShowWeightInKG ? "LB" : "KG";
 			<MudTimelineItem Size="Size.Medium" Color="Color.Info" Elevation="25">
 				<ItemDot>
 					<MudText>@setNumber</MudText>
@@ -14,7 +16,7 @@
 				<ItemContent>
 					<MudCard Elevation="25">
 						<MudCardContent>
-							<MudText Typo="Typo.body2">Weigth: <b>@Math.Ceiling(weight ?? 0) @weightUnit</b></MudText>
+							<MudText Typo="Typo.body2">Weigth: <b>@Math.Ceiling(primaryWeight ?? 0) @primaryWeightUnit</b> (@Math.Ceiling(secondaryWeight ?? 0) @secondaryWeightUnit)</MudText>
 							<MudText Typo="Typo.body2">Repetitions: <b>@set.Repetitions</b></MudText>
 							<MudText Typo="Typo.body2">Duration: <b>@set.Duration</b></MudText>
 							<MudText Typo="Typo.body2">Rest time: <b>@set.RestTime</b></MudText>

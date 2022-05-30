@@ -4,16 +4,13 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using WorkoutTracker.ViewModels;
 using System;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace WorkoutTracker.MAUI.Android
 {
     public class AndroidCacheService : ICacheService
     {
         private IEnumerable<ExerciseViewModel> _exercisesInMemoryCache;
-        private AccessToken _token;
         private string exercisesFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "exercises.json");
-        private string tokenFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "token.json");
 
         public async Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
         {
@@ -47,33 +44,6 @@ namespace WorkoutTracker.MAUI.Android
         public Task<bool> IsExercisesCached()
         {
             return Task.FromResult(File.Exists(exercisesFile));
-        }
-
-        public async Task<AccessToken> GetToken()
-        {
-            if (_token is object) 
-            {
-                return _token;
-            }
-
-            if (!File.Exists(tokenFile)) 
-            {
-                return null;
-            }
-
-            var json = await File.ReadAllTextAsync(tokenFile);
-            _token = JsonSerializer.Deserialize<AccessToken>(json);
-
-            return _token;
-        }
-
-        public async Task SaveToken(AccessToken token)
-        {
-            using (var writer = File.CreateText(tokenFile))
-            {
-                var json = JsonSerializer.Serialize(token);
-                await writer.WriteLineAsync(json);
-            }
         }
     }
 }

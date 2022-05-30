@@ -35,16 +35,5 @@ namespace WorkoutTracker.Data.Services
         {
             return Task.FromResult(_exercisesInMemoryCache is object);
         }
-
-        public Task<AccessToken> GetToken()
-        {
-            return Task.FromResult(_token);
-        }
-
-        public Task SaveToken(AccessToken token)
-        {
-            _token = token;
-            return Task.CompletedTask;
-        }
     }
 }

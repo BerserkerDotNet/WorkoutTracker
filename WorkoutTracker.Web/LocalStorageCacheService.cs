@@ -1,6 +1,4 @@
 ﻿using BlazorStorage.Interfaces;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using System.Text.Json;
 using WorkoutTracker.ViewModels;
 
 namespace WorkoutTracker.Web;
@@ -35,15 +33,5 @@ public class LocalStorageCacheService : ICacheService
     public async Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
     {
         await _storage.SetItem(ExercisesKey, exercises);
-    }
-
-    public async Task<AccessToken> GetToken()
-    {
-        return await _storage.GetItem<AccessToken>(TokenKey);
-    }
-
-    public async Task SaveToken(AccessToken token)
-    {
-        await _storage.SetItem(TokenKey, token);
     }
 }
