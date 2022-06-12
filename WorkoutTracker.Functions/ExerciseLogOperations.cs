@@ -44,26 +44,57 @@ public static class ExerciseLogOperations
 
     private static async Task<IActionResult> Get(HttpRequest request, ILogger log)
     {
-        var id = request.Query["id"];
-        var date = !string.IsNullOrEmpty(request.Query["date"]) ? DateTime.Parse(request.Query["date"]) : DateTime.Today.ToUniversalTime();
-        var nextDay = date.AddDays(1);
         var container = await CosmosUtils.GetContainer<ExerciseLogEntry>();
 
-        if (string.IsNullOrEmpty(id))
+        if (request.Query.ContainsKey("date"))
         {
+            var date = !string.IsNullOrEmpty(request.Query["date"]) ? DateTime.Parse(request.Query["date"]) : DateTime.Today.ToUniversalTime();
+            var nextDay = date.AddDays(1);
             log.LogInformation("Fetching logs for '{Date}'", date);
-            var items = container.GetItemLinqQueryable<ExerciseLogEntry>(allowSynchronousQueryExecution: true)
-                .Where(e => e.Date >= date && e.Date < nextDay)
-                .OrderByDescending(e => e.Date);
+            return GetByDateRange(date, nextDay, container);
+        }
 
-            return new OkObjectResult(items);
-        }
-        else
+        if (request.Query.ContainsKey("id"))
         {
+            var id = request.Query["id"];
             log.LogInformation("Fetching exericse log '{Id}'", id);
-            var item = await container.ReadItemAsync<ExerciseLogEntry>(id, new PartitionKey(id));
-            return new OkObjectResult(item.Resource);
+            return await GetById(id, container);
         }
+
+        if (request.Query.ContainsKey("from") && request.Query.ContainsKey("to")) 
+        {
+            var fromString = request.Query["from"];
+            var toString = request.Query["to"];
+            if (DateTime.TryParse(fromString, out var from) && DateTime.TryParse(toString, out var to))
+            {
+                log.LogInformation("Fetching logs from '{From}' to '{To}'", from, to);
+                return GetByDateRange(from, to, container);
+            }
+            else
+            {
+                log.LogWarning("Can't parse '{FromDate}' and '{ToDate}' dates.", fromString, toString);
+                return new BadRequestObjectResult($"Can't parse '{fromString}' and '{toString}' dates.");
+            }
+        }
+
+        log.LogWarning("Not supported Get operation on exericse log.");
+        return new BadRequestObjectResult("Not supported Get operation");
+    }
+
+    private static async Task<IActionResult> GetById(string id, Container container) 
+    {
+        var item = await container.ReadItemAsync<ExerciseLogEntry>(id, new PartitionKey(id));
+        return new OkObjectResult(item.Resource);
+    }
+
+    private static IActionResult GetByDateRange(DateTime from, DateTime to, Container container)
+    {
+        
+        var items = container.GetItemLinqQueryable<ExerciseLogEntry>(allowSynchronousQueryExecution: true)
+            .Where(e => e.Date >= from && e.Date < to)
+            .OrderByDescending(e => e.Date);
+
+        return new OkObjectResult(items);
     }
 
     private static async Task<IActionResult> Delete(HttpRequest request, ILogger log)

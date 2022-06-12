@@ -4,6 +4,7 @@ public record ExerciseProfileSelected(ExerciseProfile Profile) : IAction;
 public record ReceiveExercisesAction(IEnumerable<ExerciseViewModel> Exercises) : IAction;
 public record ReceiveMusclesAction(IEnumerable<MuscleViewModel> Muscles) : IAction;
 public record ReceiveExerciseLogsAction(DateOnly Date, IEnumerable<LogEntryViewModel> ExerciseLogs) : IAction;
+public record ReceiveWorkoutStatsAction(IEnumerable<WorkoutSummary> Summaries) : IAction;
 public record ReceiveExerciseScheduleAction(ScheduleViewModel[] Schedule) : IAction;
 public record SwapExerciseSchedulesAction(ScheduleViewModel ScheduleToSwap) : IAction;
 public record MoveExerciseUpAction(ScheduleViewModel ScheduleToSwap) : IAction;

@@ -27,6 +27,4 @@ public class CachedWorkoutRepository : CosmosDbWorkoutRepository // Inheritance 
 
         return exercises;
     }
-
-    public override Task UpdateExercise(EditExerciseViewModel exercise) => base.UpdateExercise(exercise); // TOOD: update cache
 }

@@ -36,7 +36,7 @@ namespace WorkoutTracker.MAUI
 
             builder.Services.AddMauiBlazorWebView();
 #if DEBUG
-		    builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
             builder.Services.AddWorkoutTracker(config, cfg =>
             {

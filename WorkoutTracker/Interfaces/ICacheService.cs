@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-
-namespace WorkoutTracker
+﻿namespace WorkoutTracker
 {
-    public interface ICacheService
+    public interface ICacheService : IExercisesCache, IWorkoutSummariesCache
+    {
+    }
+
+    public interface IExercisesCache
     {
         Task<bool> IsExercisesCached();
 
@@ -11,5 +13,16 @@ namespace WorkoutTracker
         Task SaveExercises(IEnumerable<ExerciseViewModel> exercises);
 
         Task ResetExercisesCache();
+    }
+
+    public interface IWorkoutSummariesCache
+    {
+        Task<bool> IsSummariesCached();
+
+        Task<IEnumerable<WorkoutSummary>> GetSummaries();
+
+        Task SaveSummaries(IEnumerable<WorkoutSummary> summaries);
+
+        Task ResetSummariesCache();
     }
 }

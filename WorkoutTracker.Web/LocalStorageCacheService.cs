@@ -6,7 +6,7 @@ namespace WorkoutTracker.Web;
 public class LocalStorageCacheService : ICacheService
 {
     private const string ExercisesKey = "WT_EXERCISES";
-    private const string TokenKey = "WT_TOKEN";
+    private const string SummariesKey = "WT_SUMMARIES";
     private readonly ILocalStorage _storage;
 
     public LocalStorageCacheService(ILocalStorage storage)
@@ -19,12 +19,6 @@ public class LocalStorageCacheService : ICacheService
         return await _storage.GetItem<IEnumerable<ExerciseViewModel>>(ExercisesKey);
     }
 
-    public async Task<bool> IsExercisesCached()
-    {
-        var exercises = await GetExercises();
-        return exercises is object;
-    }
-
     public async Task ResetExercisesCache()
     {
         await _storage.RemoveItem(ExercisesKey);
@@ -33,5 +27,32 @@ public class LocalStorageCacheService : ICacheService
     public async Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
     {
         await _storage.SetItem(ExercisesKey, exercises);
+    }
+
+    public async Task<bool> IsExercisesCached()
+    {
+        var exercises = await GetExercises();
+        return exercises is object;
+    }
+
+    public async Task ResetSummariesCache()
+    {
+        await _storage.RemoveItem(SummariesKey);
+    }
+
+    public async Task SaveSummaries(IEnumerable<WorkoutSummary> summaries)
+    {
+        await _storage.SetItem(SummariesKey, summaries);
+    }
+
+    public async Task<IEnumerable<WorkoutSummary>> GetSummaries()
+    {
+        return await _storage.GetItem<IEnumerable<WorkoutSummary>>(SummariesKey);
+    }
+
+    public async Task<bool> IsSummariesCached()
+    {
+        var exercises = await GetSummaries();
+        return exercises is object;
     }
 }

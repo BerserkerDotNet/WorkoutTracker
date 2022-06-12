@@ -18,3 +18,11 @@ public class ExercisesHistoryProps
 
     public AsyncAction<Guid> Delete { get; set; }
 }
+
+
+public class WorkoutSummaryProps
+{
+    public IEnumerable<WorkoutSummary> Summaries { get; set; }
+
+    public IEnumerable<ExerciseViewModel> Exercises { get; set; }
+}

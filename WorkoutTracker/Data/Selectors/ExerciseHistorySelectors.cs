@@ -7,6 +7,11 @@ public static class ExerciseHistorySelectors
         return state.ExerciseLogs?.History ?? new Dictionary<DateOnly, IEnumerable<LogEntryViewModel>>();
     }
 
+    public static IEnumerable<WorkoutSummary> SelectSummaries(this RootState state)
+    {
+        return state.ExerciseLogs?.Summaries ?? Enumerable.Empty<WorkoutSummary>();
+    }
+
     public static DateOnly SelectDate(this RootState state)
     {
         var date = state.ExerciseLogs?.SelectedDate;

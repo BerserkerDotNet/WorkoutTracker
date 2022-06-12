@@ -22,7 +22,7 @@ public class ExercisesHistoryConnected : SafeConnectedComponent<ExercisesHistory
     protected override void MapDispatchToProps(IStore<RootState> store, ExercisesHistoryProps props)
     {
         props.Delete = CallbackAsync<Guid>(async id => await store.Dispatch<DeleteExerciseLogEntryAction, Guid>(id));
-        props.SelectedDateChanged = CallbackAsync<DateOnly>(async date => 
+        props.SelectedDateChanged = CallbackAsync<DateOnly>(async date =>
         {
             store.Dispatch(new SetSelectedHistoryDate(date));
             await store.Dispatch<FetchExerciseLogsAction, DateTime>(date.ToDateTime());

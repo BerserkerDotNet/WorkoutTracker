@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace WorkoutTracker.Data.Actions;
+﻿namespace WorkoutTracker.Data.Actions;
 
 public class FetchExerciseLogsAction : TrackableAction<DateTime>
 {
