@@ -2,16 +2,8 @@
 
 namespace WorkoutTracker.ViewModels;
 
-public class LogEntryViewModel
+public record LogEntryViewModel(Guid Id, ExerciseViewModel Exercise, DateTime Date, IEnumerable<Set> Sets)
 {
-    public Guid Id { get; set; }
-
-    public ExerciseViewModel Exercise { get; set; }
-
-    public IEnumerable<Set> Sets { get; set; }
-
-    public DateTime Date { get; set; }
-
     public double TotalDuration => Math.Ceiling(Sets.Sum(s => s.Duration.TotalMinutes));
 
     public double TotalRest => Math.Ceiling(Sets.Sum(s => s.RestTime.TotalMinutes));
@@ -19,6 +11,8 @@ public class LogEntryViewModel
     public double TotalWeightKG => Math.Ceiling(Sets.Sum(s => (s.WeightKG ?? 0) * s.Repetitions));
 
     public double TotalWeightLB => Math.Ceiling(Sets.Sum(s => (s.WeightLB ?? 0) * s.Repetitions));
+
+    public static LogEntryViewModel New(ExerciseViewModel exercise) => new LogEntryViewModel(Guid.NewGuid(), exercise, DateTime.UtcNow, Enumerable.Empty<Set>());
 }
 
 public record WorkoutSummary(DateTime Date, WorkoutSetSummary Max, WorkoutSetSummary Min, WorkoutSetSummary Avg, WorkoutSetSummary Total, int SetsCount, Guid ExerciseId);

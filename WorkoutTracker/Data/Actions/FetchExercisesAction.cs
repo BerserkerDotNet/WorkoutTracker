@@ -5,7 +5,7 @@ public class FetchExercisesAction : TrackableAction
     private readonly IWorkoutRepository _repository;
 
     public FetchExercisesAction(IWorkoutRepository repository, ApplicationContext<FetchExercisesAction> context)
-        : base(context)
+        : base(context, "Loading exercises")
     {
         _repository = repository;
     }

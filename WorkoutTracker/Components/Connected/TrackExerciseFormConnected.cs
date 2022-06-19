@@ -2,7 +2,6 @@
 using WorkoutTracker.Components.Presentational;
 using WorkoutTracker.Data.Actions;
 using WorkoutTracker.Data.Selectors;
-using WorkoutTracker.Models;
 
 namespace WorkoutTracker.Components.Connected;
 
@@ -35,13 +34,8 @@ public class TrackExerciseFormConnected : SafeConnectedComponent<TrackExerciseFo
         }
         else
         {
-            props.Log = new LogEntryViewModel
-            {
-                Id = Guid.NewGuid(),
-                Exercise = state.SelectExerciseById(currentExerciseId),
-                Sets = Enumerable.Empty<Set>(),
-                Date = DateTime.UtcNow
-            };
+            var exercise = state.SelectExerciseById(currentExerciseId);
+            props.Log = LogEntryViewModel.New(exercise);
             props.SetNumber = 1;
         }
 
@@ -54,7 +48,7 @@ public class TrackExerciseFormConnected : SafeConnectedComponent<TrackExerciseFo
         props.Save = CallbackAsync<LogEntryViewModel>(async e =>
         {
             await store.Dispatch<SaveExerciseLogEntryAction, LogEntryViewModel>(e);
-            if (e.Sets.Count() == props.CurrentSchedule.TargetSets && props.NextExerciseId is object) 
+            if (e.Sets.Count() == props.CurrentSchedule.TargetSets && props.NextExerciseId is object)
             {
                 Navigation.NavigateTo($"/trackexercise/{props.NextExerciseId.Id}");
             }
@@ -81,7 +75,7 @@ public class TrackExerciseFormConnected : SafeConnectedComponent<TrackExerciseFo
     protected override async Task OnParametersSetAsync()
     {
         var currentSchedule = Store.State.SelectScheduleById(CurrentScheduleId);
-        if (currentSchedule is null) 
+        if (currentSchedule is null)
         {
             Navigation.NavigateTo("/");
             return;

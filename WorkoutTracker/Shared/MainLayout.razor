@@ -1,39 +1,40 @@
 ﻿@inherits LayoutComponentBase
 <div class="content">
-	<MudThemeProvider />
-	<MudDialogProvider />
-	<MudSnackbarProvider />
+    <MudThemeProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
 
-	<MudLayout>
-		<MudAppBar>
-			<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-			Workout Tracker
-			<MudSpacer />
-			<MudText>
-				<AuthorizeView>
-					<Authorized>
-						Hello, @context.User.Identity.Name!.Split(' ')[0]
-					</Authorized>
-					<NotAuthorized>
-						Log in
-					</NotAuthorized>
-				</AuthorizeView>
-			</MudText>
-		</MudAppBar>
-		<MudDrawer @bind-Open="@_drawerOpen" Anchor="Anchor.Top" Elevation="1" Variant="@DrawerVariant.Temporary">
-			<NavMenu />
-		</MudDrawer>
-		<MudMainContent Class="px-4">
-			@Body
-		</MudMainContent>
-	</MudLayout>
+    <MudLayout>
+        <MudAppBar>
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            Workout Tracker
+            <MudSpacer />
+            <MudText>
+                <AuthorizeView>
+                    <Authorized>
+                        Hello, @context.User.Identity.Name!.Split(' ')[0]
+                    </Authorized>
+                    <NotAuthorized>
+                        Log in
+                    </NotAuthorized>
+                </AuthorizeView>
+            </MudText>
+        </MudAppBar>
+        <MudDrawer @bind-Open="@_drawerOpen" Anchor="Anchor.Top" Elevation="1" Variant="@DrawerVariant.Temporary">
+            <NavMenu />
+        </MudDrawer>
+        <MudMainContent Class="px-4">
+            @Body
+            <ProgressIndicatorConnected />
+        </MudMainContent>
+    </MudLayout>
 </div>
 
 @code {
-	bool _drawerOpen = true;
+    bool _drawerOpen = true;
 
-	void DrawerToggle()
-	{
-		_drawerOpen = !_drawerOpen;
-	}
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
 }

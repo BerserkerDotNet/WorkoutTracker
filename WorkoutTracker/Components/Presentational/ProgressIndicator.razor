@@ -1,0 +1,13 @@
+﻿<MudOverlay Visible="Props.IsVisible" LightBackground="true">
+    <div style="display: flex;align-items: center;flex-direction: column">
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+        <MudText Typo="Typo.subtitle1" Color="Color.Default" Align="Align.Center">
+            <b>@Props.Text</b>
+        </MudText>
+    </div>
+</MudOverlay>
+
+@code {
+    [Parameter]
+    public ProgressIndicatorProps Props { get; set; }
+}

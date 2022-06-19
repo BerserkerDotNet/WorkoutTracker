@@ -12,13 +12,75 @@
 
     public int DefaultNumberOfSets { get; set; } = 5;
 
-    public TimeSpan DefaultRestTime { get; set; } = TimeSpan.FromMinutes(1);
+    public TimeSpan DefaultRestTime { get; set; } = TimeSpan.FromMinutes(2);
 
     public static ExerciseProfile UpperBody = new ExerciseProfile
     {
-        Name = "Upper body",
+        Name = "Upper Body",
         ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Chest", "Back", "Shoulder", "Triceps", "Biceps" },
         IncludeCore = true
+    };
+
+    public static ExerciseProfile ChestFirstUpperBody = new ExerciseProfile
+    {
+        Name = "Chest First Upper Body",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Chest", "Back", "Shoulder", "Triceps", "Biceps" },
+        IncludeCore = false,
+        Shuffler = new IndexBasedShuffle(1)
+    };
+
+    public static ExerciseProfile ShouldersFirstUpperBody = new ExerciseProfile
+    {
+        Name = "Shoulders First Upper Body",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Shoulder", "Chest", "Back", "Triceps", "Biceps" },
+        Shuffler = new IndexBasedShuffle(1),
+        IncludeCore = false
+    };
+
+    public static ExerciseProfile BicepsFirstUpperBody = new ExerciseProfile
+    {
+        Name = "Biceps First Upper Body",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Biceps", "Chest", "Back", "Shoulder", "Triceps" },
+        Shuffler = new IndexBasedShuffle(1),
+        IncludeCore = false
+    };
+
+    public static ExerciseProfile BackFirstUpperBody = new ExerciseProfile
+    {
+        Name = "Back First Upper Body",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Back", "Chest", "Shoulder", "Triceps", "Biceps" },
+        Shuffler = new IndexBasedShuffle(1),
+        IncludeCore = false
+    };
+
+    public static ExerciseProfile SquadsLowerBody = new ExerciseProfile
+    {
+        Name = "Lower Body Squads",
+        ExerciseSelectors = new IExerciseSelector[]
+        {
+            new SpecificExerciseSelector(Guid.Parse("b71b20c9-0fb4-4351-aa6f-41cffc75daed")), /*Barbell Squats*/
+            new MuscleGroupExerciseSelector("Glutes"),
+            new MuscleGroupExerciseSelector("Glutes"),
+            new MuscleGroupExerciseSelector("Calves"),
+        },
+        IncludeCore = false,
+        Shuffler = new IndexBasedShuffle(1),
+        DefaultRestTime = TimeSpan.FromMinutes(3),
+    };
+
+    public static ExerciseProfile DeadliftLowerBody = new ExerciseProfile
+    {
+        Name = "Lower Body Deadlift",
+        ExerciseSelectors = new IExerciseSelector[]
+        {
+            new SpecificExerciseSelector(Guid.Parse("b33af80a-8608-4ef9-a792-a18c7eadb676")), /*Deadlift*/
+            new MuscleGroupExerciseSelector("Hamstrings"),
+            new MuscleGroupExerciseSelector("Quads"),
+            new MuscleGroupExerciseSelector("Quads")
+        },
+        IncludeCore = false,
+        Shuffler = new IndexBasedShuffle(1),
+        DefaultRestTime = TimeSpan.FromMinutes(3),
     };
 
     public static ExerciseProfile DoubleUpperBody = new ExerciseProfile
@@ -28,24 +90,6 @@
         IncludeCore = false,
         DefaultNumberOfSets = 4,
         Shuffler = new GroupShuffle(0, 2)
-    };
-
-    public static ExerciseProfile LowerBody = new ExerciseProfile
-    {
-        Name = "Lower body",
-        ExerciseSelectors = new IExerciseSelector[]
-        {
-            new SpecificExerciseSelector(Guid.Parse("b33af80a-8608-4ef9-a792-a18c7eadb676")), /*Deadlift*/
-            new MuscleGroupExerciseSelector("Glutes"),
-            new MuscleGroupExerciseSelector("Quads", 4),
-            new MuscleGroupExerciseSelector("Quads", 4),
-            new MuscleGroupExerciseSelector("Hamstrings"),
-            new MuscleGroupExerciseSelector("Calves"),
-            new MuscleGroupExerciseSelector("Adductors")
-        },
-        IncludeCore = false,
-        Shuffler = new IndexBasedShuffle(1),
-        DefaultRestTime = TimeSpan.FromMinutes(2),
     };
 
     public static ExerciseProfile ShouldersDay = new ExerciseProfile
@@ -99,5 +143,18 @@
         Shuffler = new IndexBasedShuffle(2)
     };
 
-    public static IEnumerable<ExerciseProfile> Profiles = new[] { UpperBody, DoubleUpperBody, LowerBody, ShouldersDay, ChestDay, BicepsDay };
+    public static IEnumerable<ExerciseProfile> Profiles = new[]
+    {
+        UpperBody,
+        ChestFirstUpperBody,
+        ShouldersFirstUpperBody,
+        BackFirstUpperBody,
+        BicepsFirstUpperBody,
+        SquadsLowerBody,
+        DeadliftLowerBody,
+        DoubleUpperBody,
+        ShouldersDay,
+        ChestDay,
+        BicepsDay
+    };
 }

@@ -8,7 +8,7 @@ public class BuildExerciseScheduleAction : TrackableAction<ExerciseProfile>
     private readonly IWorkoutRepository _repository;
 
     public BuildExerciseScheduleAction(IWorkoutRepository repository, ApplicationContext<BuildExerciseScheduleAction> context)
-        : base(context)
+        : base(context, "Building schedule")
     {
         _repository = repository;
     }

@@ -28,10 +28,10 @@ public class LogEntriesReducer : IReducer<LogEntriesState>
             case ReceiveLastWorkoutLogByExerciseAction a:
                 state.LastLogByExercise[a.ExerciseId] = a.Entry;
                 return state;
-            case AddExerciseLogEntryAction a:
+            case UpsertExerciseLogEntryAction a:
                 var key = DateOnly.FromDateTime(a.Entry.Date);
                 var log = state.History.ContainsKey(key) ? state.History[key] : Enumerable.Empty<LogEntryViewModel>();
-                state.History[key] = log.Union(new[] { a.Entry }).OrderByDescending(e => e.Date);
+                state.History[key] = log.Where(l => l.Id != a.Entry.Id).Union(new[] { a.Entry }).OrderByDescending(e => e.Date);
                 return state;
             case SetSelectedHistoryDate a:
                 return state with { SelectedDate = a.Date };

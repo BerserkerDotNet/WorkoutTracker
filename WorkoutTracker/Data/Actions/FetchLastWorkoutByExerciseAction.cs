@@ -8,6 +8,7 @@ public class FetchLastWorkoutByExerciseAction : TrackableAction<Guid>
         : base(context)
     {
         _repository = repository;
+        NoBusyIndicator = true;
     }
 
     protected override async Task Execute(IDispatcher dispatcher, Guid exerciseId, Dictionary<string, string> trackableProperties)

@@ -39,8 +39,8 @@ public class EditExerciseConnected : SafeConnectedComponent<EditExercise, RootSt
     {
         props.Save = CallbackAsync<EditExerciseViewModel>(async exercise =>
         {
-            Navigation.NavigateTo($"/library");
             await store.Dispatch<SaveExerciseAction, EditExerciseViewModel>(exercise);
+            Navigation.NavigateTo($"/library");
         });
 
         props.Cancel = Callback(() => Navigation.NavigateTo($"/library"));

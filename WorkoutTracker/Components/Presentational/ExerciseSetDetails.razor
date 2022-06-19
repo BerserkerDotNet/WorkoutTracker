@@ -24,7 +24,8 @@
 		var result = await DialogService.ShowMessageBox("Delete set", $"Are you sure you wnat to delete set?", "Yes", "No");
 		if (result.HasValue && result.Value)
 		{
-			Props.LogRecord.Sets = Props.LogRecord.Sets.Where(s => s != set).ToArray();
+			var newSets = Props.LogRecord.Sets.Where(s => s != set).ToArray();
+			Props.LogRecord = Props.LogRecord with { Sets = newSets };
 			await Props.Save(Props.LogRecord);
 		}
 	}

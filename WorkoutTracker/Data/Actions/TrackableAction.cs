@@ -3,14 +3,19 @@ using System.Runtime.ExceptionServices;
 
 namespace WorkoutTracker.Data.Actions;
 
-public abstract class TrackableAction<TProperty> : IAsyncAction<TProperty>
+public abstract class TrackableAction<TProperty> : IAsyncAction<TProperty> // TODO: Consider decorator instead of inheritance
 {
-    public TrackableAction(ApplicationContext context)
+    private readonly string _busyText;
+
+    public TrackableAction(ApplicationContext context, string busyText = null)
     {
         Context = context;
+        _busyText = busyText;
     }
 
     protected ApplicationContext Context { get; }
+
+    protected bool NoBusyIndicator { get; set; }
 
     public async Task Execute(IDispatcher dispatcher, TProperty property)
     {
@@ -20,11 +25,15 @@ public abstract class TrackableAction<TProperty> : IAsyncAction<TProperty>
         await Context.StartTrackEvent(GetType().Name);
         try
         {
+            if (!NoBusyIndicator)
+            {
+                dispatcher.Dispatch(new ShowProgressIndicator(_busyText));
+            }
             await Execute(dispatcher, property, trackableProperties);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
-            await Context.TrackException(new Error 
+            await Context.TrackException(new Error
             {
                 Name = $"Error executing {GetType().Name} action.",
                 Message = ex.Message,
@@ -36,6 +45,10 @@ public abstract class TrackableAction<TProperty> : IAsyncAction<TProperty>
         }
         finally
         {
+            if (!NoBusyIndicator)
+            {
+                dispatcher.Dispatch(new HideProgressIndicator());
+            }
             await Context.StopTrackEvent(GetType().Name, trackableProperties);
             await Context.Flush();
         }
@@ -46,9 +59,12 @@ public abstract class TrackableAction<TProperty> : IAsyncAction<TProperty>
 
 public abstract class TrackableAction : IAsyncAction
 {
-    public TrackableAction(ApplicationContext context)
+    private readonly string _busyText;
+
+    public TrackableAction(ApplicationContext context, string busyText = null)
     {
         Context = context;
+        _busyText = busyText;
     }
 
     protected ApplicationContext Context { get; }
@@ -59,6 +75,7 @@ public abstract class TrackableAction : IAsyncAction
         await Context.StartTrackEvent(GetType().Name);
         try
         {
+            dispatcher.Dispatch(new ShowProgressIndicator(_busyText));
             await Execute(dispatcher, trackableProperties);
         }
         catch (Exception ex)
@@ -75,6 +92,7 @@ public abstract class TrackableAction : IAsyncAction
         }
         finally
         {
+            dispatcher.Dispatch(new HideProgressIndicator());
             await Context.StopTrackEvent(GetType().Name, trackableProperties);
             await Context.Flush();
         }

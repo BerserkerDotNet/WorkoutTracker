@@ -10,9 +10,11 @@ public record SwapExerciseSchedulesAction(ScheduleViewModel ScheduleToSwap) : IA
 public record MoveExerciseUpAction(ScheduleViewModel ScheduleToSwap) : IAction;
 public record MoveExerciseDownAction(ScheduleViewModel ScheduleToSwap) : IAction;
 public record ReceiveExerciseCurrentIndexAction(Guid ExerciseGroupId, int Index) : IAction;
-public record AddExerciseLogEntryAction(LogEntryViewModel Entry) : IAction;
+public record UpsertExerciseLogEntryAction(LogEntryViewModel Entry) : IAction;
 public record ReceiveLastWorkoutLogByExerciseAction(Guid ExerciseId, LogEntryViewModel Entry) : IAction;
 public record ForceStateChange() : IAction;
 public record ExercisesFilterChanged(ExercisesFilterViewModel Filter) : IAction;
 public record SetSelectedHistoryDate(DateOnly Date) : IAction;
 public record SetCurrentSchedule(Guid? Id) : IAction;
+public record ShowProgressIndicator(string Text) : IAction;
+public record HideProgressIndicator() : IAction;

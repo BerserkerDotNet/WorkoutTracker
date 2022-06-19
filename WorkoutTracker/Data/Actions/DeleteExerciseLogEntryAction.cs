@@ -5,7 +5,7 @@ public class DeleteExerciseLogEntryAction : TrackableAction<Guid>
     private readonly IWorkoutRepository _repository;
 
     public DeleteExerciseLogEntryAction(IWorkoutRepository repository, ApplicationContext<DeleteExerciseLogEntryAction> context)
-        : base(context)
+        : base(context, "Deleting log entry")
     {
         _repository = repository;
     }

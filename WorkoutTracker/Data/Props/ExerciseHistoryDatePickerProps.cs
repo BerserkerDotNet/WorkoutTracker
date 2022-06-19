@@ -2,7 +2,7 @@
 
 namespace WorkoutTracker.Data.Props;
 
-public class ExercisesHistoryProps 
+public class ExercisesHistoryProps
 {
     public IEnumerable<LogEntryViewModel> Records { get; set; }
 
@@ -17,12 +17,4 @@ public class ExercisesHistoryProps
     public AsyncAction<DateOnly> SelectedDateChanged { get; set; }
 
     public AsyncAction<Guid> Delete { get; set; }
-}
-
-
-public class WorkoutSummaryProps
-{
-    public IEnumerable<WorkoutSummary> Summaries { get; set; }
-
-    public IEnumerable<ExerciseViewModel> Exercises { get; set; }
 }

@@ -10,9 +10,8 @@ public partial class TrackExerciseForm : IDisposable
 {
     private Stopwatch _timeTracker;
     private bool _isRunning = false;
-    private bool isSavingData = false;
     private CancellationTokenSource _source;
-    
+
     private int _currentRestTime = 0;
     private Mass _weight = new Mass(0, MassUnit.Pound);
 
@@ -48,12 +47,25 @@ public partial class TrackExerciseForm : IDisposable
 
     private async Task SaveAndNew(Set set)
     {
-        Props.Log.Sets = Props.Log.Sets.Union(new[] { set }); // TODO: Change this!
+        try
+        {
+            var newSets = Props.Log.Sets.Union(new[] { set });
+            var newLog = Props.Log with { Sets = newSets };
 
-        await SaveLog();
+            await SaveLog(newLog);
+        }
+        catch
+        {
+            await RetryCompleteSet(set);
+        }
     }
 
-    private async Task SaveLog()
+    private async Task SaveLog(LogEntryViewModel model)
+    {
+        await Props.Save(model);
+    }
+
+    private async Task SaveCurrentLog()
     {
         await Props.Save(Props.Log);
     }
@@ -63,8 +75,9 @@ public partial class TrackExerciseForm : IDisposable
         var result = await DialogService.ShowMessageBox("Delete set", $"Are you sure you want to delete set?", "Yes", "No");
         if (result.HasValue && result.Value)
         {
-            Props.Log.Sets = Props.Log.Sets.Where(s => s != set).ToArray();
-            await SaveLog();
+            var newSets = Props.Log.Sets.Where(s => s != set).ToArray();
+            var newLog = Props.Log with { Sets = newSets };
+            await SaveLog(newLog);
         }
     }
 
@@ -82,6 +95,11 @@ public partial class TrackExerciseForm : IDisposable
         var exerciseDuration = (int)_timeTracker.Elapsed.TotalSeconds;
         _currentRestTime = 0;
         _timeTracker.Restart();
+        await CompleteSet(exerciseDuration, restTime);
+    }
+
+    private async Task CompleteSet(int exerciseDuration, int restTime)
+    {
         var saveDialog = ShowSetCompletionDialog(exerciseDuration, restTime);
         var result = await saveDialog.Result;
         if (result.Cancelled)
@@ -89,15 +107,19 @@ public partial class TrackExerciseForm : IDisposable
             return;
         }
 
-        try
+        await SaveAndNew(result.Data as Set);
+    }
+
+    private async Task RetryCompleteSet(Set set)
+    {
+        var saveDialog = ShowSetCompletionDialog(set);
+        var result = await saveDialog.Result;
+        if (result.Cancelled)
         {
-            isSavingData = true;
-            await SaveAndNew(result.Data as Set);
+            return;
         }
-        finally
-        {
-            isSavingData = false;
-        }
+
+        await SaveAndNew(result.Data as Set);
     }
 
     private async Task StartCounting(CancellationToken token)
@@ -121,6 +143,19 @@ public partial class TrackExerciseForm : IDisposable
                 { nameof(SetCompletionForm.CurrentDuration), duration},
                 { nameof(SetCompletionForm.CurrentRestTime), restTime},
                 { nameof(SetCompletionForm.CurrentWeight), _weight},
+            };
+        return DialogService.Show<SetCompletionForm>($"Details of set {Props.SetNumber}", parameters);
+    }
+
+    private IDialogReference ShowSetCompletionDialog(Set set)
+    {
+        var parameters = new DialogParameters
+            {
+                { nameof(SetCompletionForm.CurrentDuration), (int)set.Duration.TotalSeconds},
+                { nameof(SetCompletionForm.CurrentRestTime), (int)set.RestTime.TotalSeconds},
+                { nameof(SetCompletionForm.CurrentWeight), _weight},
+                { nameof(SetCompletionForm.Repetitions), set.Repetitions},
+                { nameof(SetCompletionForm.Notes), set.Note},
             };
         return DialogService.Show<SetCompletionForm>($"Details of set {Props.SetNumber}", parameters);
     }

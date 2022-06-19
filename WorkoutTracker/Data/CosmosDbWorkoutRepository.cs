@@ -84,7 +84,7 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
     public virtual async Task UpdateExercise(EditExerciseViewModel exercise)
     {
         var isImageUploaded = await UploadImage(exercise.ImageFile, exercise.ImagePath);
-        if (!isImageUploaded) 
+        if (!isImageUploaded)
         {
             throw new Exception("Not able to upload image. Aborting exercise update");
         }
@@ -123,7 +123,7 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
             throw new DataFetchException($"Failed to fetch {endpoint}. Reason: {response.StatusCode} - {response.ReasonPhrase}.");
         }
 
-        if (response.StatusCode == System.Net.HttpStatusCode.NoContent) 
+        if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
         {
             return null;
         }
@@ -175,9 +175,9 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
         }
     }
 
-    private async Task<bool> UploadImage(IBrowserFile file, string imagePath) 
+    private async Task<bool> UploadImage(IBrowserFile file, string imagePath)
     {
-        if (file is null) 
+        if (file is null)
         {
             return true;
         }
@@ -195,7 +195,7 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
 
         var response = await client.PostAsync(EndpointNames.ExerciseImageUpload, content);
 
-        if (!response.IsSuccessStatusCode) 
+        if (!response.IsSuccessStatusCode)
         {
             var responseContent = response.Content.ReadAsStringAsync();
             Context.LogError("Unable to upload image '{Path}'. Server responded with {StatusCode} {Content}", imagePath, response.StatusCode, responseContent);
@@ -204,7 +204,7 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
         return response.IsSuccessStatusCode;
     }
 
-    private async Task<HttpClient> GetAuthenticatedClient() 
+    private async Task<HttpClient> GetAuthenticatedClient()
     {
         var tokenResult = await _accessTokenProvider.RequestAccessToken();
         if (tokenResult.TryGetToken(out var token))
@@ -217,13 +217,13 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
         return _client;
     }
 
-    private async Task<Dictionary<Guid, ExerciseViewModel>> GetExercisesLookup() 
+    private async Task<Dictionary<Guid, ExerciseViewModel>> GetExercisesLookup()
     {
         var exercises = await GetExercises();
         return exercises.ToDictionary(k => k.Id, v => v);
     }
 
-    private MuscleViewModel MapMuscle(Muscle muscle) 
+    private MuscleViewModel MapMuscle(Muscle muscle)
     {
         return new MuscleViewModel
         {
@@ -240,7 +240,7 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
         {
             Id = exercise.Id,
             Description = exercise.Description,
-            Name= exercise.Name,
+            Name = exercise.Name,
             ImagePath = exercise.ImagePath,
             Steps = exercise.Steps,
             Tags = exercise.Tags,
@@ -251,17 +251,11 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
 
     private LogEntryViewModel MapLog(ExerciseLogEntry logEntry, Dictionary<Guid, ExerciseViewModel> exercisesDictionary)
     {
-        if (logEntry is null) 
+        if (logEntry is null)
         {
             return null;
         }
 
-        return new LogEntryViewModel
-        {
-            Id = logEntry.Id,
-            Date = logEntry.Date,
-            Sets = logEntry.Sets,
-            Exercise = exercisesDictionary[logEntry.ExerciseId]
-        };
+        return new LogEntryViewModel(logEntry.Id, exercisesDictionary[logEntry.ExerciseId], logEntry.Date, logEntry.Sets);
     }
 }

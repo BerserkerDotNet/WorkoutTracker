@@ -11,9 +11,9 @@ using WorkoutTracker.Models;
 
 namespace WorkoutTracker.Extensions;
 
-public static class ServiceCollectionExtensions 
+public static class ServiceCollectionExtensions
 {
-    public static void AddWorkoutTracker(this IServiceCollection services, IConfiguration configuration, Action<WorkoutTrackerConfigurator>? configurator = null) 
+    public static void AddWorkoutTracker(this IServiceCollection services, IConfiguration configuration, Action<WorkoutTrackerConfigurator>? configurator = null)
     {
         ConfigureMappingRules();
 
@@ -56,6 +56,8 @@ public static class ServiceCollectionExtensions
             cfg.Map<ExercisesReducer, ExercisesState>(s => s.Exercises);
             cfg.Map<ExerciseScheduleReducer, ExerciseScheduleState>(s => s.ExerciseSchedule);
             cfg.Map<LogEntriesReducer, LogEntriesState>(s => s.ExerciseLogs);
+            cfg.Map<UIReducer, UIState>(s => s.UI);
+            cfg.Map<UserPreferencesReducer, UserPreferencesState>(s => s.Preferences);
         });
 
         services.AddMudServices(config =>
@@ -90,7 +92,7 @@ public class WorkoutTrackerConfigurator
 
     public string AuthenticationRedirectUrl { get; private set; }
 
-    public WorkoutTrackerConfigurator WithCacheService<T>() 
+    public WorkoutTrackerConfigurator WithCacheService<T>()
         where T : ICacheService
     {
         CacheService = typeof(T);

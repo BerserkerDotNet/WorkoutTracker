@@ -5,7 +5,7 @@ public class FetchExerciseLogsAction : TrackableAction<DateTime>
     private readonly IWorkoutRepository _repository;
 
     public FetchExerciseLogsAction(IWorkoutRepository repository, ApplicationContext<FetchExerciseLogsAction> context)
-        : base(context)
+        : base(context, "Loading workout data")
     {
         _repository = repository;
     }

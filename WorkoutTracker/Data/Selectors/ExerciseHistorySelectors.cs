@@ -15,7 +15,7 @@ public static class ExerciseHistorySelectors
     public static DateOnly SelectDate(this RootState state)
     {
         var date = state.ExerciseLogs?.SelectedDate;
-        if (date is null) 
+        if (date is null)
         {
             return DateOnly.FromDateTime(DateTime.Today.ToUniversalTime());
         }
@@ -61,7 +61,7 @@ public static class ExerciseHistorySelectors
     {
         var lookup = SelectLastLogByExerciseLookup(state);
         var record = lookup.ContainsKey(id) ? lookup[id] : null;
-        if (record is null || !record.Sets.Any()) 
+        if (record is null || !record.Sets.Any())
         {
             return null;
         }

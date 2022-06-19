@@ -11,4 +11,6 @@ public class RootState
     public ExerciseScheduleState ExerciseSchedule { get; set; }
 
     public UserPreferencesState Preferences { get; set; }
+
+    public UIState UI { get; set; }
 }
