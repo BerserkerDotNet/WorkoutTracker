@@ -11,14 +11,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="6.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.6" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="6.0.6" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="BlazorApplicationInsights" Version="1.6.0" />
 		<PackageReference Include="BlazorState.Redux" Version="1.1.*-*" />
-		<PackageReference Include="MudBlazor" Version="6.0.9" />
-		<PackageReference Include="UnitsNet" Version="4.120.0" />
+		<PackageReference Include="MudBlazor" Version="6.0.11" />
+		<PackageReference Include="UnitsNet" Version="4.137.0" />
 		<PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="Plotly.Blazor" Version="2.12.0" />
 	</ItemGroup>

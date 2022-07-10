@@ -2,9 +2,9 @@
 
 namespace WorkoutTracker.ViewModels;
 
-public interface IShuffle 
+public interface IShuffle
 {
-    IEnumerable<IExerciseSelector> Shuffle(IEnumerable<IExerciseSelector> selectors);
+	IEnumerable<IExerciseSelector> Shuffle(IEnumerable<IExerciseSelector> selectors);
 }
 
 public record ShuffleAll() : IShuffle
@@ -37,12 +37,20 @@ public record GroupShuffle(int StartIndex, int GroupSize) : IShuffle
 	{
 		var groupsToShuffle = new List<IExerciseSelector[]>();
 
-		for (int i = StartIndex; i < selectors.Count(); i+= GroupSize)
+		for (int i = StartIndex; i < selectors.Count(); i += GroupSize)
 		{
 			var group = selectors.Skip(i).Take(GroupSize).ToArray();
 			groupsToShuffle.Add(group);
 		}
 
 		return _random.Shuffle(groupsToShuffle.ToArray()).SelectMany(g => g).ToArray();
+	}
+}
+
+public class NoShuffle : IShuffle
+{
+	public IEnumerable<IExerciseSelector> Shuffle(IEnumerable<IExerciseSelector> selectors)
+	{
+		return selectors;
 	}
 }

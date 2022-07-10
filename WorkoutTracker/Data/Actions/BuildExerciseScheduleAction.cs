@@ -25,7 +25,7 @@ public class BuildExerciseScheduleAction : TrackableAction<ExerciseProfile>
 
         Context.LogInformation("Building schedule for {Profile}", profile.Name);
         var allExercises = await _repository.GetExercises();
-        var exerciseFilters = profile.Shuffler.Shuffle(profile.ExerciseSelectors);
+        var exerciseFilters = profile.Shuffle.Shuffle(profile.ExerciseSelectors);
 
         if (profile.IncludeCore)
         {
