@@ -18,7 +18,7 @@ namespace WorkoutTracker.Components.Connected
 
         protected override void MapDispatchToProps(IStore<RootState> store, ExerciseScheduleProps props)
         {
-            props.Start = Callback<IEnumerable<ScheduleViewModel>>(schedule => 
+            props.Start = Callback<IEnumerable<ScheduleViewModel>>(schedule =>
             {
                 var first = schedule.First();
                 store.Dispatch(new SetCurrentSchedule(first.Id));
@@ -42,6 +42,7 @@ namespace WorkoutTracker.Components.Connected
                 await store.Dispatch<FetchExercisesAction>();
                 await store.Dispatch<BuildExerciseScheduleAction, ExerciseProfile>(state.SelectCurrentProfile());
             }
+            await store.Dispatch<FetchWorkoutStatsAction, WorkoutStatsRequest>(new WorkoutStatsRequest(DateTime.Today.AddMonths(-6), DateTime.Today.AddDays(1)));
         }
     }
 }

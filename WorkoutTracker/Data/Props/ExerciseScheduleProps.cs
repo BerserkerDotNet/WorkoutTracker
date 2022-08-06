@@ -1,19 +1,20 @@
 ﻿using BlazorState.Redux.Utilities;
 using Microsoft.AspNetCore.Components;
-using UnitsNet;
 
 namespace WorkoutTracker.Data.Props
 {
-    public record PreviousLogRecordStats(double Weight, string WeightUnit, int Repetitions) 
+    public record PreviousLogRecordStats(WorkoutSummary BestWorkout, WorkoutSummary LastWorkout)
     {
-        public string WeightFormatted => $"{Weight} {WeightUnit}";
+        public string MaxWeightFormatted => $"{BestWorkout.Max.WeightLb} LB";
+
+        public string LastWeightFormatted => $"{LastWorkout.Max.WeightLb} LB";
     }
 
     public class ExerciseScheduleProps
     {
-		public Guid? CurrentScheduleId { get; set; }
+        public Guid? CurrentScheduleId { get; set; }
 
-		public IEnumerable<ScheduleViewModel> Schedule { get; set; }
+        public IEnumerable<ScheduleViewModel> Schedule { get; set; }
 
         public Action<IEnumerable<ScheduleViewModel>> Start { get; set; }
 
@@ -72,7 +73,7 @@ namespace WorkoutTracker.Data.Props
         public ExercisesFilterViewModel Filter { get; set; }
 
         public Action Add { get; set; }
-     
+
         public Action<ExercisesFilterViewModel> ApplyFilter { get; set; }
     }
 }

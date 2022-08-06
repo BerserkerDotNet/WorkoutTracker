@@ -1,4 +1,5 @@
 ﻿using UnitsNet;
+using WorkoutTracker.Models;
 
 namespace WorkoutTracker.Data.Actions;
 
@@ -48,15 +49,15 @@ public class FetchWorkoutStatsAction : TrackableAction<WorkoutStatsRequest>
             var avgDuration = sets.Aggregate(TimeSpan.Zero, (acc, s) => acc + s.Duration) / sets.Count();
             var avgRest = sets.Aggregate(TimeSpan.Zero, (acc, s) => acc + s.RestTime) / sets.Count();
 
-            var max = new WorkoutSetSummary(maxSet.WeightKG ?? 0, Math.Ceiling(maxSet.WeightLB ?? 0), maxSet.Repetitions, maxSet.Duration, maxSet.RestTime);
-            var min = new WorkoutSetSummary(minSet.WeightKG ?? 0, Math.Ceiling(minSet.WeightLB ?? 0), minSet.Repetitions, minSet.Duration, minSet.RestTime);
-            var avg = new WorkoutSetSummary(Mass.FromPounds(avgWeightLb).Kilograms, Math.Ceiling(avgWeightLb), avgReps, avgDuration, avgRest);
+            var max = new WorkoutSetSummary(maxSet.WeightKG ?? 0, Math.Ceiling(maxSet.WeightLB ?? 0), maxSet.Repetitions, maxSet.Duration, maxSet.RestTime, sets);
+            var min = new WorkoutSetSummary(minSet.WeightKG ?? 0, Math.Ceiling(minSet.WeightLB ?? 0), minSet.Repetitions, minSet.Duration, minSet.RestTime, sets);
+            var avg = new WorkoutSetSummary(Mass.FromPounds(avgWeightLb).Kilograms, Math.Ceiling(avgWeightLb), avgReps, avgDuration, avgRest, sets);
             var total = new WorkoutSetSummary(
                 sets.Sum(s => s.WeightKG ?? 0),
                 sets.Sum(s => s.WeightLB ?? 0),
                 sets.Sum(s => s.Repetitions),
                 TimeSpan.FromSeconds(sets.Sum(s => s.Duration.TotalSeconds)),
-                TimeSpan.FromSeconds(sets.Sum(s => s.RestTime.TotalSeconds)));
+                TimeSpan.FromSeconds(sets.Sum(s => s.RestTime.TotalSeconds)), Enumerable.Empty<Set>());
 
             return new WorkoutSummary(log.Date, max, min, avg, total, sets.Count(), log.Exercise.Id);
         }).ToArray();

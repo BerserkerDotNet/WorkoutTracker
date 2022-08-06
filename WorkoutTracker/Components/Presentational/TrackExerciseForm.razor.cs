@@ -10,6 +10,7 @@ public partial class TrackExerciseForm : IDisposable
 {
     private Stopwatch _timeTracker;
     private bool _isRunning = false;
+    private bool _isDetailsShown = false;
     private CancellationTokenSource _source;
 
     private int _currentRestTime = 0;
@@ -43,6 +44,11 @@ public partial class TrackExerciseForm : IDisposable
         _timeTracker = Stopwatch.StartNew();
         _source = new CancellationTokenSource();
         Task.Factory.StartNew(async () => await StartCounting(_source.Token));
+    }
+
+    private void ToggleExerciseDetails()
+    {
+        _isDetailsShown = !_isDetailsShown;
     }
 
     private async Task SaveAndNew(Set set)

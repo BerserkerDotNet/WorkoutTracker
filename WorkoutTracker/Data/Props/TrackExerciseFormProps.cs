@@ -2,7 +2,7 @@
 
 namespace WorkoutTracker.Data.Props;
 
-public class TrackExerciseFormProps 
+public class TrackExerciseFormProps
 {
     public ScheduleViewModel NextExerciseId { get; set; }
 
@@ -13,8 +13,6 @@ public class TrackExerciseFormProps
     public LogEntryViewModel Log { get; set; }
 
     public PreviousLogRecordStats PreviousLog { get; set; }
-
-    public bool PreviousLogLoading { get; set; }
 
     public int SetNumber { get; set; }
 

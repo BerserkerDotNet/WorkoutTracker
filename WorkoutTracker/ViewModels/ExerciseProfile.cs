@@ -21,36 +21,39 @@
         IncludeCore = true
     };
 
-    public static ExerciseProfile ChestFirstUpperBody = new ExerciseProfile
+    public static ExerciseProfile BackDay = new ExerciseProfile
     {
-        Name = "Chest First Upper Body",
-        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Chest", "Back", "Shoulder", "Triceps", "Biceps" },
-        IncludeCore = false,
-        Shuffle = new IndexBasedShuffle(1)
+        Name = "Back Day",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Back", "Back", "Back", "Biceps", "Biceps" },
+        Shuffle = new NoShuffle()
     };
 
-    public static ExerciseProfile ShouldersFirstUpperBody = new ExerciseProfile
+    public static ExerciseProfile ChestDay = new ExerciseProfile
     {
-        Name = "Shoulders First Upper Body",
-        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Shoulder", "Chest", "Back", "Triceps", "Biceps" },
-        Shuffle = new IndexBasedShuffle(1),
-        IncludeCore = false
+        Name = "Chest Day",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Chest", "Chest", "Chest", "Triceps", "Shoulder" },
+        Shuffle = new NoShuffle()
     };
 
-    public static ExerciseProfile BicepsFirstUpperBody = new ExerciseProfile
+    public static ExerciseProfile ShouldersDay = new ExerciseProfile
     {
-        Name = "Biceps First Upper Body",
-        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Biceps", "Chest", "Back", "Shoulder", "Triceps" },
-        Shuffle = new IndexBasedShuffle(1),
-        IncludeCore = false
+        Name = "Shoulders Day",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Shoulder", "Shoulder", "Shoulder", "Chest", "Chest" },
+        Shuffle = new NoShuffle()
     };
 
-    public static ExerciseProfile BackFirstUpperBody = new ExerciseProfile
+    public static ExerciseProfile LegsAndTricepsDay = new ExerciseProfile
     {
-        Name = "Back First Upper Body",
-        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Back", "Chest", "Shoulder", "Triceps", "Biceps" },
-        Shuffle = new IndexBasedShuffle(1),
-        IncludeCore = false
+        Name = "Legs and Triceps Day",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Quads", "Quads", "Glutes", "Triceps", "Triceps" },
+        Shuffle = new NoShuffle()
+    };
+
+    public static ExerciseProfile LegsAndBicepsDay = new ExerciseProfile
+    {
+        Name = "Legs and Biceps Day",
+        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Quads", "Hamstrings", "Glutes", "Biceps", "Biceps" },
+        Shuffle = new NoShuffle()
     };
 
     public static ExerciseProfile SquadsLowerBody = new ExerciseProfile
@@ -84,78 +87,32 @@
         DefaultRestTime = TimeSpan.FromMinutes(3),
     };
 
-    public static ExerciseProfile DoubleUpperBody = new ExerciseProfile
-    {
-        Name = "Double upper body",
-        ExerciseSelectors = new MuscleGroupExerciseSelector[] { "Chest", "Chest", "Back", "Back", "Shoulder", "Shoulder", "Triceps", "Triceps", "Biceps", "Biceps" },
-        IncludeCore = false,
-        DefaultNumberOfSets = 4,
-        Shuffle = new GroupShuffle(0, 2)
-    };
-
-    public static ExerciseProfile ShouldersDay = new ExerciseProfile
-    {
-        Name = "Shoulders day",
-        ExerciseSelectors = new IExerciseSelector[]
-        {
-            new MuscleExerciseSelector(Guid.Parse("9024dbc7-defb-4aa3-8b0d-29ce21d1ece5"), 4), /*Front deltoid*/
-            new MuscleExerciseSelector(Guid.Parse("57ebdabc-7507-4b2b-8322-dc3da9b58a8c"), 4), /*Lateral deltoid*/
-            new MuscleExerciseSelector(Guid.Parse("70da1002-465a-4e77-93df-7ddd9ee21e1e"), 4), /*Rear deltoid*/
-            new MuscleGroupExerciseSelector("Chest"),
-            new MuscleGroupExerciseSelector("Back"),
-            new MuscleGroupExerciseSelector("Triceps"),
-            new MuscleGroupExerciseSelector("Biceps")
-        },
-        IncludeCore = false,
-        Shuffle = new IndexBasedShuffle(2),
-    };
-
-    public static ExerciseProfile ChestDay = new ExerciseProfile
-    {
-        Name = "Chest day",
-        ExerciseSelectors = new MuscleGroupExerciseSelector[]
-        {
-            new MuscleGroupExerciseSelector("Chest", 4),
-            new MuscleGroupExerciseSelector("Chest", 4),
-            new MuscleGroupExerciseSelector("Chest", 4),
-            new MuscleGroupExerciseSelector("Back"),
-            new MuscleGroupExerciseSelector("Shoulder"),
-            new MuscleGroupExerciseSelector("Triceps"),
-            new MuscleGroupExerciseSelector("Biceps")
-        },
-        IncludeCore = false,
-        Shuffle = new IndexBasedShuffle(2)
-    };
-
-    public static ExerciseProfile BicepsDay = new ExerciseProfile
-    {
-        Name = "Biceps day",
-        ExerciseSelectors = new MuscleGroupExerciseSelector[]
-        {
-            new MuscleGroupExerciseSelector("Biceps",4),
-            new MuscleGroupExerciseSelector("Biceps",4),
-            new MuscleGroupExerciseSelector("Biceps",4),
-            new MuscleGroupExerciseSelector("Back"),
-            new MuscleGroupExerciseSelector("Shoulder"),
-            new MuscleGroupExerciseSelector("Triceps"),
-            new MuscleGroupExerciseSelector("Chest")
-        },
-        IncludeCore = false,
-        Shuffle = new IndexBasedShuffle(2)
-    };
-
     public static IEnumerable<ExerciseProfile> Profiles = new[]
     {
         UpperBody,
-        ChestFirstUpperBody,
-        ShouldersFirstUpperBody,
-        BackFirstUpperBody,
-        BicepsFirstUpperBody,
-        SquadsLowerBody,
-        DeadliftLowerBody,
-        DoubleUpperBody,
-        ShouldersDay,
+        BackDay,
         ChestDay,
-        BicepsDay
+        ShouldersDay,
+        LegsAndTricepsDay,
+        LegsAndBicepsDay
     };
+
+    public static ExerciseProfile GetDefaultProfile()
+    {
+        switch (DateTime.Today.DayOfWeek)
+        {
+            case DayOfWeek.Monday:
+                return BackDay;
+            case DayOfWeek.Tuesday:
+                return LegsAndTricepsDay;
+            case DayOfWeek.Wednesday:
+                return ChestDay;
+            case DayOfWeek.Thursday:
+                return LegsAndBicepsDay;
+            case DayOfWeek.Friday:
+                return ShouldersDay;
+            default:
+                return UpperBody;
+        }
+    }
 }

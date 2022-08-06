@@ -7,7 +7,7 @@ namespace WorkoutTracker.Data.Reducers
     {
         public ExerciseScheduleState Reduce(ExerciseScheduleState state, IAction action)
         {
-            state = state ?? new ExerciseScheduleState(Array.Empty<ScheduleViewModel>(), ExerciseProfile.UpperBody, null);
+            state = state ?? new ExerciseScheduleState(Array.Empty<ScheduleViewModel>(), ExerciseProfile.GetDefaultProfile(), null);
 
             switch (action)
             {

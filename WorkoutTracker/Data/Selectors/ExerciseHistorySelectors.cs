@@ -59,31 +59,20 @@ public static class ExerciseHistorySelectors
 
     public static PreviousLogRecordStats SelectLastLogByExercise(this RootState state, Guid id)
     {
-        var lookup = SelectLastLogByExerciseLookup(state);
-        var record = lookup.ContainsKey(id) ? lookup[id] : null;
-        if (record is null || !record.Sets.Any())
+        var summaries = state.SelectSummaries()
+            .Where(s => s.ExerciseId == id)
+            .OrderByDescending(s => s.Date);
+
+        var maxWeight = summaries.MaxBy(s => s.Max.WeightLb);
+        if (maxWeight is null)
         {
             return null;
         }
 
-        var maxWeightSet = record.Sets.MaxBy(s => s.WeightLB);
-
         var showKG = state.SelectShowWeightInKG();
-        var weight = showKG ? maxWeightSet.WeightKG : maxWeightSet.WeightLB;
+        var weight = showKG ? maxWeight.Max.WeightKg : maxWeight.Max.WeightLb;
         var weightUnit = showKG ? "KG" : "LB";
 
-        return new PreviousLogRecordStats(Math.Ceiling(weight ?? 0), weightUnit, maxWeightSet.Repetitions);
-    }
-
-    public static bool IsLastLogByExerciseLoaded(this RootState state, Guid id)
-    {
-        var lookup = SelectLastLogByExerciseLookup(state);
-        return lookup.ContainsKey(id) && lookup[id] is object;
-    }
-
-    public static bool IsLastLogByExerciseLoading(this RootState state, Guid id)
-    {
-        var lookup = SelectLastLogByExerciseLookup(state);
-        return lookup.ContainsKey(id);
+        return new PreviousLogRecordStats(maxWeight, summaries.First());
     }
 }

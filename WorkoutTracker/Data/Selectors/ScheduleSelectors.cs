@@ -17,7 +17,7 @@ public static class ScheduleSelectors
         return state?.ExerciseSchedule?.CurrentScheduleId ?? null;
     }
 
-    public static ScheduleViewModel SelectNextExerciseFromSchedule(this RootState state, Guid currentScheduleId) 
+    public static ScheduleViewModel SelectNextExerciseFromSchedule(this RootState state, Guid currentScheduleId)
     {
         return SelectSchedule(state)
             .SkipWhile(s => s.Id != currentScheduleId)
@@ -32,8 +32,8 @@ public static class ScheduleSelectors
             .LastOrDefault();
     }
 
-    public static ExerciseProfile SelectCurrentProfile(this RootState state) 
+    public static ExerciseProfile SelectCurrentProfile(this RootState state)
     {
-        return state?.ExerciseSchedule?.SelectedProfile ?? ExerciseProfile.UpperBody;
+        return state?.ExerciseSchedule?.SelectedProfile ?? ExerciseProfile.GetDefaultProfile();
     }
 }

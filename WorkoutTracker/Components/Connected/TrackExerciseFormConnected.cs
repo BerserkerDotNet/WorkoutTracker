@@ -40,7 +40,6 @@ public class TrackExerciseFormConnected : SafeConnectedComponent<TrackExerciseFo
         }
 
         props.PreviousLog = state.SelectLastLogByExercise(currentExerciseId);
-        props.PreviousLogLoading = !state.IsLastLogByExerciseLoaded(currentExerciseId);
     }
 
     protected override void MapDispatchToProps(IStore<RootState> store, TrackExerciseFormProps props)
@@ -72,19 +71,13 @@ public class TrackExerciseFormConnected : SafeConnectedComponent<TrackExerciseFo
         props.Swap = Callback<ScheduleViewModel>(model => store.Dispatch(new SwapExerciseSchedulesAction(model)));
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         var currentSchedule = Store.State.SelectScheduleById(CurrentScheduleId);
         if (currentSchedule is null)
         {
             Navigation.NavigateTo("/");
             return;
-        }
-
-        var currentExerciseId = currentSchedule.CurrentExercise.Id;
-        if (!Store.State.IsLastLogByExerciseLoading(currentExerciseId))
-        {
-            await Store.Dispatch<FetchLastWorkoutByExerciseAction, Guid>(currentExerciseId);
         }
 
         base.OnParametersSet();
