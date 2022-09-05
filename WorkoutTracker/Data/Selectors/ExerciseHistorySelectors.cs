@@ -36,6 +36,14 @@ public static class ExerciseHistorySelectors
         return history.ContainsKey(today) ? history[today].ToDictionary(k => k.Exercise.Id, v => v.Sets.Count()) : new Dictionary<Guid, int>();
     }
 
+    public static Dictionary<Guid, LogEntryViewModel> SelectTodayExerciseLogLookup(this RootState state)
+    {
+        var history = SelectHistory(state);
+
+        var today = DateOnly.FromDateTime(DateTime.Today.ToUniversalTime());
+        return history.ContainsKey(today) ? history[today].ToDictionary(k => k.Exercise.Id, v => v) : new Dictionary<Guid, LogEntryViewModel>();
+    }
+
     public static IEnumerable<LogEntryViewModel> SelectExercisesByDate(this RootState state, DateOnly date)
     {
         var history = SelectHistory(state);
@@ -55,6 +63,11 @@ public static class ExerciseHistorySelectors
     public static LogEntryViewModel SelectExerciseLog(this RootState state, DateOnly date, Guid id)
     {
         return SelectExercisesByDate(state, date).FirstOrDefault(e => e.Id == id);
+    }
+
+    public static Dictionary<Guid, PreviousLogRecordStats> SelectLastLogByExercise(this RootState state, IEnumerable<ScheduleViewModel> schedule)
+    {
+        return schedule.ToDictionary(k => k.CurrentExercise.Id, v => state.SelectLastLogByExercise(v.CurrentExercise.Id));
     }
 
     public static PreviousLogRecordStats SelectLastLogByExercise(this RootState state, Guid id)

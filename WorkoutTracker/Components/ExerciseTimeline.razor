@@ -1,6 +1,6 @@
 ﻿@if (Sets is not null && Sets.Any())
 {
-	<MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start">
+	<MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start" >
 		@for (var setIdx = Sets.Count() - 1; setIdx >= 0; setIdx--)
 		{
 			var setNumber = setIdx + 1;

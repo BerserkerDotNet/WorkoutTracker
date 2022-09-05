@@ -1,0 +1,43 @@
+﻿@if (isOpen)
+{
+    <MudPaper Elevation="25" Class="pa-2 mt-2 rounded-lg">
+        <ItemSearch TItem="ExerciseViewModel" Items="Exercises" ItemNameFunc="@(e => e.Name)" @bind-Value="selectedExercise" />
+        <div class="d-flex justify-space-around">
+            <MudButton Class="btn-confirm" OnClick="OnSelectionConfirmed" Size="Size.Small" Color="Color.Primary" FullWidth="false" Disabled="@(selectedExercise is null)">@ActionText</MudButton>
+            <MudButton Class="btn-cancel" OnClick="ToggleView" Size="Size.Small" Color="Color.Secondary" FullWidth="false">Cancel</MudButton>
+        </div>
+    </MudPaper>
+}
+else
+{
+    <MudButton Color="Color.Primary" OnClick="ToggleView" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="py-2">@ActionText</MudButton>
+}
+
+@code
+{
+    private ExerciseViewModel selectedExercise;
+    private bool isOpen = false;
+
+    [Parameter]
+    [EditorRequired]
+    public string ActionText { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<ExerciseViewModel> Exercises { get; set; }
+
+    [Parameter]
+    public EventCallback<ExerciseViewModel> OnExerciseSelected { get; set; }
+
+    private async Task OnSelectionConfirmed()
+    {
+        OnExerciseSelected.InvokeAsync(selectedExercise);
+        ToggleView();
+    }
+
+    private void ToggleView()
+    {
+        selectedExercise = null;
+        isOpen = !isOpen;
+    }
+}

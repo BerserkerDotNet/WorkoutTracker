@@ -1,0 +1,39 @@
+﻿using Microsoft.Extensions.Logging;
+
+namespace WorkoutTracker.Data.Actions;
+
+public record InsertNewExerciseRequest(IExerciseSelector ExerciseSelector, IEnumerable<ScheduleViewModel> CurrentSchedule, Guid? CurrentScheduleId);
+public class InsertNewExerciseAction : TrackableAction<InsertNewExerciseRequest>
+{
+    private readonly IWorkoutRepository _repository;
+
+    public InsertNewExerciseAction(IWorkoutRepository repository, ApplicationContext<InsertNewExerciseAction> context)
+        : base(context, "Updating exercises list")
+    {
+        _repository = repository;
+    }
+
+    protected override async Task Execute(IDispatcher dispatcher, InsertNewExerciseRequest request, Dictionary<string, string> trackableProperties) // Pass a current schedule to amend
+    {
+        var allExercises = await _repository.GetExercises();
+        var descriptor = request.ExerciseSelector.Select(allExercises);
+        if (descriptor is null)
+        {
+            Context.LogWarning("Didn't find any exercises matching {Selector} to insert into schedule.", request.ExerciseSelector.GetType().Name);
+            return;
+        }
+
+        var exercises = descriptor.MatchedExercises.ToArray();
+        var restTime = descriptor.TargetRestTime ?? ExerciseProfile.DefaultRestTime;
+        var targetSets = descriptor.TargetSets ?? ExerciseProfile.DefaultNumberOfSets;
+        var index = Random.Shared.Next(0, exercises.Length);
+        var scheduleModel = new ScheduleViewModel(Guid.NewGuid(), index, targetSets, restTime, exercises);
+        var newSchedule = request.CurrentSchedule
+            .TakeWhile(s => s.Id != request.CurrentScheduleId)
+            .Union(new[] { scheduleModel })
+            .Union(request.CurrentSchedule.SkipWhile(s => s.Id != request.CurrentScheduleId))
+            .ToArray();
+
+        dispatcher.Dispatch(new ReceiveExerciseScheduleAction(newSchedule));
+    }
+}

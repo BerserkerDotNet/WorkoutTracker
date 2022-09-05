@@ -16,18 +16,22 @@ namespace WorkoutTracker.Data.Props
 
         public IEnumerable<ScheduleViewModel> Schedule { get; set; }
 
-        public Action<IEnumerable<ScheduleViewModel>> Start { get; set; }
+        public Dictionary<Guid, LogEntryViewModel> TodayLogByExercise { get; set; }
 
-        public Action<Guid> Resume { get; set; }
+        public Dictionary<Guid, PreviousLogRecordStats> PreviousSessionLog { get; set; }
 
-        public Action<ScheduleViewModel> Previous { get; set; }
+        public IEnumerable<ExerciseViewModel> AllExercises { get; set; }
 
-        public Action<ScheduleViewModel> Next { get; set; }
+        public AsyncAction<IExerciseSelector> AddExercise { get; set; }
 
-        public Action<ScheduleViewModel> MoveUp { get; set; }
+        public AsyncAction<LogEntryViewModel> Save { get; set; }
 
-        public Action<ScheduleViewModel> MoveDown { get; set; }
+        public AsyncAction<Guid> RemoveExercise { get; set; }
+
+        public Action<Guid, int> SetScheduleTargetSets { get; set; }
     }
+
+    public record ExerciseControlContext(AsyncAction<IExerciseSelector> AddExercise, AsyncAction<Guid> RemoveExercise, AsyncAction<LogEntryViewModel> SaveExercise, Action<Guid, int> SetScheduleTargetSets);
 
     public class ExercisesLogProps
     {

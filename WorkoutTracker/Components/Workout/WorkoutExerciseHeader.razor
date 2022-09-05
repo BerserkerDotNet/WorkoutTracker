@@ -1,0 +1,35 @@
+﻿@inject CDNImageProvider ImageProvider
+
+<div class="d-flex align-center ">
+    @if (Status == SetStatus.NotStarted)
+    {
+        <MudAvatar Image="@ImageProvider.GetFullPath(ImagePath)" Size="Size.Large" Variant="Variant.Outlined" />
+    }
+    else
+    {
+        var icon = Status == SetStatus.InProgress ? Icons.Material.Filled.RunCircle : Icons.Material.Filled.CheckCircle;
+        var color = Status == SetStatus.InProgress ? Color.Info : Color.Success;
+        <MudBadge Overlap="true" Icon="@icon" Color="color" Bordered="true">
+            <MudAvatar Image="@ImageProvider.GetFullPath(ImagePath)" Size="Size.Large" Variant="Variant.Outlined" />
+        </MudBadge>
+    }
+    <MudText Class="ml-3">@Name</MudText>
+    @ChildContent
+</div>
+
+@code
+{
+    [Parameter]
+    [EditorRequired]
+    public string ImagePath { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public string Name { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public SetStatus Status { get; set; }
+}

@@ -1,0 +1,23 @@
+﻿<MudExpansionPanel Class="mt-2">
+    <TitleContent>
+        <WorkoutExerciseHeader Name="@_exercise.Name" ImagePath="@_exercise.ImagePath" Status="_exerciseStatus" />
+    </TitleContent>
+    <ChildContent>
+        <PreviousWorkoutStats PreviousLog="_previousSessionData" />
+        <ExerciseSets CompletedSets="_completedSets"
+                      TargetSets="Schedule.TargetSets"
+                      TargetWeight="(int?)_previousSessionData?.LastWorkout.Max.WeightLb ?? 0"
+                      TargetReps="(int?)_previousSessionData?.LastWorkout.Max.Repetitions ?? 0"
+                      StartSet="set =>  OnStartSet(_exercise, set)"
+                      FinishSet="set =>  OnFinishSet(_exercise, set)"
+                      EditSet="set =>  OnEditSet(_exercise, set)" />
+        <div class="d-flex justify-space-around">
+            <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddSet">Add set</MudButton>
+            <MudMenu Label="More" EndIcon="@Icons.Filled.KeyboardArrowDown" Color="Color.Primary">
+                <MudMenuItem OnClick="OnRemoveExercise">Remove exercise</MudMenuItem>
+                <MudMenuItem OnClick="OnRemoveSet">Reduce sets</MudMenuItem>
+            </MudMenu>
+        </div>
+    </ChildContent>
+</MudExpansionPanel>
+

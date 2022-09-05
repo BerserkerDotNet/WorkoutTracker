@@ -8,7 +8,7 @@
             return Array.IndexOf(muscles, MuscleId) == 0;
         });
 
-        return matchedExercises.Any()? new ExerciseDescriptor(matchedExercises, TargetSets, TargetRestTime) : null;
+        return matchedExercises.Any() ? new ExerciseDescriptor(matchedExercises, TargetSets, TargetRestTime) : null;
     }
 }
 

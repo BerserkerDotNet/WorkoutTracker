@@ -16,5 +16,6 @@ public record ForceStateChange() : IAction;
 public record ExercisesFilterChanged(ExercisesFilterViewModel Filter) : IAction;
 public record SetSelectedHistoryDate(DateOnly Date) : IAction;
 public record SetCurrentSchedule(Guid? Id) : IAction;
+public record SetScheduleTargetSets(Guid ScheduleId, int TargetSets) : IAction;
 public record ShowProgressIndicator(string Text) : IAction;
 public record HideProgressIndicator() : IAction;

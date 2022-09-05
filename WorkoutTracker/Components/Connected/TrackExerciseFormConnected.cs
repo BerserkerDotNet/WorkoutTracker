@@ -7,21 +7,24 @@ namespace WorkoutTracker.Components.Connected;
 
 public class TrackExerciseFormConnected : SafeConnectedComponent<TrackExerciseForm, RootState, TrackExerciseFormProps>
 {
-    [Parameter]
-    public Guid CurrentScheduleId { get; set; }
-
     [Inject]
     public NavigationManager Navigation { get; set; }
 
     protected override void MapStateToPropsSafe(RootState state, TrackExerciseFormProps props)
     {
-        var nextSet = state.SelectNextExerciseFromSchedule(CurrentScheduleId);
-        props.NextExerciseId = nextSet.Id == CurrentScheduleId ? null : nextSet;
+        var currentScheduleId = state.SelectCurentScheduleId();
+        if (currentScheduleId is null)
+        {
+            return;
+        }
 
-        var prevSet = state.SelectPreviousExerciseFromSchedule(CurrentScheduleId);
-        props.PreviousExerciseId = prevSet is null || prevSet.Id == CurrentScheduleId ? null : prevSet;
+        var nextSet = state.SelectNextExerciseFromSchedule(currentScheduleId.Value);
+        props.NextExerciseId = nextSet.Id == currentScheduleId ? null : nextSet;
 
-        var currentSchedule = state.SelectScheduleById(CurrentScheduleId);
+        var prevSet = state.SelectPreviousExerciseFromSchedule(currentScheduleId.Value);
+        props.PreviousExerciseId = prevSet is null || prevSet.Id == currentScheduleId ? null : prevSet;
+
+        var currentSchedule = state.SelectScheduleById(currentScheduleId.Value);
         props.CurrentSchedule = currentSchedule;
 
         var currentExerciseId = currentSchedule.CurrentExercise.Id;
@@ -67,13 +70,19 @@ public class TrackExerciseFormConnected : SafeConnectedComponent<TrackExerciseFo
             Navigation.NavigateTo($"/trackexercise/{item.Id}");
         });
 
+        props.AddNew = CallbackAsync(async () =>
+        {
+            var request = new InsertNewExerciseRequest(new MuscleGroupExerciseSelector("Back"), store.State.SelectSchedule(), store.State.SelectCurentScheduleId());
+            await store.Dispatch<InsertNewExerciseAction, InsertNewExerciseRequest>(request);
+        });
+
         props.Replace = CallbackAsync<ScheduleViewModel>(async model => await store.Dispatch<MoveToNextExerciseAction, ScheduleViewModel>(model));
         props.Swap = Callback<ScheduleViewModel>(model => store.Dispatch(new SwapExerciseSchedulesAction(model)));
     }
 
     protected override void OnParametersSet()
     {
-        var currentSchedule = Store.State.SelectScheduleById(CurrentScheduleId);
+        var currentSchedule = Store.State.SelectCurentScheduleId();
         if (currentSchedule is null)
         {
             Navigation.NavigateTo("/");

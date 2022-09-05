@@ -4,7 +4,6 @@ namespace WorkoutTracker.Data.Actions;
 
 public class BuildExerciseScheduleAction : TrackableAction<ExerciseProfile>
 {
-    private readonly Random _random = new Random();
     private readonly IWorkoutRepository _repository;
 
     public BuildExerciseScheduleAction(IWorkoutRepository repository, ApplicationContext<BuildExerciseScheduleAction> context)
@@ -45,9 +44,9 @@ public class BuildExerciseScheduleAction : TrackableAction<ExerciseProfile>
             }
 
             var exercises = descriptor.MatchedExercises.ToArray();
-            var restTime = descriptor.TargetRestTime ?? profile.DefaultRestTime;
-            var targetSets = descriptor.TargetSets ?? profile.DefaultNumberOfSets;
-            var index = _random.Next(0, exercises.Length);
+            var restTime = descriptor.TargetRestTime ?? profile.RestTime;
+            var targetSets = descriptor.TargetSets ?? profile.NumberOfSets;
+            var index = Random.Shared.Next(0, exercises.Length);
             randomSet.Add(new ScheduleViewModel(Guid.NewGuid(), index, targetSets, restTime, exercises));
             exercisesToPickFrom.Remove(exercises.ElementAt(index)); // At least prevent same exercise from appearing immediatly in the list
         }

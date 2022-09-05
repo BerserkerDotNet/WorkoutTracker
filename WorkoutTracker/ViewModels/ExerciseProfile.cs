@@ -1,5 +1,8 @@
 ﻿public class ExerciseProfile
 {
+    public static int DefaultNumberOfSets = 4;
+    public static TimeSpan DefaultRestTime = TimeSpan.FromMinutes(2);
+
     public string Name { get; set; }
 
     public string Description { get; set; }
@@ -10,9 +13,9 @@
 
     public IShuffle Shuffle { get; set; } = new ShuffleAll();
 
-    public int DefaultNumberOfSets { get; set; } = 4;
+    public int NumberOfSets { get; set; } = DefaultNumberOfSets;
 
-    public TimeSpan DefaultRestTime { get; set; } = TimeSpan.FromMinutes(2);
+    public TimeSpan RestTime { get; set; } = DefaultRestTime;
 
     public static ExerciseProfile UpperBody = new ExerciseProfile
     {
@@ -69,7 +72,7 @@
         },
         IncludeCore = false,
         Shuffle = new NoShuffle(),
-        DefaultRestTime = TimeSpan.FromMinutes(3),
+        RestTime = TimeSpan.FromMinutes(3),
     };
 
     public static ExerciseProfile DeadliftLowerBody = new ExerciseProfile
@@ -84,7 +87,7 @@
         },
         IncludeCore = false,
         Shuffle = new NoShuffle(),
-        DefaultRestTime = TimeSpan.FromMinutes(3),
+        RestTime = TimeSpan.FromMinutes(3),
     };
 
     public static IEnumerable<ExerciseProfile> Profiles = new[]

@@ -1,42 +1,66 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using WorkoutTracker.Models;
 
-namespace WorkoutTracker.ViewModels
+namespace WorkoutTracker.ViewModels;
+
+public record ExercisesFilterViewModel(string Name, IEnumerable<string> MuscleGroups)
 {
-    public record ExercisesFilterViewModel(string Name, IEnumerable<string> MuscleGroups) 
-    {
-        public static ExercisesFilterViewModel Empty = new ExercisesFilterViewModel(string.Empty, Enumerable.Empty<string>());
-    }
+    public static ExercisesFilterViewModel Empty = new ExercisesFilterViewModel(string.Empty, Enumerable.Empty<string>());
+}
 
-    public record ScheduleViewModel(Guid Id, int CurrentIndex, int TargetSets, TimeSpan TargetRest, IEnumerable<ExerciseViewModel> Exercises) 
-    {
-        public int TargetSets { get; set; } = TargetSets;
+public record ScheduleViewModel(Guid Id, int CurrentIndex, int TargetSets, TimeSpan TargetRest, IEnumerable<ExerciseViewModel> Exercises)
+{
+    public int TargetSets { get; set; } = TargetSets;
 
-        public TimeSpan TargetRest { get; set; } = TargetRest;
+    public TimeSpan TargetRest { get; set; } = TargetRest;
 
-        public ExerciseViewModel CurrentExercise => Exercises.Count() > CurrentIndex ? Exercises.ElementAt(CurrentIndex) : null;
-    }
+    public ExerciseViewModel CurrentExercise => Exercises.Count() > CurrentIndex ? Exercises.ElementAt(CurrentIndex) : null;
+}
 
-    public class ExerciseViewModel
-    {
-        public Guid Id { get; set; }
+public class ExerciseViewModel
+{
+    public Guid Id { get; set; }
 
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public string Description { get; set; }
+    public string Description { get; set; }
 
-        public string Steps { get; set; }
+    public string Steps { get; set; }
 
-        public string TutorialUrl { get; set; }
+    public string TutorialUrl { get; set; }
 
-        public string ImagePath { get; set; }
+    public string ImagePath { get; set; }
 
-        public IEnumerable<MuscleViewModel> Muscles { get; set; }
+    public IEnumerable<MuscleViewModel> Muscles { get; set; }
 
-        public IEnumerable<string> Tags { get; set; }
-    }
+    public IEnumerable<string> Tags { get; set; }
+}
 
-    public class EditExerciseViewModel : ExerciseViewModel 
-    {
-        public IBrowserFile ImageFile { get; set; }
-    }
+public class EditExerciseViewModel : ExerciseViewModel
+{
+    public IBrowserFile ImageFile { get; set; }
+}
+
+public class ExerciseSetViewModel
+{
+    public int TargetWeight { get; set; }
+
+    public int TargetReps { get; set; }
+}
+
+public record WorkoutSet(int Index, SetStatus Status, double Weight, int Reps, TimeSpan RestTime, TimeSpan Duration)
+{
+    public int Reps { get; set; } = Reps;
+
+    public double Weight { get; set; } = Weight;
+
+    public static WorkoutSet CreateFromSet(int idx, Set set) => new WorkoutSet(idx, SetStatus.Completed, set.WeightLB.Value, set.Repetitions, set.RestTime, set.Duration);
+
+    public static WorkoutSet CreateNewSet(int idx, SetStatus status, int weight = 0, int reps = 0) => new WorkoutSet(idx, status, weight, reps, TimeSpan.Zero, TimeSpan.Zero);
+}
+public enum SetStatus
+{
+    NotStarted = 0,
+    InProgress,
+    Completed
 }

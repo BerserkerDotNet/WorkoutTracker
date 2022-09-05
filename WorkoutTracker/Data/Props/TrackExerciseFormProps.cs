@@ -26,5 +26,7 @@ public class TrackExerciseFormProps
 
     public Action<ScheduleViewModel> Swap { get; set; }
 
+    public AsyncAction AddNew { get; set; }
+
     public Action Cancel { get; set; }
 }

@@ -1,7 +1,18 @@
 @page "/"
 @attribute [Authorize]
+@inject IExerciseTimerService ExerciseTimer
 
-<h2>Today's schedule</h2>
-
-<ExerciseProfileSelectorConnected />
+<Header Title="Workout">
+    <ExerciseTimerBadge TargetRestTime="TimeSpan.FromMinutes(2)" />
+</Header>
 <ExerciseScheduleConnected />
+
+@code{
+    protected override void OnInitialized()
+    {
+        if (!ExerciseTimer.IsRunning)
+        {
+            ExerciseTimer.Start();
+        }
+    }
+}

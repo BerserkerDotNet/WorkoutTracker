@@ -1,0 +1,54 @@
+﻿@typeparam TItem
+
+<MudAutocomplete T="TItem"
+                 Label="@Hint"
+                 Variant="Variant.Text"
+                 ValueChanged="OnSelected"
+                 SearchFunc="Search"
+                 ToStringFunc="ItemNameFunc"
+                 ResetValueOnEmptyText="true"
+                 CoerceText="true"
+                 CoerceValue="true"
+                 Class="mx-2 mt-n2"
+                 DisableUnderLine="true"
+                 Margin="Margin.Dense">
+    <ItemTemplate Context="item">
+        <MudText>@ItemNameFunc(item)</MudText>
+    </ItemTemplate>
+</MudAutocomplete>
+
+@code {
+    [Parameter]
+    public string Hint { get; set; } = "Type a name";
+
+    [Parameter]
+    [EditorRequired]
+    public Func<TItem, string> ItemNameFunc { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<TItem> Items { get; set; }
+
+    [Parameter]
+    public TItem Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> ValueChanged { get; set; }
+
+    private async Task<IEnumerable<TItem>> Search(string value)
+    {
+        await Task.Delay(0);
+
+        if (string.IsNullOrEmpty(value))
+        {
+            return Items;
+        }
+
+        return Items.Where(i => ItemNameFunc(i).Contains(value, StringComparison.OrdinalIgnoreCase)).ToArray();
+    }
+
+    private async Task OnSelected(TItem item)
+    {
+        await ValueChanged.InvokeAsync(item);
+    }
+}

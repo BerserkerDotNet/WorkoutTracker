@@ -33,22 +33,22 @@ public class ApplicationContext : ILogger, INotificationService
         Logger.Log(logLevel, eventId, state, exception, formatter);
     }
 
-    public Task TrackException(Error exception, string? id = null, SeverityLevel? severityLevel = null, Dictionary<string, object?>? properties = null) 
+    public Task TrackException(Error exception, string? id = null, SeverityLevel? severityLevel = null, Dictionary<string, object?>? properties = null)
     {
         return AppInsights.TrackException(exception, id, severityLevel, properties);
     }
 
-    public Task StartTrackEvent(string name) 
+    public Task StartTrackEvent(string name)
     {
         return AppInsights.StartTrackEvent(name);
     }
 
-    public Task StopTrackEvent(string name, Dictionary<string, string?>? properties = null, Dictionary<string, decimal>? measurements = null) 
+    public Task StopTrackEvent(string name, Dictionary<string, string?>? properties = null, Dictionary<string, decimal>? measurements = null)
     {
         return AppInsights.StopTrackEvent(name, properties, measurements);
     }
 
-    public Task Flush(bool? async = true) 
+    public Task Flush(bool? async = true)
     {
         return AppInsights.Flush(async);
     }

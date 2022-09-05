@@ -39,7 +39,7 @@
     </MudItem>
     <MudItem xs="12" style="display:flex;justify-content: center">
         <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
-            <MudButton StartIcon="@Icons.Filled.Add" IconColor="Color.Warning" Disabled="true">Add</MudButton>
+            <MudButton StartIcon="@Icons.Filled.Add" IconColor="Color.Warning" Disabled="false" OnClick="() => Props.AddNew()">Add</MudButton>
             <MudButton StartIcon="@Icons.Filled.SwapHoriz" IconColor="Color.Warning" OnClick="() => Props.Replace(Props.CurrentSchedule)" Disabled="@DisableReplace">Substitude</MudButton>
             <MudButton StartIcon="@Icons.Filled.ArrowCircleDown" IconColor="Color.Warning" OnClick="() => Props.Swap(Props.CurrentSchedule)" Disabled="@DisableSwap">Do later</MudButton>
         </MudButtonGroup>

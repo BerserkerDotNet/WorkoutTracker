@@ -12,26 +12,26 @@ namespace WorkoutTracker.Components.Connected
 
         protected override void MapStateToPropsSafe(RootState state, ExerciseScheduleProps props)
         {
+            props.AllExercises = state.SelectExercises();
             props.Schedule = state.SelectSchedule();
             props.CurrentScheduleId = state.SelectCurentScheduleId();
+            props.TodayLogByExercise = state.SelectTodayExerciseLogLookup();
+            props.PreviousSessionLog = state.SelectLastLogByExercise(props.Schedule);
         }
 
         protected override void MapDispatchToProps(IStore<RootState> store, ExerciseScheduleProps props)
         {
-            props.Start = Callback<IEnumerable<ScheduleViewModel>>(schedule =>
+            props.AddExercise = CallbackAsync<IExerciseSelector>(async (selector) =>
             {
-                var first = schedule.First();
-                store.Dispatch(new SetCurrentSchedule(first.Id));
-                Navigation.NavigateTo($"/trackexercise/{first.Id}");
+                var request = new InsertNewExerciseRequest(selector, store.State.SelectSchedule(), store.State.SelectCurentScheduleId());
+                await store.Dispatch<InsertNewExerciseAction, InsertNewExerciseRequest>(request);
             });
-            props.Resume = Callback<Guid>(scheduleId =>
+            props.Save = CallbackAsync<LogEntryViewModel>(async e =>
             {
-                Navigation.NavigateTo($"/trackexercise/{scheduleId}");
+                await store.Dispatch<SaveExerciseLogEntryAction, LogEntryViewModel>(e);
             });
-            props.Previous = Callback<ScheduleViewModel>(async model => await store.Dispatch<MoveToPreviousExerciseAction, ScheduleViewModel>(model));
-            props.Next = Callback<ScheduleViewModel>(async model => await store.Dispatch<MoveToNextExerciseAction, ScheduleViewModel>(model));
-            props.MoveUp = Callback<ScheduleViewModel>(model => store.Dispatch(new MoveExerciseUpAction(model)));
-            props.MoveDown = Callback<ScheduleViewModel>(model => store.Dispatch(new MoveExerciseDownAction(model)));
+            props.RemoveExercise = CallbackAsync<Guid>(async id => await store.Dispatch<RemoveExerciseFromSchedule, RemoveExerciseFromScheduleRequest>(new RemoveExerciseFromScheduleRequest(store.State.SelectSchedule(), id)));
+            props.SetScheduleTargetSets = (id, targetSets) => Callback(() => store.Dispatch(new SetScheduleTargetSets(id, targetSets)))();
         }
 
         protected override async Task Init(IStore<RootState> store)
@@ -42,7 +42,20 @@ namespace WorkoutTracker.Components.Connected
                 await store.Dispatch<FetchExercisesAction>();
                 await store.Dispatch<BuildExerciseScheduleAction, ExerciseProfile>(state.SelectCurrentProfile());
             }
-            await store.Dispatch<FetchWorkoutStatsAction, WorkoutStatsRequest>(new WorkoutStatsRequest(DateTime.Today.AddMonths(-6), DateTime.Today.AddDays(1)));
+
+            var isSummariesLoaded = state.SelectSummaries().Any();
+            if (!isSummariesLoaded)
+            {
+                await store.Dispatch<FetchWorkoutStatsAction, WorkoutStatsRequest>(new WorkoutStatsRequest(DateTime.Today.AddMonths(-6), DateTime.Today.AddDays(1)));
+            }
+
+            var history = store.State.SelectHistory();
+            if (history.ContainsKey(DateTime.Today.ToDateOnly()))
+            {
+                return;
+            }
+
+            await store.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today);
         }
     }
 }

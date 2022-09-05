@@ -1,0 +1,51 @@
+﻿@implements IDisposable
+@inject NavigationManager Navigation
+
+<MudPaper Elevation="0" Class="fixed px-4 z-10 py-0 d-flex flex-row justify-space-between" Style="bottom:0;left:0;right:0;">
+    @foreach (var menuItem in menu)
+    {
+        var color = GetColor(menuItem.Url);
+        <MudButton Href="@menuItem.Url" Color="@color" Class="pa-1">
+            <div class="d-flex flex-column align-center">
+                <MudIcon Icon="@menuItem.Icon" Color="@color" />
+                <MudText Typo="Typo.caption">@menuItem.Title</MudText>
+            </div>
+        </MudButton>
+    }
+</MudPaper>
+
+@code {
+    private MenuItem[] menu = new[]
+    {
+        new MenuItem("Workout", "/", Icons.Material.Filled.RunCircle),
+        new MenuItem("Schedule", "/schedule", Icons.Material.Filled.CalendarMonth),
+        new MenuItem("Exercises", "/library", Icons.Material.Filled.LibraryBooks),
+        new MenuItem("Reports", "/log", Icons.Material.Filled.BarChart),
+        new MenuItem("Account", "/account", Icons.Material.Filled.ManageAccounts),
+    };
+
+    private Color GetColor(string suffix)
+    {
+        Console.WriteLine(Navigation.Uri);
+
+        return Navigation.Uri.Remove(0, Navigation.BaseUri.Length - 1).Equals(suffix, StringComparison.OrdinalIgnoreCase) ? Color.Primary : Color.Default;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Navigation.LocationChanged += OnLocationChnaged;
+    }
+
+    private void OnLocationChnaged(object? sender, LocationChangedEventArgs args)
+    {
+        this.StateHasChanged();
+    }
+
+    public void Dispose() 
+    {
+        Navigation.LocationChanged -= OnLocationChnaged;
+    }
+
+    public record MenuItem(string Title, string Url, string Icon);
+}

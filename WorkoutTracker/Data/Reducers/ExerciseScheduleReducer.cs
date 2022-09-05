@@ -28,6 +28,10 @@ namespace WorkoutTracker.Data.Reducers
                     return MoveExerciseUp(state, a.ScheduleToSwap);
                 case SetCurrentSchedule a:
                     return state with { CurrentScheduleId = a.Id };
+                case SetScheduleTargetSets a:
+                    var scheduleIdx = Array.FindIndex(state.Schedule, s => s.Id == a.ScheduleId);
+                    state.Schedule[scheduleIdx] = state.Schedule[scheduleIdx] with { TargetSets = a.TargetSets };
+                    return state;
                 default:
                     return state;
             }

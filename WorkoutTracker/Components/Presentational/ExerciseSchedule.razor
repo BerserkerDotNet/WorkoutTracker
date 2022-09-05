@@ -1,74 +1,42 @@
 ﻿<If Condition="!Props.Schedule.Any()">
-	<Then>
-		<MudCard>
-			<MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="300px" />
-			<MudCardContent>
-				<MudSkeleton Width="30%" Height="42px;" />
-				<MudSkeleton Width="80%" />
-				<MudSkeleton Width="100%" />
-			</MudCardContent>
-			<MudCardActions>
-				<MudSkeleton Width="64px" Height="40px" Class="ml-2" />
-				<MudSkeleton Width="105px" Height="40px" Class="ml-3" />
-			</MudCardActions>
-		</MudCard>
-	</Then>
-	<Else>
-		<Foreach Items="Props.Schedule" Context="scheduleItem">
-			@{
-				var item = scheduleItem.CurrentExercise;
-			}
-			<MudCard Class="mb-4" Elevation="4">
-				<Image Path="@item.ImagePath" ImageName="@item.Name" />
-				<MudCardContent>
-					<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
-					@*<MudText Typo="Typo.caption">@item.Description</MudText>*@
-					<MudNumericField T="int" Min="1" Max="50" Step="1" Label="# of sets" Value="scheduleItem.TargetSets" ValueChanged="value => SetsChanged(scheduleItem, value)" />
-					<MudNumericField T="double" Min="10" Max="180" Step="10" Label="Target rest time(s)" Value="scheduleItem.TargetRest.TotalSeconds" ValueChanged="value => RestChanged(scheduleItem, value)" />
-				</MudCardContent>
-				<MudCardActions>
-					<div style="display:flex;justify-content: center;width:100%;">
-						<MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
-							<MudButton StartIcon="@Icons.Filled.ArrowBack" IconColor="Color.Warning" OnClick="() => Props.Previous(scheduleItem)">Prev</MudButton>
-							<MudButton StartIcon="@Icons.Filled.ArrowUpward" IconColor="Color.Warning" OnClick="() => Props.MoveUp(scheduleItem)">Up</MudButton>
-							<MudButton StartIcon="@Icons.Filled.ArrowDownward" IconColor="Color.Warning" OnClick="() => Props.MoveDown(scheduleItem)">Down</MudButton>
-							<MudButton EndIcon="@Icons.Filled.ArrowForward" IconColor="Color.Warning" OnClick="() => Props.Next(scheduleItem)">Next</MudButton>
-						</MudButtonGroup>
-					</div>
-				</MudCardActions>
-			</MudCard>
-		</Foreach>
-
-		<If Condition="Props.CurrentScheduleId is null">
-			<Then>
-				<ActionButton StartIcon="@Icons.Filled.PlayArrow"
-							Label="Start"
-							  Color="Color.Success"
-							  OnClick="() => Props.Start(Props.Schedule)" />
-			</Then>
-			<Else>
-				<ActionButton StartIcon="@Icons.Filled.PlayArrow"
-					Label="Resume"
-							  Color="Color.Success"
-							  OnClick="() => Props.Resume(Props.CurrentScheduleId.Value)" />
-			</Else>
-		</If>
-
-
-	</Else>
+    <Then>
+        <MudCard>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="300px" />
+            <MudCardContent>
+                <MudSkeleton Width="30%" Height="42px;" />
+                <MudSkeleton Width="80%" />
+                <MudSkeleton Width="100%" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+                <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+            </MudCardActions>
+        </MudCard>
+    </Then>
+    <Else>
+        <MudExpansionPanels MultiExpansion="true">
+            @foreach (var scheduleItem in Props.Schedule)
+            {
+                <ExercisePanel Schedule="scheduleItem" ControlContext="_controlContext" PreviousSessionLog="Props.PreviousSessionLog" TodayLogByExercise="Props.TodayLogByExercise" />
+            }
+        </MudExpansionPanels>
+        <ExerciseSelectorForm ActionText="Add exercise" Exercises="Props.AllExercises" OnExerciseSelected="OnAddExercise" />
+    </Else>
 </If>
 
-@code {
-	[Parameter]
-	public ExerciseScheduleProps Props { get; set; }
+@code{
+    ExerciseControlContext _controlContext = new ExerciseControlContext(null, null, null, null);
 
-	private void SetsChanged(ScheduleViewModel model, int value)
-	{
-		model.TargetSets = value;
-	}
+    [Parameter]
+    public ExerciseScheduleProps Props { get; set; }
 
-	private void RestChanged(ScheduleViewModel model, double value)
-	{
-		model.TargetRest = TimeSpan.FromSeconds(value);
-	}
+    protected override void OnParametersSet()
+    {
+        _controlContext = new ExerciseControlContext(Props.AddExercise, Props.RemoveExercise, Props.Save, Props.SetScheduleTargetSets);
+    }
+
+    private async Task OnAddExercise(ExerciseViewModel exercise)
+    {
+        await Props.AddExercise(new SpecificExerciseSelector(exercise.Id));
+    }
 }
