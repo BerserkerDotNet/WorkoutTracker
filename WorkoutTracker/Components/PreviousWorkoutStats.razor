@@ -1,7 +1,6 @@
 ﻿<div class="d-flex justify-space-around">
     @if (PreviousLog is object)
     {
-
         <MudChip Size="Size.Small" Icon="@Icons.Filled.WorkspacePremium" Color="Color.Info" OnClick="ToggleDetails">@PreviousLog.BestWorkout.Max.Repetitions reps of @PreviousLog.MaxWeightFormatted</MudChip>
         <MudChip Size="Size.Small" Icon="@Icons.Filled.History" Color="Color.Info" OnClick="ToggleDetails">@PreviousLog.LastWorkout.Max.Repetitions reps of @PreviousLog.LastWeightFormatted</MudChip>
         <MudPopover Open="@_isDetailsShown" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.BottomCenter">

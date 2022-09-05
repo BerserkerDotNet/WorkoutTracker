@@ -14,7 +14,6 @@
         </MudBadge>
     }
     <MudText Class="ml-3">@Name</MudText>
-    @ChildContent
 </div>
 
 @code
@@ -26,9 +25,6 @@
     [Parameter]
     [EditorRequired]
     public string Name { get; set; }
-
-    [Parameter]
-    public RenderFragment ChildContent { get; set; }
 
     [Parameter]
     public SetStatus Status { get; set; }
