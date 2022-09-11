@@ -1,33 +1,25 @@
 ﻿@inject IDialogService DialogService
-<MudDatePicker Class="d-flex align-center"
-               PickerVariant="PickerVariant.Dialog"
-               Variant="Variant.Outlined"
-               Date="Props.SelectedDate.ToDateTime()"
-               MaxDate="DateTime.MaxValue"
-               DisableToolbar="true"
-               Label="Workout date"
-               Elevation="3"
-               DateChanged="OnDateChanged" />
-<MudDivider Class="my-2" />
-<If Condition="!Props.Records.Any()">
-    <Then>
-        <MudAlert Severity="Severity.Normal">There is nothing on @Props.SelectedDate.ToShortDateString().</MudAlert>
-    </Then>
-    <Else>
-        @{
-            var workoutDuration = Props.Records.Sum(r => r.TotalDuration);
-            var workoutRest = Props.Records.Sum(r => r.TotalRest);
-            var workoutWeight = Props.Records.Sum(r => Props.ShowWeightInKG ? r.TotalWeightKG : r.TotalWeightLB);
-            var secondaryWorkoutWeight = Props.Records.Sum(r => Props.ShowWeightInKG ? r.TotalWeightLB : r.TotalWeightKG);
-            var weightUnit = Props.ShowWeightInKG ? "KG" : "LB";
-            var secondaryWeightUnit = Props.ShowWeightInKG ? "LB" : "KG";
-        }
-        <MudAlert Severity="Severity.Success" Elevation="3" Variant="Variant.Outlined">
-            You workout lasted for <b>@(workoutDuration + workoutRest)</b> minutes. Time in exercise is <b>@workoutDuration</b> minutes, rested <b>@workoutRest</b> minutes.
-            You lifted a total of <b>@string.Format("{0:n0}",workoutWeight)</b> @weightUnit (@string.Format("{0:n0}",secondaryWorkoutWeight) @secondaryWeightUnit)
-        </MudAlert>
-    </Else>
-</If>
+<MudPaper Elevation="2">
+    <If Condition="!Props.Records.Any()">
+        <Then>
+            <MudAlert Severity="Severity.Normal">There is nothing on @Props.SelectedDate.ToShortDateString().</MudAlert>
+        </Then>
+        <Else>
+            @{
+                var workoutDuration = Props.Records.Sum(r => r.TotalDuration);
+                var workoutRest = Props.Records.Sum(r => r.TotalRest);
+                var workoutWeight = Props.Records.Sum(r => Props.ShowWeightInKG ? r.TotalWeightKG : r.TotalWeightLB);
+                var secondaryWorkoutWeight = Props.Records.Sum(r => Props.ShowWeightInKG ? r.TotalWeightLB : r.TotalWeightKG);
+                var weightUnit = Props.ShowWeightInKG ? "KG" : "LB";
+                var secondaryWeightUnit = Props.ShowWeightInKG ? "LB" : "KG";
+            }
+            <MudAlert Severity="Severity.Success" Elevation="3" Variant="Variant.Outlined">
+                You workout lasted for <b>@(workoutDuration + workoutRest)</b> minutes. Time in exercise is <b>@workoutDuration</b> minutes, rested <b>@workoutRest</b> minutes.
+                You lifted a total of <b>@string.Format("{0:n0}",workoutWeight)</b> @weightUnit (@string.Format("{0:n0}",secondaryWorkoutWeight) @secondaryWeightUnit)
+            </MudAlert>
+        </Else>
+    </If>
+</MudPaper>
 
 @foreach (var logRecord in Props.Records)
 {

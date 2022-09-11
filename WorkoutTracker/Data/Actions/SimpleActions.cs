@@ -10,6 +10,7 @@ public record SwapExerciseSchedulesAction(ScheduleViewModel ScheduleToSwap) : IA
 public record MoveExerciseUpAction(ScheduleViewModel ScheduleToSwap) : IAction;
 public record MoveExerciseDownAction(ScheduleViewModel ScheduleToSwap) : IAction;
 public record ReceiveExerciseCurrentIndexAction(Guid ExerciseGroupId, int Index) : IAction;
+public record ReplaceScheduleExercise(Guid ScheduleId, ExerciseViewModel NewExercise) : IAction;
 public record UpsertExerciseLogEntryAction(LogEntryViewModel Entry) : IAction;
 public record ReceiveLastWorkoutLogByExerciseAction(Guid ExerciseId, LogEntryViewModel Entry) : IAction;
 public record ForceStateChange() : IAction;

@@ -1,0 +1,21 @@
+﻿<MudPaper Style="background-color:var(--mud-palette-background-grey)">
+    <MudDatePicker Class="d-flex align-center ma-2 no-label-input"
+                   PickerVariant="PickerVariant.Dialog"
+                   Variant="Variant.Text"
+                   Rounded="true"
+                   Date="Props.SelectedDate.ToDateTime()"
+                   MaxDate="DateTime.MaxValue"
+                   DisableToolbar="true"
+                   Elevation="0"
+                   DateChanged="OnDateChanged" />
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ExercisesHistoryProps Props { get; set; }
+
+    private async Task OnDateChanged(DateTime? newDate)
+    {
+        await Props.SelectedDateChanged(newDate.Value.ToDateOnly());
+    }
+}

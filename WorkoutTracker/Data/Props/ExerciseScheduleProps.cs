@@ -29,9 +29,16 @@ namespace WorkoutTracker.Data.Props
         public AsyncAction<Guid> RemoveExercise { get; set; }
 
         public Action<Guid, int> SetScheduleTargetSets { get; set; }
+
+        public Action<Guid, ExerciseViewModel> ReplaceExercise { get; set; }
     }
 
-    public record ExerciseControlContext(AsyncAction<IExerciseSelector> AddExercise, AsyncAction<Guid> RemoveExercise, AsyncAction<LogEntryViewModel> SaveExercise, Action<Guid, int> SetScheduleTargetSets);
+    public record ExerciseControlContext(
+        AsyncAction<IExerciseSelector> AddExercise,
+        AsyncAction<Guid> RemoveExercise,
+        AsyncAction<LogEntryViewModel> SaveExercise,
+        Action<Guid, int> SetScheduleTargetSets,
+        Action<Guid, ExerciseViewModel> ReplaceExercise);
 
     public class ExercisesLogProps
     {

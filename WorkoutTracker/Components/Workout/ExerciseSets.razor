@@ -7,7 +7,7 @@
     var localIdx = idx;
     var isCompleted = set.Status == SetStatus.Completed;
     var isRunning = set.Status == SetStatus.InProgress;
-    <MudPaper Class="d-flex align-center my-2">
+    <MudPaper Class="d-flex align-center my-2" @key="set.Index">
         @if (isCompleted)
         {
             <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium" Class="mx-2" OnClick="() => OnEditSet(set)" />

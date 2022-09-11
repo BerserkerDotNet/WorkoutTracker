@@ -32,6 +32,8 @@ namespace WorkoutTracker.Components.Connected
             });
             props.RemoveExercise = CallbackAsync<Guid>(async id => await store.Dispatch<RemoveExerciseFromSchedule, RemoveExerciseFromScheduleRequest>(new RemoveExerciseFromScheduleRequest(store.State.SelectSchedule(), id)));
             props.SetScheduleTargetSets = (id, targetSets) => Callback(() => store.Dispatch(new SetScheduleTargetSets(id, targetSets)))();
+
+            props.ReplaceExercise = (id, exercise) => Callback(() => store.Dispatch(new ReplaceScheduleExercise(id, exercise)))();
         }
 
         protected override async Task Init(IStore<RootState> store)

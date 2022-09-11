@@ -32,6 +32,10 @@ namespace WorkoutTracker.Data.Reducers
                     var scheduleIdx = Array.FindIndex(state.Schedule, s => s.Id == a.ScheduleId);
                     state.Schedule[scheduleIdx] = state.Schedule[scheduleIdx] with { TargetSets = a.TargetSets };
                     return state;
+                case ReplaceScheduleExercise si:
+                    var scheduleToUpdate = Array.FindIndex(state.Schedule, s => s.Id == si.ScheduleId);
+                    state.Schedule[scheduleToUpdate] = state.Schedule[scheduleToUpdate] with { CurrentIndex = 0, Exercises = new[] { si.NewExercise } };
+                    return state;
                 default:
                     return state;
             }

@@ -11,6 +11,7 @@ namespace WorkoutTracker.Components.Workout
         private SetStatus _exerciseStatus;
         private IEnumerable<Set> _completedSets;
         private PreviousLogRecordStats _previousSessionData;
+        private bool _isReplacingExercise;
 
         [Inject]
         public IDialogService DialogService { get; set; }
@@ -21,6 +22,10 @@ namespace WorkoutTracker.Components.Workout
         [Parameter]
         [EditorRequired]
         public ScheduleViewModel Schedule { get; set; }
+
+        [Parameter]
+        [EditorRequired]
+        public IEnumerable<ExerciseViewModel> AllExercises { get; set; }
 
         [Parameter]
         [EditorRequired]
@@ -37,12 +42,28 @@ namespace WorkoutTracker.Components.Workout
             _exercise = Schedule.CurrentExercise;
             _previousSessionData = PreviousSessionLog.ContainsKey(_exercise.Id) ? PreviousSessionLog[_exercise.Id] : null;
             _completedSets = TodayLogByExercise.ContainsKey(_exercise.Id) ? TodayLogByExercise[_exercise.Id].Sets : Enumerable.Empty<Set>();
-            _exerciseStatus = _completedSets.Count() == Schedule.TargetSets ? SetStatus.Completed : (_completedSets.Count() > 0 ? SetStatus.InProgress : SetStatus.NotStarted);
+            _exerciseStatus = _completedSets.Count() >= Schedule.TargetSets ? SetStatus.Completed : (_completedSets.Count() > 0 ? SetStatus.InProgress : SetStatus.NotStarted);
         }
 
         private async Task OnRemoveExercise()
         {
             await ControlContext.RemoveExercise(Schedule.Id);
+        }
+
+        private void OnBeginReplaceExercise()
+        {
+            _isReplacingExercise = true;
+        }
+
+        private void OnCompleteReplaceExercise(ExerciseViewModel model)
+        {
+            ControlContext.ReplaceExercise(Schedule.Id, model);
+            _isReplacingExercise = false;
+        }
+
+        private void OnCancelReplaceExercise()
+        {
+            _isReplacingExercise = false;
         }
 
         private async Task OnStartSet(ExerciseViewModel exercise, WorkoutSet workoutSet)

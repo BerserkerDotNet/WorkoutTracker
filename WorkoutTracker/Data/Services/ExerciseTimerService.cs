@@ -38,7 +38,7 @@ public class ExerciseTimerService : IExerciseTimerService, IDisposable
     public void Start()
     {
         _source = new CancellationTokenSource();
-        Task.Factory.StartNew(async () => await StartCounting(_source.Token));
+        Task.Factory.StartNew(async () => await StartCounting(_source.Token), TaskCreationOptions.LongRunning);
     }
 
     public void Stop()

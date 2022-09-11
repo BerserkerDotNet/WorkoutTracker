@@ -42,3 +42,23 @@ public class ExercisesHistoryConnected : SafeConnectedComponent<ExercisesHistory
         await store.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today);
     }
 }
+
+public class ExercisesHistoryFilterConnected : SafeConnectedComponent<ExerciseHistoryFilter, RootState, ExercisesHistoryProps>
+{
+    [Inject]
+    public NavigationManager Navigation { get; set; }
+
+    protected override void MapStateToPropsSafe(RootState state, ExercisesHistoryProps props)
+    {
+        props.SelectedDate = state.SelectDate();
+    }
+
+    protected override void MapDispatchToProps(IStore<RootState> store, ExercisesHistoryProps props)
+    {
+        props.SelectedDateChanged = CallbackAsync<DateOnly>(async date =>
+        {
+            store.Dispatch(new SetSelectedHistoryDate(date));
+            await store.Dispatch<FetchExerciseLogsAction, DateTime>(date.ToDateTime());
+        });
+    }
+}

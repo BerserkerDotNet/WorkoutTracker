@@ -11,13 +11,21 @@
                       StartSet="set =>  OnStartSet(_exercise, set)"
                       FinishSet="set =>  OnFinishSet(_exercise, set)"
                       EditSet="set =>  OnEditSet(_exercise, set)" />
-        <div class="d-flex justify-space-around">
-            <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddSet">Add set</MudButton>
-            <MudMenu Label="More" EndIcon="@Icons.Filled.KeyboardArrowDown" Color="Color.Primary">
-                <MudMenuItem OnClick="OnRemoveExercise">Remove exercise</MudMenuItem>
-                <MudMenuItem OnClick="OnRemoveSet">Reduce sets</MudMenuItem>
-            </MudMenu>
-        </div>
+            @if (@_isReplacingExercise)
+            {
+                <ExerciseSelector Exercises="AllExercises" ActionText="Replace" OnExerciseSelected="OnCompleteReplaceExercise" OnCancel="OnCancelReplaceExercise" />
+            }
+            else
+            {
+                <div class="d-flex justify-space-around">
+                <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddSet">Add set</MudButton>
+                <MudMenu Label="More" EndIcon="@Icons.Filled.KeyboardArrowDown" Color="Color.Primary">
+                    <MudMenuItem OnClick="OnBeginReplaceExercise">Replace exercise</MudMenuItem>
+                    <MudMenuItem OnClick="OnRemoveExercise">Remove exercise</MudMenuItem>
+                    <MudMenuItem OnClick="OnRemoveSet">Reduce sets</MudMenuItem>
+                </MudMenu>
+            </div>
+            }
     </ChildContent>
 </MudExpansionPanel>
 

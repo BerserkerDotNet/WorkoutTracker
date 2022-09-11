@@ -29,7 +29,8 @@ public partial class ExerciseTimerBadge : IDisposable
         _chipColor = isResting ? Color.Success : Color.Secondary;
         _chipColor = isResting && TargetRestTime < args.CurrentTime ? Color.Warning : _chipColor;
         _currentTimeFormatted = args.CurrentTime.ToString(@"mm\:ss");
-        StateHasChanged();
+
+        InvokeAsync(() => StateHasChanged());
     }
 
     private void OnStartTimer()
