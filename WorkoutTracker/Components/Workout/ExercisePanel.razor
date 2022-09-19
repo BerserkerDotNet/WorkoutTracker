@@ -4,13 +4,12 @@
     </TitleContent>
     <ChildContent>
         <PreviousWorkoutStats PreviousLog="_previousSessionData" />
-        <ExerciseSets CompletedSets="_completedSets"
-                      TargetSets="Schedule.TargetSets"
-                      TargetWeight="(int?)_previousSessionData?.LastWorkout.Max.WeightLb ?? 0"
-                      TargetReps="(int?)_previousSessionData?.LastWorkout.Max.Repetitions ?? 0"
+        <ExerciseSets TargetSets="Schedule.Exercise.Sets"
                       StartSet="set =>  OnStartSet(_exercise, set)"
                       FinishSet="set =>  OnFinishSet(_exercise, set)"
-                      EditSet="set =>  OnEditSet(_exercise, set)" />
+                      EditSet="set =>  OnEditSet(_exercise, set)"
+                      SetUpdated="set => OnSetUpdated(set)"
+                      />
             @if (@_isReplacingExercise)
             {
                 <ExerciseSelector Exercises="AllExercises" ActionText="Replace" OnExerciseSelected="OnCompleteReplaceExercise" OnCancel="OnCancelReplaceExercise" />

@@ -7,9 +7,8 @@ namespace WorkoutTracker.Components.Workout
     public partial class ExercisePanel
     {
         private TimeSpan _currentRestTime;
-        private ExerciseViewModel _exercise;
+        private WorkoutExerciseViewModel _exercise;
         private SetStatus _exerciseStatus;
-        private IEnumerable<Set> _completedSets;
         private PreviousLogRecordStats _previousSessionData;
         private bool _isReplacingExercise;
 
@@ -21,7 +20,7 @@ namespace WorkoutTracker.Components.Workout
 
         [Parameter]
         [EditorRequired]
-        public ScheduleViewModel Schedule { get; set; }
+        public WorkoutViewModel Schedule { get; set; }
 
         [Parameter]
         [EditorRequired]
@@ -39,10 +38,9 @@ namespace WorkoutTracker.Components.Workout
 
         protected override void OnParametersSet()
         {
-            _exercise = Schedule.CurrentExercise;
+            _exercise = Schedule.Exercise;
             _previousSessionData = PreviousSessionLog.ContainsKey(_exercise.Id) ? PreviousSessionLog[_exercise.Id] : null;
-            _completedSets = TodayLogByExercise.ContainsKey(_exercise.Id) ? TodayLogByExercise[_exercise.Id].Sets : Enumerable.Empty<Set>();
-            _exerciseStatus = _completedSets.Count() >= Schedule.TargetSets ? SetStatus.Completed : (_completedSets.Count() > 0 ? SetStatus.InProgress : SetStatus.NotStarted);
+            _exerciseStatus = _exercise.Sets.Any(s => s.Status == SetStatus.Completed) ? SetStatus.InProgress : _exercise.Sets.All(s => s.Status == SetStatus.Completed) ? SetStatus.Completed : SetStatus.NotStarted;
         }
 
         private async Task OnRemoveExercise()
@@ -66,21 +64,21 @@ namespace WorkoutTracker.Components.Workout
             _isReplacingExercise = false;
         }
 
-        private async Task OnStartSet(ExerciseViewModel exercise, WorkoutSet workoutSet)
+        private async Task OnStartSet(WorkoutExerciseViewModel exercise, WorkoutExerciseSetViewModel workoutSet)
         {
             _currentRestTime = ExerciseTimer.CurrentTime;
             ExerciseTimer.SetMode(ExerciseTimerMode.Exercising);
+            ControlContext.StartSet(Schedule.Id, workoutSet.Index);
             await Task.Yield();
         }
 
-        private async Task OnFinishSet(ExerciseViewModel exercise, WorkoutSet workoutSet)
+        private async Task OnFinishSet(WorkoutExerciseViewModel exercise, WorkoutExerciseSetViewModel workoutSet)
         {
             var duration = ExerciseTimer.CurrentTime;
             ExerciseTimer.SetMode(ExerciseTimerMode.Resting);
-            // TODO: Reps are not passed to a dialog
             // TODO: Show dialog when running set
             var model = TodayLogByExercise.ContainsKey(exercise.Id) ? TodayLogByExercise[exercise.Id] : LogEntryViewModel.New(exercise);
-            var dialog = ShowSetCompletionDialog(workoutSet, 0, (int)duration.TotalSeconds, (int)_currentRestTime.TotalSeconds);
+            var dialog = ShowSetCompletionDialog(workoutSet, workoutSet.Reps, (int)duration.TotalSeconds, (int)_currentRestTime.TotalSeconds);
             var result = await dialog.Result;
             if (!result.Cancelled)
             {
@@ -88,10 +86,12 @@ namespace WorkoutTracker.Components.Workout
                 var newSets = model.Sets.Union(new[] { set });
                 var newLog = model with { Sets = newSets };
                 await ControlContext.SaveExercise(newLog);
+                var finalSet = workoutSet with { Reps = set.Repetitions, Weight = set.WeightLB.Value, Duration = set.Duration, RestTime = set.RestTime, Status = SetStatus.Completed };
+                ControlContext.UpdateSet(Schedule.Id, finalSet);
             }
         }
 
-        private async Task OnEditSet(ExerciseViewModel exercise, WorkoutSet workoutSet)
+        private async Task OnEditSet(WorkoutExerciseViewModel exercise, WorkoutExerciseSetViewModel workoutSet)
         {
             // TODO: Find the set in the list and replace
             var model = TodayLogByExercise.ContainsKey(exercise.Id) ? TodayLogByExercise[exercise.Id] : LogEntryViewModel.New(exercise);
@@ -106,20 +106,28 @@ namespace WorkoutTracker.Components.Workout
 
                 var newLog = model with { Sets = currentSets };
                 await ControlContext.SaveExercise(newLog);
+                var finalSet = workoutSet with { Reps = set.Repetitions, Weight = set.WeightLB.Value, Duration = set.Duration, RestTime = set.RestTime, Status = SetStatus.Completed };
+                ControlContext.UpdateSet(Schedule.Id, finalSet);
             }
+        }
+
+        private async Task OnSetUpdated(WorkoutExerciseSetViewModel workoutSet)
+        {
+            ControlContext.UpdateSet(Schedule.Id, workoutSet);
+            await Task.Yield();
         }
 
         private void OnAddSet()
         {
-            ControlContext.SetScheduleTargetSets(Schedule.Id, Schedule.TargetSets + 1);
+            ControlContext.IncreaseSets(Schedule.Id);
         }
 
         private void OnRemoveSet()
         {
-            ControlContext.SetScheduleTargetSets(Schedule.Id, Schedule.TargetSets - 1);
+            ControlContext.DecreaseSets(Schedule.Id);
         }
 
-        private IDialogReference ShowSetCompletionDialog(WorkoutSet set, int reps, int duration, int restTime)
+        private IDialogReference ShowSetCompletionDialog(WorkoutExerciseSetViewModel set, int reps, int duration, int restTime)
         {
             var parameters = new DialogParameters
             {

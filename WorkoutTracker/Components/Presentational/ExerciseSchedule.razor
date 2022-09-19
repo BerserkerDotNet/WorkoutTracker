@@ -19,14 +19,14 @@
 </If>
 
 @code{
-    ExerciseControlContext _controlContext = new ExerciseControlContext(null, null, null, null, null);
+    ExerciseControlContext _controlContext = new ExerciseControlContext(null, null, null, null, null, null, null, null, null);
 
     [Parameter]
     public ExerciseScheduleProps Props { get; set; }
 
     protected override void OnParametersSet()
     {
-        _controlContext = new ExerciseControlContext(Props.AddExercise, Props.RemoveExercise, Props.Save, Props.SetScheduleTargetSets, Props.ReplaceExercise);
+        _controlContext = new ExerciseControlContext(Props.AddExercise, Props.RemoveExercise, Props.Save, Props.IncreaseSets, Props.DecreaseSets, Props.ReplaceExercise, Props.StartSet, Props.FinishSet, Props.UpdateSet);
     }
 
     private async Task OnAddExercise(ExerciseViewModel exercise)

@@ -17,6 +17,12 @@ public record ScheduleViewModel(Guid Id, int CurrentIndex, int TargetSets, TimeS
     public ExerciseViewModel CurrentExercise => Exercises.Count() > CurrentIndex ? Exercises.ElementAt(CurrentIndex) : null;
 }
 
+public record WorkoutExerciseSetViewModel(int Index, SetStatus Status, double Weight, int Reps, TimeSpan RestTime, TimeSpan Duration);
+
+public record WorkoutExerciseViewModel(Guid Id, string Name, string ImagePath, IEnumerable<WorkoutExerciseSetViewModel> Sets);
+
+public record WorkoutViewModel(Guid Id, TimeSpan TargetRestTime, WorkoutExerciseViewModel Exercise);
+
 public class ExerciseViewModel
 {
     public Guid Id { get; set; }
@@ -41,13 +47,6 @@ public class EditExerciseViewModel : ExerciseViewModel
     public IBrowserFile ImageFile { get; set; }
 }
 
-public class ExerciseSetViewModel
-{
-    public int TargetWeight { get; set; }
-
-    public int TargetReps { get; set; }
-}
-
 public record WorkoutSet(int Index, SetStatus Status, double Weight, int Reps, TimeSpan RestTime, TimeSpan Duration)
 {
     public int Reps { get; set; } = Reps;
@@ -58,6 +57,7 @@ public record WorkoutSet(int Index, SetStatus Status, double Weight, int Reps, T
 
     public static WorkoutSet CreateNewSet(int idx, SetStatus status, int weight = 0, int reps = 0) => new WorkoutSet(idx, status, weight, reps, TimeSpan.Zero, TimeSpan.Zero);
 }
+
 public enum SetStatus
 {
     NotStarted = 0,

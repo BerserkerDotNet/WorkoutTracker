@@ -12,7 +12,7 @@ public record LogEntryViewModel(Guid Id, ExerciseViewModel Exercise, DateTime Da
 
     public double TotalWeightLB => Math.Ceiling(Sets.Sum(s => (s.WeightLB ?? 0) * s.Repetitions));
 
-    public static LogEntryViewModel New(ExerciseViewModel exercise) => new LogEntryViewModel(Guid.NewGuid(), exercise, DateTime.UtcNow, Enumerable.Empty<Set>());
+    public static LogEntryViewModel New(WorkoutExerciseViewModel exercise) => new LogEntryViewModel(Guid.NewGuid(), new ExerciseViewModel { Id = exercise.Id, ImagePath = exercise.ImagePath, Name = exercise.Name }, DateTime.UtcNow, Enumerable.Empty<Set>());
 }
 
 public record WorkoutSummary(DateTime Date, WorkoutSetSummary Max, WorkoutSetSummary Min, WorkoutSetSummary Avg, WorkoutSetSummary Total, int SetsCount, Guid ExerciseId);

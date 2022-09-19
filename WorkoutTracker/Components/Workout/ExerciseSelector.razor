@@ -27,12 +27,12 @@
     private async Task OnSelectionConfirmed()
     {
         await OnExerciseSelected.InvokeAsync(selectedExercise);
+        selectedExercise = null;
     }
 
     private async Task Cancel()
     {
         selectedExercise = null;
-
         await OnCancel.InvokeAsync();
     }
 }

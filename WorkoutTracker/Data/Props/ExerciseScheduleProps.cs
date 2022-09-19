@@ -12,9 +12,7 @@ namespace WorkoutTracker.Data.Props
 
     public class ExerciseScheduleProps
     {
-        public Guid? CurrentScheduleId { get; set; }
-
-        public IEnumerable<ScheduleViewModel> Schedule { get; set; }
+        public IEnumerable<WorkoutViewModel> Schedule { get; set; }
 
         public Dictionary<Guid, LogEntryViewModel> TodayLogByExercise { get; set; }
 
@@ -28,17 +26,29 @@ namespace WorkoutTracker.Data.Props
 
         public AsyncAction<Guid> RemoveExercise { get; set; }
 
-        public Action<Guid, int> SetScheduleTargetSets { get; set; }
+        public Action<Guid> IncreaseSets { get; set; }
+
+        public Action<Guid> DecreaseSets { get; set; }
 
         public Action<Guid, ExerciseViewModel> ReplaceExercise { get; set; }
+
+        public Action<Guid, int> StartSet { get; set; }
+
+        public Action<Guid, int> FinishSet { get; set; }
+
+        public Action<Guid, WorkoutExerciseSetViewModel> UpdateSet { get; set; }
     }
 
     public record ExerciseControlContext(
         AsyncAction<IExerciseSelector> AddExercise,
         AsyncAction<Guid> RemoveExercise,
         AsyncAction<LogEntryViewModel> SaveExercise,
-        Action<Guid, int> SetScheduleTargetSets,
-        Action<Guid, ExerciseViewModel> ReplaceExercise);
+        Action<Guid> IncreaseSets,
+        Action<Guid> DecreaseSets,
+        Action<Guid, ExerciseViewModel> ReplaceExercise,
+        Action<Guid, int> StartSet,
+        Action<Guid, int> FinishSet,
+        Action<Guid, WorkoutExerciseSetViewModel> UpdateSet);
 
     public class ExercisesLogProps
     {

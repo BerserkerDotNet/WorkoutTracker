@@ -1,10 +1,5 @@
-﻿@{
-    var idx = 0;
-}
-
-@foreach (var set in _workoutSets)
+﻿@foreach (var set in TargetSets)
 {
-    var localIdx = idx;
     var isCompleted = set.Status == SetStatus.Completed;
     var isRunning = set.Status == SetStatus.InProgress;
     <MudPaper Class="d-flex align-center my-2" @key="set.Index">
@@ -18,84 +13,54 @@
         }
         else
         {
-            <MudIconButton Icon="@Icons.Material.Filled.PlayCircleOutline" Color="Color.Primary" Size="Size.Medium" Class="mx-2" OnClick="() => OnStartSet(localIdx, set)" />
+            <MudIconButton Icon="@Icons.Material.Filled.PlayCircleOutline" Color="Color.Primary" Size="Size.Medium" Class="mx-2" OnClick="() => OnStartSet(set)" />
         }
-        <MudTextField T="double" Variant="Variant.Text" DisableUnderLine="true" Label="Weight" ReadOnly="isCompleted" @bind-Value="@set.Weight" />
-        <MudTextField T="int" Variant="Variant.Text" DisableUnderLine="true" Label="Reps" ReadOnly="isCompleted" @bind-Value="@set.Reps" />
+
+        <MudTextField T="double" Variant="Variant.Text" DisableUnderLine="true" Label="Weight" ReadOnly="isCompleted" Value="@set.Weight" ValueChanged="(value) => OnWeightChanged(value, set)" />
+        <MudTextField T="int" Variant="Variant.Text" DisableUnderLine="true" Label="Reps" ReadOnly="isCompleted" Value="@set.Reps" ValueChanged="(value) => OnRepsChanged(value, set)" />
     </MudPaper>
-    idx++;
 }
 
 @code {
 
-    private IEnumerable<WorkoutSet> _workoutSets = Enumerable.Empty<WorkoutSet>();
-    private int _currentlyRunningSetIdx = -1;
-
     [Parameter]
     [EditorRequired]
-    public IEnumerable<Set> CompletedSets { get; set; }
+    public IEnumerable<WorkoutExerciseSetViewModel> TargetSets { get; set; }
 
     [Parameter]
-    [EditorRequired]
-    public int TargetSets { get; set; }
+    public EventCallback<WorkoutExerciseSetViewModel> StartSet { get; set; }
 
     [Parameter]
-    public int TargetWeight { get; set; }
+    public EventCallback<WorkoutExerciseSetViewModel> FinishSet { get; set; }
 
     [Parameter]
-    public int TargetReps { get; set; }
+    public EventCallback<WorkoutExerciseSetViewModel> EditSet { get; set; }
 
     [Parameter]
-    public EventCallback<WorkoutSet> StartSet { get; set; }
+    public EventCallback<WorkoutExerciseSetViewModel> SetUpdated { get; set; }
 
-    [Parameter]
-    public EventCallback<WorkoutSet> FinishSet { get; set; }
-
-    [Parameter]
-    public EventCallback<WorkoutSet> EditSet { get; set; }
-
-    protected override void OnParametersSet()
+    private async Task OnWeightChanged(double newWeight, WorkoutExerciseSetViewModel set)
     {
-        _workoutSets = GenerateSets();
+        var newSet = set with { Weight = newWeight };
+        await SetUpdated.InvokeAsync(newSet);
     }
 
-    private IEnumerable<WorkoutSet> GenerateSets()
+    private async Task OnRepsChanged(int reps, WorkoutExerciseSetViewModel set)
     {
-        var setsCount = Math.Max(TargetSets, CompletedSets.Count());
-        var sets = new List<WorkoutSet>(setsCount);
-        for (int i = 0; i < setsCount; i++)
-        {
-            var status = i == _currentlyRunningSetIdx ? SetStatus.InProgress : SetStatus.NotStarted;
-            if (i >= CompletedSets.Count() && i < _workoutSets.Count())
-            {
-                var set = _workoutSets.ElementAt(i);
-                var weight = set.Weight > 0 ? set.Weight : TargetWeight;
-                var reps = set.Reps > 0 ? set.Reps : TargetReps;
-                set = set with { Status = status, Weight = weight, Reps = reps };
-                sets.Add(set);
-            }
-            else
-            {
-                var set = i < CompletedSets.Count() ? WorkoutSet.CreateFromSet(i, CompletedSets.ElementAt(i)) : WorkoutSet.CreateNewSet(i, status, TargetWeight, TargetReps);
-                sets.Add(set);
-            }
-        }
-
-        return sets;
+        var newSet = set with { Reps = reps };
+        await SetUpdated.InvokeAsync(newSet);
     }
 
-    private async Task OnStartSet(int idx, WorkoutSet set)
+    private async Task OnStartSet(WorkoutExerciseSetViewModel set)
     {
-        _currentlyRunningSetIdx = idx;
         await StartSet.InvokeAsync(set);
     }
-    private async Task OnFinishSet(WorkoutSet set)
+    private async Task OnFinishSet(WorkoutExerciseSetViewModel set)
     {
-        _currentlyRunningSetIdx = -1;
         await FinishSet.InvokeAsync(set);
     }
 
-    private async Task OnEditSet(WorkoutSet set)
+    private async Task OnEditSet(WorkoutExerciseSetViewModel set)
     {
         await EditSet.InvokeAsync(set);
     }

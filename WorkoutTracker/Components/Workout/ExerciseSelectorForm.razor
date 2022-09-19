@@ -1,6 +1,6 @@
 ﻿@if (isOpen)
 {
-    <ExerciseSelectorForm ActionText="@ActionText" Exercises="Exercises" OnExerciseSelected="OnExerciseSelected" OnCancel="ToggleView" />
+    <ExerciseSelector ActionText="@ActionText" Exercises="Exercises" OnExerciseSelected="OnSelectionConfirmed" OnCancel="ToggleView" />
 }
 else
 {
@@ -9,7 +9,6 @@ else
 
 @code
 {
-    private ExerciseViewModel selectedExercise;
     private bool isOpen = false;
 
     [Parameter]
@@ -23,7 +22,7 @@ else
     [Parameter]
     public EventCallback<ExerciseViewModel> OnExerciseSelected { get; set; }
 
-    private async Task OnSelectionConfirmed()
+    private async Task OnSelectionConfirmed(ExerciseViewModel selectedExercise)
     {
         await OnExerciseSelected.InvokeAsync(selectedExercise);
         ToggleView();
@@ -31,7 +30,6 @@ else
 
     private void ToggleView()
     {
-        selectedExercise = null;
         isOpen = !isOpen;
     }
 }

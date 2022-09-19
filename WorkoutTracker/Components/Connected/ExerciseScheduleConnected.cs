@@ -14,7 +14,6 @@ namespace WorkoutTracker.Components.Connected
         {
             props.AllExercises = state.SelectExercises();
             props.Schedule = state.SelectSchedule();
-            props.CurrentScheduleId = state.SelectCurentScheduleId();
             props.TodayLogByExercise = state.SelectTodayExerciseLogLookup();
             props.PreviousSessionLog = state.SelectLastLogByExercise(props.Schedule);
         }
@@ -23,7 +22,7 @@ namespace WorkoutTracker.Components.Connected
         {
             props.AddExercise = CallbackAsync<IExerciseSelector>(async (selector) =>
             {
-                var request = new InsertNewExerciseRequest(selector, store.State.SelectSchedule(), store.State.SelectCurentScheduleId());
+                var request = new InsertNewExerciseRequest(selector, store.State.SelectSchedule());
                 await store.Dispatch<InsertNewExerciseAction, InsertNewExerciseRequest>(request);
             });
             props.Save = CallbackAsync<LogEntryViewModel>(async e =>
@@ -31,14 +30,18 @@ namespace WorkoutTracker.Components.Connected
                 await store.Dispatch<SaveExerciseLogEntryAction, LogEntryViewModel>(e);
             });
             props.RemoveExercise = CallbackAsync<Guid>(async id => await store.Dispatch<RemoveExerciseFromSchedule, RemoveExerciseFromScheduleRequest>(new RemoveExerciseFromScheduleRequest(store.State.SelectSchedule(), id)));
-            props.SetScheduleTargetSets = (id, targetSets) => Callback(() => store.Dispatch(new SetScheduleTargetSets(id, targetSets)))();
-
-            props.ReplaceExercise = (id, exercise) => Callback(() => store.Dispatch(new ReplaceScheduleExercise(id, exercise)))();
+            props.ReplaceExercise = (id, exercise) => CallbackAsync(async () => await store.Dispatch<ReplaceExerciseInSchedule, ReplaceExerciseInScheduleRequest>(new ReplaceExerciseInScheduleRequest(id, exercise)))();
+            props.StartSet = (id, index) => Callback(() => store.Dispatch(new UpdateSetStatus(id, index, SetStatus.InProgress)))();
+            props.FinishSet = (id, index) => Callback(() => store.Dispatch(new UpdateSetStatus(id, index, SetStatus.Completed)))();
+            props.IncreaseSets = Callback<Guid>((id) => store.Dispatch(new IncreaseSets(id)));
+            props.DecreaseSets = Callback<Guid>((id) => store.Dispatch(new DecreaseSets(id)));
+            props.UpdateSet = (id, set) => Callback(() => store.Dispatch(new UpdateSet(id, set)))();
         }
 
         protected override async Task Init(IStore<RootState> store)
         {
             var state = store.State;
+
             if (state.ExerciseSchedule is null)
             {
                 await store.Dispatch<FetchExercisesAction>();

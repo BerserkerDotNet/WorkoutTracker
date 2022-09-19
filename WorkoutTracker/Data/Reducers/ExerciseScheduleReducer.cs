@@ -2,73 +2,120 @@
 
 namespace WorkoutTracker.Data.Reducers
 {
-    public record ExerciseScheduleState(ScheduleViewModel[] Schedule, ExerciseProfile SelectedProfile, Guid? CurrentScheduleId);
+    public record ExerciseScheduleState(WorkoutViewModel[] WorkoutSchedule, ExerciseProfile SelectedProfile);
     public class ExerciseScheduleReducer : IReducer<ExerciseScheduleState>
     {
         public ExerciseScheduleState Reduce(ExerciseScheduleState state, IAction action)
         {
-            state = state ?? new ExerciseScheduleState(Array.Empty<ScheduleViewModel>(), ExerciseProfile.GetDefaultProfile(), null);
+            state = state ?? new ExerciseScheduleState(Array.Empty<WorkoutViewModel>(), ExerciseProfile.GetDefaultProfile());
 
             switch (action)
             {
                 case ExerciseProfileSelected a:
                     return state with { SelectedProfile = a.Profile };
                 case ReceiveExerciseScheduleAction a:
-                    return state with { Schedule = a.Schedule };
-                case ReceiveExerciseCurrentIndexAction si:
-                    var idx = Array.FindIndex(state.Schedule, s => s.Id == si.ExerciseGroupId);
-                    var item = state.Schedule[idx];
-                    state.Schedule[idx] = item with { CurrentIndex = si.Index };
-                    return state;
+                    return state with { WorkoutSchedule = a.Schedule };
                 case SwapExerciseSchedulesAction a:
                     return MoveExerciseDown(state, a.ScheduleToSwap);
                 case MoveExerciseDownAction a:
                     return MoveExerciseDown(state, a.ScheduleToSwap);
                 case MoveExerciseUpAction a:
                     return MoveExerciseUp(state, a.ScheduleToSwap);
-                case SetCurrentSchedule a:
-                    return state with { CurrentScheduleId = a.Id };
-                case SetScheduleTargetSets a:
-                    var scheduleIdx = Array.FindIndex(state.Schedule, s => s.Id == a.ScheduleId);
-                    state.Schedule[scheduleIdx] = state.Schedule[scheduleIdx] with { TargetSets = a.TargetSets };
-                    return state;
                 case ReplaceScheduleExercise si:
-                    var scheduleToUpdate = Array.FindIndex(state.Schedule, s => s.Id == si.ScheduleId);
-                    state.Schedule[scheduleToUpdate] = state.Schedule[scheduleToUpdate] with { CurrentIndex = 0, Exercises = new[] { si.NewExercise } };
+                    var scheduleToUpdate = Array.FindIndex(state.WorkoutSchedule, s => s.Id == si.ScheduleId);
+                    state.WorkoutSchedule[scheduleToUpdate] = state.WorkoutSchedule[scheduleToUpdate] with { Exercise = si.NewExercise };
                     return state;
+                case UpdateSetStatus a:
+                    var scheduleIndexToUpdate = Array.FindIndex(state.WorkoutSchedule, s => s.Id == a.ScheduleId);
+                    var wSchedule = state.WorkoutSchedule[scheduleIndexToUpdate];
+                    var setsArray = wSchedule.Exercise.Sets.ToArray();
+                    setsArray[a.SetIndex] = setsArray[a.SetIndex] with { Status = a.Status };
+                    var newExercise = wSchedule.Exercise with { Sets = setsArray };
+                    var newSchedule = wSchedule with { Exercise = newExercise };
+                    state.WorkoutSchedule[scheduleIndexToUpdate] = newSchedule;
+                    return state;
+                case UpdateSet a:
+                    return UpdateSet(state, a.ScheduleId, a.Set);
+                case IncreaseSets a:
+                    return IncreaseSets(state, a.ScheduleId);
+                case DecreaseSets a:
+                    return DecreaseSets(state, a.ScheduleId);
                 default:
                     return state;
             }
         }
 
-        private ExerciseScheduleState MoveExerciseDown(ExerciseScheduleState state, ScheduleViewModel scheduleToSwap)
+
+
+        private ExerciseScheduleState UpdateSet(ExerciseScheduleState state, Guid ScheduleId, WorkoutExerciseSetViewModel set)
         {
-            var currentExerciseIndex = Array.FindIndex(state.Schedule, e => e.Id == scheduleToSwap.Id);
-            if (currentExerciseIndex == state.Schedule.Length - 1)
+            var scheduleIndexToUpdate = Array.FindIndex(state.WorkoutSchedule, s => s.Id == ScheduleId);
+            var wSchedule = state.WorkoutSchedule[scheduleIndexToUpdate];
+            var setsArray = wSchedule.Exercise.Sets.ToArray();
+            setsArray[set.Index] = setsArray[set.Index] = set;
+            var newExercise = wSchedule.Exercise with { Sets = setsArray };
+            var newSchedule = wSchedule with { Exercise = newExercise };
+            state.WorkoutSchedule[scheduleIndexToUpdate] = newSchedule;
+            return state;
+        }
+
+        private ExerciseScheduleState IncreaseSets(ExerciseScheduleState state, Guid ScheduleId)
+        {
+            var scheduleToIncreaseSets = Array.FindIndex(state.WorkoutSchedule, s => s.Id == ScheduleId);
+            var scheduleToUpdate = state.WorkoutSchedule[scheduleToIncreaseSets];
+            var setsList = scheduleToUpdate.Exercise.Sets.ToList();
+            setsList.Add(new WorkoutExerciseSetViewModel(setsList.Count(), SetStatus.NotStarted, 0, 0, TimeSpan.Zero, TimeSpan.Zero));
+            var newExercise = scheduleToUpdate.Exercise with { Sets = setsList };
+            var newSchedule = scheduleToUpdate with { Exercise = newExercise };
+            state.WorkoutSchedule[scheduleToIncreaseSets] = newSchedule;
+            return state;
+        }
+
+        private ExerciseScheduleState DecreaseSets(ExerciseScheduleState state, Guid ScheduleId)
+        {
+            var scheduleToIncreaseSets = Array.FindIndex(state.WorkoutSchedule, s => s.Id == ScheduleId);
+            var scheduleToUpdate = state.WorkoutSchedule[scheduleToIncreaseSets];
+            var setsList = scheduleToUpdate.Exercise.Sets.ToList();
+            var canDecrease = setsList.Last().Status != SetStatus.Completed;
+            if (canDecrease)
+            {
+                setsList.RemoveAt(setsList.Count - 1);
+            }
+
+            var newExercise = scheduleToUpdate.Exercise with { Sets = setsList };
+            var newSchedule = scheduleToUpdate with { Exercise = newExercise };
+            state.WorkoutSchedule[scheduleToIncreaseSets] = newSchedule;
+            return state;
+        }
+
+        private ExerciseScheduleState MoveExerciseDown(ExerciseScheduleState state, WorkoutViewModel scheduleToSwap)
+        {
+            var currentExerciseIndex = Array.FindIndex(state.WorkoutSchedule, e => e.Id == scheduleToSwap.Id);
+            if (currentExerciseIndex == state.WorkoutSchedule.Length - 1)
             {
                 return state;
             }
 
-            var swap = state.Schedule[currentExerciseIndex + 1];
+            var swap = state.WorkoutSchedule[currentExerciseIndex + 1];
 
-            state.Schedule[currentExerciseIndex] = new ScheduleViewModel(scheduleToSwap.Id, swap.CurrentIndex, swap.TargetSets, swap.TargetRest, swap.Exercises);
-            state.Schedule[currentExerciseIndex + 1] = new ScheduleViewModel(swap.Id, scheduleToSwap.CurrentIndex, scheduleToSwap.TargetSets, scheduleToSwap.TargetRest, scheduleToSwap.Exercises);
+            state.WorkoutSchedule[currentExerciseIndex] = new WorkoutViewModel(scheduleToSwap.Id, swap.TargetRestTime, swap.Exercise);
+            state.WorkoutSchedule[currentExerciseIndex + 1] = new WorkoutViewModel(swap.Id, scheduleToSwap.TargetRestTime, scheduleToSwap.Exercise);
 
             return state;
         }
 
-        private ExerciseScheduleState MoveExerciseUp(ExerciseScheduleState state, ScheduleViewModel scheduleToSwap)
+        private ExerciseScheduleState MoveExerciseUp(ExerciseScheduleState state, WorkoutViewModel scheduleToSwap)
         {
-            var currentExerciseIndex = Array.FindIndex(state.Schedule, e => e.Id == scheduleToSwap.Id);
+            var currentExerciseIndex = Array.FindIndex(state.WorkoutSchedule, e => e.Id == scheduleToSwap.Id);
             if (currentExerciseIndex == 0)
             {
                 return state;
             }
 
-            var swap = state.Schedule[currentExerciseIndex - 1];
+            var swap = state.WorkoutSchedule[currentExerciseIndex - 1];
 
-            state.Schedule[currentExerciseIndex] = new ScheduleViewModel(scheduleToSwap.Id, swap.CurrentIndex, swap.TargetSets, swap.TargetRest, swap.Exercises);
-            state.Schedule[currentExerciseIndex - 1] = new ScheduleViewModel(swap.Id, scheduleToSwap.CurrentIndex, scheduleToSwap.TargetSets, scheduleToSwap.TargetRest, scheduleToSwap.Exercises);
+            state.WorkoutSchedule[currentExerciseIndex] = new WorkoutViewModel(scheduleToSwap.Id, swap.TargetRestTime, swap.Exercise);
+            state.WorkoutSchedule[currentExerciseIndex - 1] = new WorkoutViewModel(swap.Id, scheduleToSwap.TargetRestTime, scheduleToSwap.Exercise);
 
             return state;
         }

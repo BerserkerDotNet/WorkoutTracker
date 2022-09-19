@@ -65,9 +65,9 @@ public static class ExerciseHistorySelectors
         return SelectExercisesByDate(state, date).FirstOrDefault(e => e.Id == id);
     }
 
-    public static Dictionary<Guid, PreviousLogRecordStats> SelectLastLogByExercise(this RootState state, IEnumerable<ScheduleViewModel> schedule)
+    public static Dictionary<Guid, PreviousLogRecordStats> SelectLastLogByExercise(this RootState state, IEnumerable<WorkoutViewModel> schedule)
     {
-        return schedule.ToDictionary(k => k.CurrentExercise.Id, v => state.SelectLastLogByExercise(v.CurrentExercise.Id));
+        return schedule.ToDictionary(k => k.Exercise.Id, v => state.SelectLastLogByExercise(v.Exercise.Id));
     }
 
     public static PreviousLogRecordStats SelectLastLogByExercise(this RootState state, Guid id)

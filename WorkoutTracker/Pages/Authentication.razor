@@ -2,7 +2,17 @@
 @inject NavigationManager Navigation
 @inject IApplicationInsights AppInsights
 
-<RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="OnLogInSucceeded" OnLogOutSucceeded="OnLogOutSucceeded" />
+<RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="OnLogInSucceeded" OnLogOutSucceeded="OnLogOutSucceeded">
+    <LoggingIn>
+        <MudText>Login in progress</MudText>
+    </LoggingIn>
+    <LogInFailed>
+        <MudText>Login failed</MudText>
+    </LogInFailed>
+    <CompletingLoggingIn>
+        <MudText>Completing login</MudText>
+    </CompletingLoggingIn>
+</RemoteAuthenticatorView>
 
 @code{
 
@@ -14,15 +24,15 @@
 
     public async Task OnLogInSucceeded()
     {
-        var user = (await AuthenticationState).User;
+        // var user = (await AuthenticationState).User;
 
-        await AppInsights.SetAuthenticatedUserContext(user.FindFirst("preferred_username")?.Value);
-        await AppInsights.Flush();
+        //await AppInsights.SetAuthenticatedUserContext(user.FindFirst("preferred_username")?.Value);
+        //await AppInsights.Flush();
     }
 
     public async Task OnLogOutSucceeded()
     {
-        await AppInsights.ClearAuthenticatedUserContext();
-        await AppInsights.Flush();
+        //await AppInsights.ClearAuthenticatedUserContext();
+        //await AppInsights.Flush();
     }
 }

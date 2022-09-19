@@ -117,7 +117,7 @@ public class AuthService : AuthenticationStateProvider, IRemoteAuthenticationSer
 
     public Task<RemoteAuthenticationResult<RemoteAuthenticationState>> SignOutAsync(RemoteAuthenticationContext<RemoteAuthenticationState> context) => throw new System.NotImplementedException();
 
-    private ClaimsIdentity GetIdentityFrom(IEnumerable<Claim> claims) 
+    private ClaimsIdentity GetIdentityFrom(IEnumerable<Claim> claims)
     {
         return new ClaimsIdentity(claims, authenticationType: "Bearer", nameType: "name", null);
     }
