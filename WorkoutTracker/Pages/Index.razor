@@ -1,7 +1,38 @@
 @page "/"
+@using WorkoutTracker.Components.Presentational
+@using WorkoutTracker.Data.Actions
+@using WorkoutTracker.Data.Selectors
 @attribute [Authorize]
+@inject IStore<RootState> Store
 
 <Header Title="Workout">
     <ExerciseTimerBadge TargetRestTime="TimeSpan.FromMinutes(2)" />
 </Header>
-<ExerciseScheduleConnected />
+<ExerciseSchedule />
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        var state = Store.State;
+
+        if (state.ExerciseSchedule is null)
+        {
+            await Store.Dispatch<FetchExercisesAction>();
+            await Store.Dispatch<BuildExerciseScheduleAction, ExerciseProfile>(state.SelectCurrentProfile());
+        }
+
+        var isSummariesLoaded = state.SelectSummaries().Any();
+        if (!isSummariesLoaded)
+        {
+            await Store.Dispatch<FetchWorkoutStatsAction, WorkoutStatsRequest>(new WorkoutStatsRequest(DateTime.Today.AddMonths(-6), DateTime.Today.AddDays(1)));
+        }
+
+        var history = Store.State.SelectHistory();
+        if (history.ContainsKey(DateTime.Today.ToDateOnly()))
+        {
+            return;
+        }
+
+        await Store.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today);
+    }
+}

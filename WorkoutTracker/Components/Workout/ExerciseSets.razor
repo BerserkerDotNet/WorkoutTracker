@@ -1,4 +1,6 @@
-﻿@foreach (var set in TargetSets)
+﻿@inherits ComponentWithProps<ExerciseSetsProps>
+
+@foreach (var set in _sets)
 {
     var isCompleted = set.Status == SetStatus.Completed;
     var isRunning = set.Status == SetStatus.InProgress;
@@ -21,47 +23,4 @@
     </MudPaper>
 }
 
-@code {
 
-    [Parameter]
-    [EditorRequired]
-    public IEnumerable<WorkoutExerciseSetViewModel> TargetSets { get; set; }
-
-    [Parameter]
-    public EventCallback<WorkoutExerciseSetViewModel> StartSet { get; set; }
-
-    [Parameter]
-    public EventCallback<WorkoutExerciseSetViewModel> FinishSet { get; set; }
-
-    [Parameter]
-    public EventCallback<WorkoutExerciseSetViewModel> EditSet { get; set; }
-
-    [Parameter]
-    public EventCallback<WorkoutExerciseSetViewModel> SetUpdated { get; set; }
-
-    private async Task OnWeightChanged(double newWeight, WorkoutExerciseSetViewModel set)
-    {
-        var newSet = set with { Weight = newWeight };
-        await SetUpdated.InvokeAsync(newSet);
-    }
-
-    private async Task OnRepsChanged(int reps, WorkoutExerciseSetViewModel set)
-    {
-        var newSet = set with { Reps = reps };
-        await SetUpdated.InvokeAsync(newSet);
-    }
-
-    private async Task OnStartSet(WorkoutExerciseSetViewModel set)
-    {
-        await StartSet.InvokeAsync(set);
-    }
-    private async Task OnFinishSet(WorkoutExerciseSetViewModel set)
-    {
-        await FinishSet.InvokeAsync(set);
-    }
-
-    private async Task OnEditSet(WorkoutExerciseSetViewModel set)
-    {
-        await EditSet.InvokeAsync(set);
-    }
-}

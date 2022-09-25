@@ -1,5 +1,4 @@
 ﻿using BlazorState.Redux.Utilities;
-using Microsoft.AspNetCore.Components;
 
 namespace WorkoutTracker.Data.Props
 {
@@ -14,54 +13,19 @@ namespace WorkoutTracker.Data.Props
     {
         public IEnumerable<WorkoutViewModel> Schedule { get; set; }
 
-        public Dictionary<Guid, LogEntryViewModel> TodayLogByExercise { get; set; }
-
-        public Dictionary<Guid, PreviousLogRecordStats> PreviousSessionLog { get; set; }
-
         public IEnumerable<ExerciseViewModel> AllExercises { get; set; }
 
         public AsyncAction<IExerciseSelector> AddExercise { get; set; }
-
-        public AsyncAction<LogEntryViewModel> Save { get; set; }
-
-        public AsyncAction<Guid> RemoveExercise { get; set; }
-
-        public Action<Guid> IncreaseSets { get; set; }
-
-        public Action<Guid> DecreaseSets { get; set; }
-
-        public Action<Guid, ExerciseViewModel> ReplaceExercise { get; set; }
-
-        public Action<Guid, int> StartSet { get; set; }
-
-        public Action<Guid, int> FinishSet { get; set; }
-
-        public Action<Guid, WorkoutExerciseSetViewModel> UpdateSet { get; set; }
     }
 
-    public record ExerciseControlContext(
-        AsyncAction<IExerciseSelector> AddExercise,
-        AsyncAction<Guid> RemoveExercise,
-        AsyncAction<LogEntryViewModel> SaveExercise,
-        Action<Guid> IncreaseSets,
-        Action<Guid> DecreaseSets,
-        Action<Guid, ExerciseViewModel> ReplaceExercise,
-        Action<Guid, int> StartSet,
-        Action<Guid, int> FinishSet,
-        Action<Guid, WorkoutExerciseSetViewModel> UpdateSet);
-
-    public class ExercisesLogProps
+    public class ExerciseSchedulePanelProps
     {
-        public Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> Log { get; set; }
-
-        public DateOnly SelectedDate { get; set; }
-
-        public EventCallback<Guid> Delete { get; set; }
-
-        public EventCallback<LogEntryViewModel> Save { get; set; }
-
-        public EventCallback<DateTime> Load { get; set; }
+        public Dictionary<Guid, PreviousLogRecordStats> PreviousSessionLog { get; set; }
     }
+
+    public record ExerciseActionBarProps(IEnumerable<ExerciseViewModel> AllExercises, Action<Guid> IncreaseSets, Action<Guid> DecreaseSets, Action<Guid, ExerciseViewModel> ReplaceExercise, AsyncAction<Guid> RemoveExercise);
+
+    public record ExerciseSetsProps(Dictionary<Guid, LogEntryViewModel> TodayLogByExercise, Action<Guid, int> StartSet, Action<Guid, int> FinishSet, Action<Guid, WorkoutExerciseSetViewModel> UpdateSet, AsyncAction<LogEntryViewModel> Save);
 
     public class EditExerciseProps
     {

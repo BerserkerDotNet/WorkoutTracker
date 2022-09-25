@@ -47,6 +47,8 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(new CDNImageProvider(new Uri("https://workout-tracker-content.azureedge.net/images/")));
         services.AddSingleton<IExerciseTimerService, ExerciseTimerService>();
+        services.AddScoped<IPropsConfig, PropsConfigurations>();
+        services.AddScoped<PropsProvider>();
         services.AddScoped(typeof(ApplicationContext<>));
         services.AddScoped<WorkoutSetsService>();
         services.AddScoped<IWorkoutRepository, CachedWorkoutRepository>();

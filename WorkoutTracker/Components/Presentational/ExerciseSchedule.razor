@@ -1,4 +1,6 @@
-﻿<If Condition="!Props.Schedule.Any()">
+﻿@inherits ComponentWithProps<ExerciseScheduleProps>
+
+<If Condition="!Props.Schedule.Any()">
     <Then>
         <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100px" Class="mb-2" />
         <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100px" Class="mb-2" />
@@ -11,7 +13,7 @@
         <MudExpansionPanels MultiExpansion="true">
             @foreach (var scheduleItem in Props.Schedule)
             {
-                <ExercisePanel @key="scheduleItem.Id" Schedule="scheduleItem" ControlContext="_controlContext" PreviousSessionLog="Props.PreviousSessionLog" TodayLogByExercise="Props.TodayLogByExercise" AllExercises="Props.AllExercises" />
+                <ExercisePanel @key="scheduleItem.Id" Schedule="scheduleItem" />
             }
         </MudExpansionPanels>
         <ExerciseSelectorForm ActionText="Add exercise" Exercises="Props.AllExercises" OnExerciseSelected="OnAddExercise" />
@@ -19,15 +21,6 @@
 </If>
 
 @code{
-    ExerciseControlContext _controlContext = new ExerciseControlContext(null, null, null, null, null, null, null, null, null);
-
-    [Parameter]
-    public ExerciseScheduleProps Props { get; set; }
-
-    protected override void OnParametersSet()
-    {
-        _controlContext = new ExerciseControlContext(Props.AddExercise, Props.RemoveExercise, Props.Save, Props.IncreaseSets, Props.DecreaseSets, Props.ReplaceExercise, Props.StartSet, Props.FinishSet, Props.UpdateSet);
-    }
 
     private async Task OnAddExercise(ExerciseViewModel exercise)
     {
