@@ -1,4 +1,4 @@
-﻿using WorkoutTracker.Models;
+﻿using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.ViewModels.Workout;
 

@@ -2,14 +2,17 @@ using BlazorStorage.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using WorkoutTracker.Extensions;
+using WorkoutTracker.Models.Mappings;
 using WorkoutTracker.Web;
+
+Mappings.Configure();
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddStorage();
-builder.Services.AddWorkoutTracker(builder.Configuration, cfg => 
+builder.Services.AddWorkoutTracker(builder.Configuration, cfg =>
 {
     cfg.WithCacheService<LocalStorageCacheService>();
 });

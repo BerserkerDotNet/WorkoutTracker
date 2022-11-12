@@ -1,5 +1,5 @@
 ﻿using UnitsNet;
-using WorkoutTracker.Models;
+using WorkoutTracker.Models.Entities;
 using WorkoutTracker.ViewModels.Workout;
 
 namespace WorkoutTracker.Data.Services.SetProviders;

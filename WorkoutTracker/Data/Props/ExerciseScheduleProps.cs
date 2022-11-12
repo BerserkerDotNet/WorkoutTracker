@@ -1,4 +1,5 @@
 ﻿using BlazorState.Redux.Utilities;
+using WorkoutTracker.Models.Contracts;
 
 namespace WorkoutTracker.Data.Props
 {

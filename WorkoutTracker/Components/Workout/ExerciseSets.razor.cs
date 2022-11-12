@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using UnitsNet;
-using WorkoutTracker.Models;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Components.Workout;
 

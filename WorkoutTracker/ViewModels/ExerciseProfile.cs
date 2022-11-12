@@ -1,4 +1,6 @@
-﻿public class ExerciseProfile
+﻿using WorkoutTracker.Models.Contracts;
+
+public class ExerciseProfile
 {
     public static int DefaultNumberOfSets = 4;
     public static TimeSpan DefaultRestTime = TimeSpan.FromMinutes(2);

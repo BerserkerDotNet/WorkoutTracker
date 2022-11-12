@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using WorkoutTracker.Models.Contracts;
 
 namespace WorkoutTracker.Data.Actions;
 

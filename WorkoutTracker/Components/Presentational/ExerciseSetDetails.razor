@@ -1,4 +1,5 @@
-﻿	<MudCard Class="my-4" Elevation="3">
+﻿@using WorkoutTracker.Models.Entities;
+	<MudCard Class="my-4" Elevation="3">
 		<Image Path="@Props.LogRecord.Exercise.ImagePath" ImageName="@Props.LogRecord.Exercise.Name" />
 		<MudCardContent>
 			<MudText Align="Align.Center" Typo="Typo.h5">@Props.LogRecord.Exercise.Name</MudText>

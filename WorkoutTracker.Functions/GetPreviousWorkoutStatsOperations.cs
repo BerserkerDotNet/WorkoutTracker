@@ -5,8 +5,8 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using WorkoutTracker.Models;
 using System;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Functions;
 

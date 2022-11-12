@@ -7,7 +7,7 @@ using MudBlazor.Services;
 using WorkoutTracker.Data.Actions;
 using WorkoutTracker.Data.Reducers;
 using WorkoutTracker.Data.Services;
-using WorkoutTracker.Models;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Extensions;
 

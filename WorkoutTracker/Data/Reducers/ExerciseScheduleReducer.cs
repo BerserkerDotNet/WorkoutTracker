@@ -45,8 +45,6 @@ namespace WorkoutTracker.Data.Reducers
             }
         }
 
-
-
         private ExerciseScheduleState UpdateSet(ExerciseScheduleState state, Guid ScheduleId, WorkoutExerciseSetViewModel set)
         {
             var scheduleIndexToUpdate = Array.FindIndex(state.WorkoutSchedule, s => s.Id == ScheduleId);

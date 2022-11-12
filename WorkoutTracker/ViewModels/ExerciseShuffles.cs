@@ -1,4 +1,5 @@
 ﻿using WorkoutTracker.Extensions;
+using WorkoutTracker.Models.Contracts;
 
 namespace WorkoutTracker.ViewModels;
 

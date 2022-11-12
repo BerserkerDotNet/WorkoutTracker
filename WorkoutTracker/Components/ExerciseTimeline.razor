@@ -1,4 +1,5 @@
-﻿@if (Sets is not null && Sets.Any())
+﻿@using WorkoutTracker.Models.Entities;
+@if (Sets is not null && Sets.Any())
 {
 	<MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start" >
 		@for (var setIdx = Sets.Count() - 1; setIdx >= 0; setIdx--)

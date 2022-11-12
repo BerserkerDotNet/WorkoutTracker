@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using WorkoutTracker.Models;
 using Microsoft.Azure.Cosmos;
 using System;
 using System.Linq;
 using Azure.Identity;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Functions
 {

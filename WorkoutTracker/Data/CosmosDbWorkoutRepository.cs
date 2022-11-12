@@ -6,7 +6,8 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using UnitsNet;
 using WorkoutTracker.Exceptions;
-using WorkoutTracker.Models;
+using WorkoutTracker.Models.Entities;
+using WorkoutTracker.Models.Mappings;
 
 namespace WorkoutTracker.Data;
 
@@ -46,14 +47,13 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
         var exerciseDtos = await GetMultiple<Exercise>(EndpointNames.ExercisePluralName);
         var muscles = await GetMuscles();
 
-        var musclesDictionary = muscles.ToDictionary(k => k.Id, m => m);
-        return exerciseDtos.Select(e => MapExercise(e, musclesDictionary)).ToArray();
+        return exerciseDtos.AdaptToViewModel(muscles);
     }
 
     public async Task<IEnumerable<MuscleViewModel>> GetMuscles()
     {
         var muscleDtos = await GetMultiple<Muscle>(EndpointNames.MusclePluralName);
-        return muscleDtos.Select(MapMuscle).ToArray();
+        return muscleDtos.Adapt<IEnumerable<MuscleViewModel>>();
     }
 
     public virtual async Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date)

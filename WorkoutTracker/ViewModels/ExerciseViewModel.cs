@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using WorkoutTracker.Models;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.ViewModels;
 
@@ -22,25 +22,6 @@ public record WorkoutExerciseSetViewModel(int Index, SetStatus Status, double We
 public record WorkoutExerciseViewModel(Guid Id, string Name, string ImagePath, IEnumerable<WorkoutExerciseSetViewModel> Sets);
 
 public record WorkoutViewModel(Guid Id, TimeSpan TargetRestTime, WorkoutExerciseViewModel Exercise);
-
-public class ExerciseViewModel
-{
-    public Guid Id { get; set; }
-
-    public string Name { get; set; }
-
-    public string Description { get; set; }
-
-    public string Steps { get; set; }
-
-    public string TutorialUrl { get; set; }
-
-    public string ImagePath { get; set; }
-
-    public IEnumerable<MuscleViewModel> Muscles { get; set; }
-
-    public IEnumerable<string> Tags { get; set; }
-}
 
 public class EditExerciseViewModel : ExerciseViewModel
 {

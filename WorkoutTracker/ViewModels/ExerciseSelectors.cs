@@ -1,4 +1,6 @@
-﻿public record MuscleExerciseSelector(Guid MuscleId, int? TargetSets = null, TimeSpan? TargetRestTime = default) : IExerciseSelector
+﻿using WorkoutTracker.Models.Contracts;
+
+public record MuscleExerciseSelector(Guid MuscleId, int? TargetSets = null, TimeSpan? TargetRestTime = default) : IExerciseSelector
 {
     public ExerciseDescriptor Select(IEnumerable<ExerciseViewModel> exercises)
     {

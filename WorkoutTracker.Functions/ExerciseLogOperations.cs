@@ -7,9 +7,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using WorkoutTracker.Models;
 using Microsoft.Azure.Cosmos;
 using System;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Functions;
 public static class ExerciseLogOperations

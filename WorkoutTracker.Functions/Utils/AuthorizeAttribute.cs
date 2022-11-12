@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.Azure.WebJobs.Host;
 using System.Threading;
-using WorkoutTracker.Models;
 using System.Text.Json;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Functions;
 

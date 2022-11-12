@@ -4,12 +4,12 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using WorkoutTracker.Models;
 using Azure.Storage.Blobs;
 using Azure.Identity;
 using System;
 using Azure;
 using Azure.Storage.Blobs.Models;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Functions;
 

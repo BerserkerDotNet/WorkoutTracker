@@ -4,11 +4,11 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using WorkoutTracker.Models;
 using Microsoft.Azure.Cosmos;
 using System.IO;
 using Newtonsoft.Json;
 using System;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Functions;
 

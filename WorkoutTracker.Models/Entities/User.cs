@@ -1,4 +1,4 @@
-﻿namespace WorkoutTracker.Models;
+﻿namespace WorkoutTracker.Models.Entities;
 
 [PluralName(EndpointNames.UserPluralName)]
 public class User : EntityBase

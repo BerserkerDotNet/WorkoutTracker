@@ -1,4 +1,4 @@
-﻿namespace WorkoutTracker.Models
+﻿namespace WorkoutTracker.Models.Entities
 {
     [System.AttributeUsage(System.AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class PluralNameAttribute : System.Attribute
