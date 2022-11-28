@@ -21,8 +21,6 @@ jobs:
       with:
         include-prerelease: True
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-    - name: Install MAUI Workload
-      run: dotnet workload install maui --ignore-failed-sources
     - name: Log in to container registry
       uses: azure/docker-login@v1
       with:
