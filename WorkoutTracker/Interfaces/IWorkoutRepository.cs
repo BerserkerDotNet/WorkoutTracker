@@ -10,7 +10,11 @@ namespace WorkoutTracker
 
         Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date);
 
+        Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime from, DateTime to);
+
         Task<LogEntryViewModel> GetPreviousWorkoutStatsBy(Guid exerciseId);
+
+        Task<IEnumerable<WorkoutSummary>> GetWorkoutSummaries(DateTime from, DateTime to);
 
         Task AddLogRecord(LogEntryViewModel model);
 

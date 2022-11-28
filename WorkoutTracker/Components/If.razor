@@ -1,0 +1,21 @@
+﻿@if (Condition)
+{
+	@Then
+}
+else
+{
+	@Else	
+}
+
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public bool Condition { get; set; }
+
+	[Parameter]
+	public RenderFragment Then { get; set; }
+
+	[Parameter]
+	public RenderFragment Else { get; set; }
+}

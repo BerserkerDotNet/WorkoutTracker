@@ -5,44 +5,53 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using WorkoutTracker.Models;
 using System;
+using WorkoutTracker.Models.Entities;
 
-namespace WorkoutTracker.Functions
+namespace WorkoutTracker.Functions;
+
+public static class GetPreviousWorkoutStatsOperations
 {
-    public static class GetPreviousWorkoutStatsOperations
+    [Authorize]
+    [FunctionName(EndpointNames.GetPreviousWorkoutStatsByExercise)]
+    public static async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest request,
+        ILogger log)
     {
-        [Authorize]
-        [FunctionName(EndpointNames.GetPreviousWorkoutStatsByExercise)]
-        public static Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest request,
-            ILogger log)
+        try
         {
             switch (request.Method)
             {
                 case "GET":
-                    return GetPreviousWorkoutStatsByExercise(request, log);
+                    return await GetPreviousWorkoutStatsByExercise(request, log);
                 default:
-                    return Task.FromResult<IActionResult>(new BadRequestObjectResult($"Method {request.Method} is not supported."));
+                    return new BadRequestObjectResult($"Method {request.Method} is not supported.");
             }
         }
-
-        private static async Task<IActionResult> GetPreviousWorkoutStatsByExercise(HttpRequest request, ILogger log)
+        catch (Exception ex)
         {
-            var isValidIdParametert = Guid.TryParse(request.Query["exerciseId"], out var id);
-            if (!isValidIdParametert) 
-            {
-                return new BadRequestObjectResult("Exercise ID parameter is required and must be a valid Guid.");
-            }
-
-            var container = await CosmosUtils.GetContainer<ExerciseLogEntry>();
-            var today = DateTime.Today.ToUniversalTime();
-            var lastWorkoutLogEntries = container.GetItemLinqQueryable<ExerciseLogEntry>(allowSynchronousQueryExecution: true)
-                .Where(e => e.Date < today && e.ExerciseId == id)
-                .OrderByDescending(e => e.Date)
-                .Take(1);
-
-            return new OkObjectResult(lastWorkoutLogEntries.AsEnumerable().FirstOrDefault());
+            log.LogError(ex, "Failed to get previous exercise stats.");
+            throw;
         }
+    }
+
+    private static async Task<IActionResult> GetPreviousWorkoutStatsByExercise(HttpRequest request, ILogger log)
+    {
+        var isValidIdParametert = Guid.TryParse(request.Query["exerciseId"], out var id);
+        if (!isValidIdParametert)
+        {
+            return new BadRequestObjectResult("Exercise ID parameter is required and must be a valid Guid.");
+        }
+
+        log.LogInformation("Getting previous exercise information for '{ExerciseId}'.", id);
+
+        var container = await CosmosUtils.GetContainer<ExerciseLogEntry>();
+        var today = DateTime.Today.ToUniversalTime();
+        var lastWorkoutLogEntries = container.GetItemLinqQueryable<ExerciseLogEntry>(allowSynchronousQueryExecution: true)
+            .Where(e => e.Date < today && e.ExerciseId == id)
+            .OrderByDescending(e => e.Date)
+            .Take(1);
+
+        return new OkObjectResult(lastWorkoutLogEntries.AsEnumerable().FirstOrDefault());
     }
 }

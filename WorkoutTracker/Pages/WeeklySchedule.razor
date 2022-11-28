@@ -1,0 +1,44 @@
+﻿@page "/schedule"
+@attribute [Authorize]
+
+<Header Title="Schedule">
+    <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Info">Manage profiles</MudButton>
+</Header>
+
+@foreach (var profile in profiles)
+{
+    <MudCard>
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@profile.Name</MudText>
+            @foreach (var descriptor in profile.ExerciseDecriptors)
+            {
+                <MudText Typo="Typo.body2">@descriptor.ExerciseSelectorType (@descriptor.ExerciseSelectorParameters["GroupName"] )</MudText>
+            }
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Color="Color.Primary">Change</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Error">Delete</MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+
+@code {
+    private IEnumerable<WorkoutProfile> profiles = new[]
+    {
+        new WorkoutProfile { Id = Guid.NewGuid(), Name = "Back and Biceps", ExerciseDecriptors = new WorkoutExerciseDecriptor[]
+        {
+            new WorkoutExerciseDecriptor() {  ExerciseSelectorType = typeof(MuscleGroupExerciseSelector).FullName,
+                    ExerciseSelectorParameters = new Dictionary<string, object> { { "GroupName", "Back" } }
+           },
+          new WorkoutExerciseDecriptor() {  ExerciseSelectorType = typeof(MuscleGroupExerciseSelector).FullName,
+                    ExerciseSelectorParameters = new Dictionary<string, object> { { "GroupName", "Back" } }
+        },
+        new WorkoutExerciseDecriptor() {  ExerciseSelectorType = typeof(MuscleGroupExerciseSelector).FullName,
+                    ExerciseSelectorParameters = new Dictionary<string, object> { { "GroupName", "Biceps" } }
+           }
+        }
+        }
+    };
+
+}

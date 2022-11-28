@@ -1,28 +1,27 @@
-﻿namespace WorkoutTracker.Data.Services
+﻿namespace WorkoutTracker.Data.Services;
+
+public class NullConfigurationService : IConfigurationService
 {
-    public class NullConfigurationService : IConfigurationService
+    private EndpointConfiguration _configuration;
+
+    public EndpointConfiguration GetEndpointConfiguration()
     {
-        private EndpointConfiguration _configuration;
+        return _configuration;
+    }
 
-        public EndpointConfiguration GetEndpointConfiguration()
-        {
-            return _configuration;
-        }
+    public Task<EndpointConfiguration> GetEndpointConfigurationAsync()
+    {
+        return Task.FromResult(_configuration);
+    }
 
-        public Task<EndpointConfiguration> GetEndpointConfigurationAsync()
-        {
-            return Task.FromResult(_configuration);
-        }
+    public bool IsConfigurationAvailable()
+    {
+        return _configuration is object;
+    }
 
-        public bool IsConfigurationAvailable()
-        {
-            return _configuration is object;
-        }
-
-        public Task SaveEndpointConfiguration(EndpointConfiguration config)
-        {
-            _configuration = config;
-            return Task.CompletedTask;
-        }
+    public Task SaveEndpointConfiguration(EndpointConfiguration config)
+    {
+        _configuration = config;
+        return Task.CompletedTask;
     }
 }

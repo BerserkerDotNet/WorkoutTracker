@@ -1,0 +1,43 @@
+﻿<div class="d-flex justify-space-around">
+    @if (PreviousLog is object)
+    {
+        <MudChip Size="Size.Small" Icon="@Icons.Filled.WorkspacePremium" Color="Color.Info" OnClick="ToggleDetails">@PreviousLog.BestWorkout.Max.Repetitions reps of @PreviousLog.MaxWeightFormatted</MudChip>
+        <MudChip Size="Size.Small" Icon="@Icons.Filled.History" Color="Color.Info" OnClick="ToggleDetails">@PreviousLog.LastWorkout.Max.Repetitions reps of @PreviousLog.LastWeightFormatted</MudChip>
+        <MudPopover Open="@_isDetailsShown" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.BottomCenter">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">Max (@PreviousLog.BestWorkout.Date.ToDateOnly()):</MudText>
+                    @foreach (var maxSet in PreviousLog.BestWorkout.Max.Sets)
+                    {
+                        <MudText Typo="Typo.body2">@Math.Ceiling((decimal)maxSet.WeightLB) LB x @maxSet.Repetitions repetitions</MudText>
+                    }
+                    <MudText Typo="Typo.h5">Last (@PreviousLog.LastWorkout.Date.ToDateOnly()):</MudText>
+                    @foreach (var lastSet in PreviousLog.LastWorkout.Max.Sets)
+                    {
+                        <MudText Typo="Typo.body2">@Math.Ceiling((decimal)lastSet.WeightLB) LB x @lastSet.Repetitions repetitions</MudText>
+                    }
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Class="ml-auto mr-n3" Variant="Variant.Text" OnClick="@ToggleDetails" Color="Color.Info">Close</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudPopover>
+    }
+    else if (PreviousLog is null)
+    {
+        <MudChip Size="Size.Small" Icon="@Icons.Filled.History" Color="Color.Default">No previous sessions found.</MudChip>
+    }
+</div>
+
+@code
+{
+    public bool _isDetailsShown = false;
+
+    [Parameter]
+    public PreviousLogRecordStats PreviousLog { get; set; }
+
+    private void ToggleDetails()
+    {
+        _isDetailsShown = !_isDetailsShown;
+    }
+}

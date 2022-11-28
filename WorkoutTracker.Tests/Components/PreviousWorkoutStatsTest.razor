@@ -1,0 +1,50 @@
+﻿@using MudBlazor.Services
+@using WorkoutTracker.Data.Props
+@using WorkoutTracker.Models;
+@using WorkoutTracker.Models.Entities
+
+@inherits BaseComponentTest
+@code {
+    public override void Initialize()
+    {
+        JSInterop.SetupVoid("mudPopover.connect", _ => true);
+        base.Initialize();
+    }
+
+    [Test]
+    public void ShouldRenderNotFound()
+    {
+        var cut = Render(@<PreviousWorkoutStats PreviousLog="null" />);
+
+        cut.FindComponent<MudChip>().MarkupMatches(@<MudChip Size="Size.Small" Icon="@Icons.Filled.History" Color="Color.Default">No previous sessions found.</MudChip>);
+
+        cut.HasComponent<MudPopover>().Should().BeFalse();
+    }
+
+    [Test]
+    public void ShouldRenderMaxOfBestAndLastWorkoutData()
+    {
+        var bestWorkout = new WorkoutSummary(DateTime.Today, new WorkoutSetSummary(10, 20, 10, TimeSpan.Zero, TimeSpan.Zero, Enumerable.Empty<Set>()), null, null, null, -1, Guid.NewGuid());
+        var lastWorkout = new WorkoutSummary(DateTime.Today, new WorkoutSetSummary(10, 15, 12, TimeSpan.Zero, TimeSpan.Zero, Enumerable.Empty<Set>()), null, null, null, -1, Guid.NewGuid());
+
+        var previousStats = new PreviousLogRecordStats(bestWorkout, lastWorkout);
+        var cut = Render(@<PreviousWorkoutStats PreviousLog="previousStats" />);
+
+        var stats = cut.FindComponents<MudChip>();
+        stats.Count.Should().Be(2);
+
+        var bestWorkoutStats = stats.ElementAt(0);
+        bestWorkoutStats.Instance.Icon.Should().Be(Icons.Filled.WorkspacePremium);
+        bestWorkoutStats.Instance.Color.Should().Be(Color.Info);
+
+        Render(bestWorkoutStats.Instance.ChildContent).MarkupMatches("10 reps of 20 LB");
+
+        var lastWorkoutStats = stats.ElementAt(1);
+        lastWorkoutStats.Instance.Icon.Should().Be(Icons.Filled.History);
+        lastWorkoutStats.Instance.Color.Should().Be(Color.Info);
+
+        Render(lastWorkoutStats.Instance.ChildContent).MarkupMatches("12 reps of 15 LB");
+
+        cut.HasComponent<MudPopover>().Should().BeTrue();
+    }
+}

@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 using WorkoutTracker.ViewModels;
-using System;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace WorkoutTracker.MAUI.Android
 {
     public class AndroidCacheService : ICacheService
     {
         private IEnumerable<ExerciseViewModel> _exercisesInMemoryCache;
-        private AccessToken _token;
         private string exercisesFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "exercises.json");
-        private string tokenFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "token.json");
+        private string summaryFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "workoutSummaries.json");
 
         public async Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
         {
@@ -26,7 +24,7 @@ namespace WorkoutTracker.MAUI.Android
 
         public async Task<IEnumerable<ExerciseViewModel>> GetExercises()
         {
-            if (_exercisesInMemoryCache is object) 
+            if (_exercisesInMemoryCache is object)
             {
                 return _exercisesInMemoryCache;
             }
@@ -37,41 +35,43 @@ namespace WorkoutTracker.MAUI.Android
             return _exercisesInMemoryCache;
         }
 
-        public void ResetExercisesCache()
+        public Task ResetExercisesCache()
         {
             File.Delete(exercisesFile);
+
+            return Task.CompletedTask;
         }
 
-        public bool IsExercisesCached()
+        public Task<bool> IsExercisesCached()
         {
-            return File.Exists(exercisesFile);
+            return Task.FromResult(File.Exists(exercisesFile));
         }
 
-        public async Task<AccessToken> GetToken()
+        public Task<bool> IsSummariesCached()
         {
-            if (_token is object) 
-            {
-                return _token;
-            }
-
-            if (!File.Exists(tokenFile)) 
-            {
-                return null;
-            }
-
-            var json = await File.ReadAllTextAsync(tokenFile);
-            _token = JsonSerializer.Deserialize<AccessToken>(json);
-
-            return _token;
+            return Task.FromResult(File.Exists(summaryFile));
         }
 
-        public async Task SaveToken(AccessToken token)
+        public async Task<IEnumerable<WorkoutSummary>> GetSummaries()
         {
-            using (var writer = File.CreateText(tokenFile))
+            var json = await File.ReadAllTextAsync(summaryFile);
+            return JsonSerializer.Deserialize<IEnumerable<WorkoutSummary>>(json);
+        }
+
+        public async Task SaveSummaries(IEnumerable<WorkoutSummary> summaries)
+        {
+            using (var writer = File.CreateText(summaryFile))
             {
-                var json = JsonSerializer.Serialize(token);
+                var json = JsonSerializer.Serialize(summaries);
                 await writer.WriteLineAsync(json);
             }
+        }
+
+        public Task ResetSummariesCache()
+        {
+            File.Delete(summaryFile);
+
+            return Task.CompletedTask;
         }
     }
 }

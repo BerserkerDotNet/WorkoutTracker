@@ -1,0 +1,102 @@
+﻿@inherits BaseComponentTest
+@code {
+    [Test]
+    public void ShouldRenderInactiveTimer()
+    {
+        Services.AddSingleton<IExerciseTimerService>(Mock.Of<IExerciseTimerService>());
+
+        var cut = Render(@<ExerciseTimerBadge />);
+
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Info" OnClick="() => {}">Press to start</MudChip>);
+    }
+
+    [Test]
+    public void ShouldStartTimerIfClicked()
+    {
+        var timerMock = new Mock<IExerciseTimerService>();
+        Services.AddSingleton<IExerciseTimerService>(timerMock.Object);
+
+        var cut = Render(@<ExerciseTimerBadge />);
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Info" OnClick="() => {}">Press to start</MudChip>);
+
+        cut.Find(".mud-clickable").Click();
+
+        timerMock.Verify(m => m.Start(), Times.Once());
+    }
+
+    [Test]
+    public void ShouldStartTimerOnlyOnceEvenIfClickedMultipleTimes()
+    {
+        var timerMock = new Mock<IExerciseTimerService>();
+        Services.AddSingleton<IExerciseTimerService>(timerMock.Object);
+
+        timerMock.Setup(m => m.Start()).Callback(() =>
+        {
+            timerMock.Setup(m => m.IsRunning).Returns(true);
+        });
+
+        var cut = Render(@<ExerciseTimerBadge />);
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Info" OnClick="() => {}">Press to start</MudChip>);
+
+        cut.Find(".mud-clickable").Click();
+        cut.Find(".mud-clickable").Click();
+        cut.Find(".mud-clickable").Click();
+        cut.Find(".mud-clickable").Click();
+        cut.Find(".mud-clickable").Click();
+        cut.Find(".mud-clickable").Click();
+        cut.Find(".mud-clickable").Click();
+
+        timerMock.Verify(m => m.Start(), Times.Once());
+    }
+
+    [Test]
+    public async Task ShouldRenderActiveRestTimerOnTick()
+    {
+        var timerMock = new Mock<IExerciseTimerService>();
+        Services.AddSingleton<IExerciseTimerService>(timerMock.Object);
+
+        var cut = Render(@<ExerciseTimerBadge />);
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Info" OnClick="() => {}">Press to start</MudChip>);
+
+        await cut.InvokeAsync(() =>
+        {
+            timerMock.Raise(m => m.OnTick += null, this, new TimerTickEventArgs(TimeSpan.FromSeconds(32), ExerciseTimerMode.Resting));
+        });
+
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Success" OnClick="() => {}">00:32</MudChip>);
+    }
+
+    [Test]
+    public async Task ShouldRenderWarnedRestTimerOnTickIfOverTargetRest()
+    {
+        var timerMock = new Mock<IExerciseTimerService>();
+        Services.AddSingleton<IExerciseTimerService>(timerMock.Object);
+
+        var cut = Render(@<ExerciseTimerBadge TargetRestTime="TimeSpan.FromMinutes(1)" />);
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Info" OnClick="() => {}">Press to start</MudChip>);
+
+        await cut.InvokeAsync(() =>
+        {
+            timerMock.Raise(m => m.OnTick += null, this, new TimerTickEventArgs(TimeSpan.FromSeconds(61), ExerciseTimerMode.Resting));
+        });
+
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Warning" OnClick="() => {}">01:01</MudChip>);
+    }
+
+    [Test]
+    public async Task ShouldRenderActiveExercisingTimerOnTickIfOverTargetRest()
+    {
+        var timerMock = new Mock<IExerciseTimerService>();
+        Services.AddSingleton<IExerciseTimerService>(timerMock.Object);
+
+        var cut = Render(@<ExerciseTimerBadge TargetRestTime="TimeSpan.FromMinutes(1)" />);
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Info" OnClick="() => {}">Press to start</MudChip>);
+
+        await cut.InvokeAsync(() =>
+        {
+            timerMock.Raise(m => m.OnTick += null, this, new TimerTickEventArgs(TimeSpan.FromSeconds(84), ExerciseTimerMode.Exercising));
+        });
+
+        cut.MarkupMatches(@<MudChip Size="Size.Medium" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Timer" Class="mx-0" Color="Color.Secondary" OnClick="() => {}">01:24</MudChip>);
+    }
+}

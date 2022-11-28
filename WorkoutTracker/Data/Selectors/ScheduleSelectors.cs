@@ -1,42 +1,34 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace WorkoutTracker.Data.Selectors;
+﻿namespace WorkoutTracker.Data.Selectors;
 
 public static class ScheduleSelectors
 {
-    public static Dictionary<string, ScheduleViewModel> SelectSchedule(RootState state)
+    public static IEnumerable<WorkoutViewModel> SelectSchedule(this RootState state)
     {
-        return state?.ExerciseSchedule?.Schedule ?? new Dictionary<string, ScheduleViewModel>();
+        return state?.ExerciseSchedule?.WorkoutSchedule ?? Enumerable.Empty<WorkoutViewModel>();
     }
 
-    public static ScheduleViewModel SelectScheduleByCategory(RootState state, string category)
+    public static WorkoutViewModel SelectScheduleById(this RootState state, Guid id)
     {
-        var schedule = SelectSchedule(state);
-        return schedule.ContainsKey(category) ? schedule[category] : null;
+        return SelectSchedule(state).FirstOrDefault(s => s.Id == id);
     }
 
-    public static IEnumerable<ExerciseWithCategoryViewModel> SelectCurrentExercisesFromSchedule(RootState state)
+    public static WorkoutViewModel SelectNextExerciseFromSchedule(this RootState state, Guid currentScheduleId)
     {
         return SelectSchedule(state)
-            .Select(s => new ExerciseWithCategoryViewModel(s.Key, s.Value.Exercises.ElementAt(s.Value.CurrentIndex)))
-            .ToArray();
-    }
-
-    public static ScheduleViewModel SelectNextExerciseFromSchedule(RootState state, string category) 
-    {
-        return SelectSchedule(state)
-            .SkipWhile(s => s.Key != category)
+            .SkipWhile(s => s.Id != currentScheduleId)
             .Take(2)
-            .Last()
-            .Value;
+            .Last();
     }
 
-    public static ScheduleViewModel SelectPreviousExerciseFromSchedule(RootState state, string category)
+    public static WorkoutViewModel SelectPreviousExerciseFromSchedule(this RootState state, Guid currentScheduleId)
     {
         return SelectSchedule(state)
-            .TakeWhile(s => s.Key != category)
-            .LastOrDefault()
-            .Value;
+            .TakeWhile(s => s.Id != currentScheduleId)
+            .LastOrDefault();
+    }
+
+    public static ExerciseProfile SelectCurrentProfile(this RootState state)
+    {
+        return state?.ExerciseSchedule?.SelectedProfile ?? ExerciseProfile.GetDefaultProfile();
     }
 }

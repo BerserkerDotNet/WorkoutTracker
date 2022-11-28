@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
+    <WarningsAsErrors>true</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -10,14 +11,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="6.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0-rc.2.*" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0-rc.2.*" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="7.0.0-rc.2.*" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0-rc.2.*" />
+    <PackageReference Include="BlazorApplicationInsights" Version="1.6.0" />
 		<PackageReference Include="BlazorState.Redux" Version="1.1.*-*" />
-		<PackageReference Include="MudBlazor" Version="6.0.5" />
-		<PackageReference Include="UnitsNet" Version="4.120.0" />
+		<PackageReference Include="MudBlazor" Version="6.0.17" />
+		<PackageReference Include="UnitsNet" Version="4.145.0" />
 		<PackageReference Include="Mapster" Version="7.3.0" />
+    <PackageReference Include="Plotly.Blazor" Version="2.14.0" />
 	</ItemGroup>
 
 	<ItemGroup>

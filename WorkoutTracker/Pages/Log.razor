@@ -1,4 +1,7 @@
 @page "/log"
 @attribute [Authorize]
 
-<ExerciseLogConnected />
+<Header Title="History">
+    <ExercisesHistoryFilterConnected />
+</Header>
+<ExercisesHistoryConnected />

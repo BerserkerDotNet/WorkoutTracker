@@ -1,0 +1,12 @@
+﻿@inherits ComponentWithProps<ExerciseSchedulePanelProps>
+
+<MudExpansionPanel Class="mt-2">
+    <TitleContent>
+        <WorkoutExerciseHeader Name="@_exercise.Name" ImagePath="@_exercise.ImagePath" Status="_exerciseStatus" />
+    </TitleContent>
+    <ChildContent>
+        <PreviousWorkoutStats PreviousLog="_previousSessionData" />
+        <ExerciseSets Schedule="Schedule" />
+            <ExerciseActionBar ScheduleId="Schedule.Id" />
+    </ChildContent>
+</MudExpansionPanel>

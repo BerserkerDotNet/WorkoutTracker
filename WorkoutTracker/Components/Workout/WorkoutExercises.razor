@@ -1,0 +1,30 @@
+﻿<MudDropContainer T="ScheduleViewModel" Items="Schedule" ItemsSelector="@((item,dropzone) => true)" Class="d-flex flex-wrap flex-grow-1">
+    <ChildContent>
+        <MudExpansionPanels MultiExpansion="true">
+            <MudDropZone T="ScheduleViewModel" Identifier="Schedule" Class="flex-grow-1" AllowReorder="true" />
+        </MudExpansionPanels>
+    </ChildContent>
+    <ItemRenderer Context="scheduleItem">
+        @{
+            var item = scheduleItem.CurrentExercise;
+        }
+        <MudExpansionPanel Class="mt-2" HideIcon="true">
+            <TitleContent>
+                <WorkoutExerciseHeader Name="@item.Name" ImagePath="@item.ImagePath">
+                    <AdditionalMenu>
+                        <ExerciseOptions />
+                    </AdditionalMenu>
+                </WorkoutExerciseHeader>
+            </TitleContent>
+            <ChildContent>
+                @*<ExerciseSets Sets="item.Sets" />*@
+            </ChildContent>
+        </MudExpansionPanel>
+    </ItemRenderer>
+</MudDropContainer>
+
+@code
+{
+    [Parameter]
+    public IEnumerable<ScheduleViewModel> Schedule { get; set; }
+}

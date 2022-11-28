@@ -1,0 +1,33 @@
+﻿@using WorkoutTracker.Models.Entities;
+	<MudCard Class="my-4" Elevation="3">
+		<Image Path="@Props.LogRecord.Exercise.ImagePath" ImageName="@Props.LogRecord.Exercise.Name" />
+		<MudCardContent>
+			<MudText Align="Align.Center" Typo="Typo.h5">@Props.LogRecord.Exercise.Name</MudText>
+			<MudText Typo="Typo.body2">@Props.LogRecord.Exercise.Description</MudText>
+			<MudText Typo="Typo.body2">Date: @Props.LogRecord.Date.ToShortDateString()</MudText>
+		</MudCardContent> 
+	</MudCard>
+
+<ExerciseTimeline Sets="Props.LogRecord.Sets" OnSave="() => Props.Save(Props.LogRecord)" OnDelete="OnDeleteSetInternal" ShowWeightInKG="false" />
+
+<ActionButton Color="Color.Secondary" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="Props.Back" />
+
+@code {
+
+	[Inject]
+	public IDialogService DialogService { get; set; }
+
+	[Parameter]
+	public ExerciseHistoryDetailsProps Props { get; set; }
+
+	private async Task OnDeleteSetInternal(Set set)
+	{
+		var result = await DialogService.ShowMessageBox("Delete set", $"Are you sure you wnat to delete set?", "Yes", "No");
+		if (result.HasValue && result.Value)
+		{
+			var newSets = Props.LogRecord.Sets.Where(s => s != set).ToArray();
+			Props.LogRecord = Props.LogRecord with { Sets = newSets };
+			await Props.Save(Props.LogRecord);
+		}
+	}
+}

@@ -1,0 +1,57 @@
+﻿@inherits ComponentWithProps<ExerciseActionBarProps>
+
+@if (@_isReplacingExercise)
+{
+    <ExerciseSelector Exercises="Props.AllExercises" ActionText="Replace" OnExerciseSelected="OnCompleteReplaceExercise" OnCancel="OnCancelReplaceExercise" />
+}
+else
+{
+    <div class="d-flex justify-space-around">
+        <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddSet">Add set</MudButton>
+        <MudMenu Label="More" EndIcon="@Icons.Filled.KeyboardArrowDown" Color="Color.Primary">
+            <MudMenuItem OnClick="OnBeginReplaceExercise">Replace exercise</MudMenuItem>
+            <MudMenuItem OnClick="OnRemoveExercise">Remove exercise</MudMenuItem>
+            <MudMenuItem OnClick="OnRemoveSet">Reduce sets</MudMenuItem>
+        </MudMenu>
+    </div>
+}
+
+@code
+{
+    private bool _isReplacingExercise;
+
+    [Parameter]
+    [EditorRequired]
+    public Guid ScheduleId { get; set; }
+
+    private async Task OnRemoveExercise()
+    {
+        await Props.RemoveExercise(ScheduleId);
+    }
+
+    private void OnBeginReplaceExercise()
+    {
+        _isReplacingExercise = true;
+    }
+
+    private void OnCompleteReplaceExercise(ExerciseViewModel model)
+    {
+        Props.ReplaceExercise(ScheduleId, model);
+        _isReplacingExercise = false;
+    }
+
+    private void OnCancelReplaceExercise()
+    {
+        _isReplacingExercise = false;
+    }
+
+    private void OnAddSet()
+    {
+        Props.IncreaseSets(ScheduleId);
+    }
+
+    private void OnRemoveSet()
+    {
+        Props.DecreaseSets(ScheduleId);
+    }
+}

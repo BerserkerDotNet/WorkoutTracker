@@ -1,0 +1,16 @@
+﻿@typeparam T
+
+@foreach(var item in Items)
+{
+	@ChildContent(item)
+}
+
+@code {
+
+	[Parameter]
+	[EditorRequired]
+	public IEnumerable<T> Items { get; set; }
+
+	[Parameter]
+	public RenderFragment<T> ChildContent  { get; set; }
+}

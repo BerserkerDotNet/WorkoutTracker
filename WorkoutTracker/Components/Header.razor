@@ -1,0 +1,12 @@
+﻿<MudPaper Elevation="0" Class="fixed px-4 z-10 py-2" Style="top:0;left:0;right:0;background-color: var(--mud-palette-primary); color: var(--mud-palette-primary-text); height:calc(var(--mud-appbar-height) - 20px)">
+    <MudText Typo="Typo.h4">@Title</MudText>
+    @ChildContent
+</MudPaper>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

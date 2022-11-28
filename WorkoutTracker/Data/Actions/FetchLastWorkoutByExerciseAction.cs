@@ -1,20 +1,19 @@
-﻿using System.Threading.Tasks;
+﻿namespace WorkoutTracker.Data.Actions;
 
-namespace WorkoutTracker.Data.Actions
+public class FetchLastWorkoutByExerciseAction : TrackableAction<Guid>
 {
-    public class FetchLastWorkoutByExerciseAction : IAsyncAction<Guid>
+    private readonly IWorkoutRepository _repository;
+
+    public FetchLastWorkoutByExerciseAction(IWorkoutRepository repository, ApplicationContext<FetchLastWorkoutByExerciseAction> context)
+        : base(context)
     {
-        private readonly IWorkoutRepository _repository;
+        _repository = repository;
+        NoBusyIndicator = true;
+    }
 
-        public FetchLastWorkoutByExerciseAction(IWorkoutRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public async Task Execute(IDispatcher dispatcher, Guid exerciseId)
-        {
-            var logEntry = await _repository.GetPreviousWorkoutStatsBy(exerciseId);
-            dispatcher.Dispatch(new ReceiveLastWorkoutLogByExerciseAction(exerciseId, logEntry));
-        }
+    protected override async Task Execute(IDispatcher dispatcher, Guid exerciseId, Dictionary<string, string> trackableProperties)
+    {
+        var logEntry = await _repository.GetPreviousWorkoutStatsBy(exerciseId);
+        dispatcher.Dispatch(new ReceiveLastWorkoutLogByExerciseAction(exerciseId, logEntry));
     }
 }

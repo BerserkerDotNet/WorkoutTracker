@@ -1,0 +1,54 @@
+﻿<MudNumericField 
+    T="double"
+    Label="@_label" 
+    HideSpinButtons="true" 
+    Value="Weight.Value" 
+    ValueChanged="OnValueChanged" 
+    OnAdornmentClick="OnChangeWeightUnits" 
+    AdornmentIcon="@Icons.Material.Filled.ChangeCircle"
+    Variant="Variant"
+    Adornment="Adornment.End" />
+
+@code {
+    const string KG = "KG";
+    const string LB = "LB";
+    private string _label;
+
+    [Parameter]
+    public Mass Weight { get; set; }
+
+    [Parameter]
+    public EventCallback<Mass> WeightChanged { get; set; }
+
+    [Parameter]
+    public Variant Variant { get; set; } = Variant.Text;
+
+    protected override void OnParametersSet()
+    {
+        _label = GetCurrentWeightLabel();
+        base.OnParametersSet();
+    }
+
+    private async Task OnChangeWeightUnits() 
+    {
+        var unit = Weight.Unit == MassUnit.Pound ? MassUnit.Kilogram : MassUnit.Pound;
+        await UpdateWeightValue(Weight.Value, unit);
+        _label = GetCurrentWeightLabel();
+    }
+
+    private Task OnValueChanged(double value)
+    {
+        return UpdateWeightValue(value, Weight.Unit);
+    }
+
+    private async Task UpdateWeightValue(double value, MassUnit unit)
+    {
+        Weight = new Mass(value, unit);
+        await WeightChanged.InvokeAsync(Weight);
+    }
+
+    private string GetCurrentWeightLabel() 
+    {
+        return $"Weight ({Weight.Unit}):";
+    }
+}

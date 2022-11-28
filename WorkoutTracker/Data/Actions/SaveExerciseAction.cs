@@ -1,20 +1,22 @@
 ﻿namespace WorkoutTracker.Data.Actions;
 
-public class SaveExerciseAction : IAsyncAction<EditExerciseViewModel>
+public class SaveExerciseAction : TrackableAction<EditExerciseViewModel>
 {
     private readonly IWorkoutRepository _repository;
-    private readonly INotificationService _notificationService;
 
-    public SaveExerciseAction(IWorkoutRepository repository, INotificationService notificationService)
+    public SaveExerciseAction(IWorkoutRepository repository, ApplicationContext<SaveExerciseAction> context)
+        : base(context)
     {
         _repository = repository;
-        _notificationService = notificationService;
     }
 
-    public async Task Execute(IDispatcher dispatcher, EditExerciseViewModel exercise)
+    protected override async Task Execute(IDispatcher dispatcher, EditExerciseViewModel exercise, Dictionary<string, string> trackableProperties)
     {
+        trackableProperties.Add(nameof(exercise.Id), exercise.Id.ToString());
+        trackableProperties.Add(nameof(exercise.Name), exercise.Name);
+
         await _repository.UpdateExercise(exercise);
-        await dispatcher.Dispatch<FetchExercisesAction>();
-        _notificationService.ShowToast("Exercise updated.");
+        await dispatcher.Dispatch<ReFetchExercisesAction>();
+        Context.ShowToast("Exercise updated.");
     }
 }

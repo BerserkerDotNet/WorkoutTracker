@@ -1,20 +1,19 @@
-﻿using System.Threading.Tasks;
+﻿namespace WorkoutTracker.Data.Actions;
 
-namespace WorkoutTracker.Data.Actions
+public class FetchExercisesAction : TrackableAction
 {
-    public class FetchExercisesAction : IAsyncAction
+    private readonly IWorkoutRepository _repository;
+
+    public FetchExercisesAction(IWorkoutRepository repository, ApplicationContext<FetchExercisesAction> context)
+        : base(context, "Loading exercises")
     {
-        private readonly IWorkoutRepository _repository;
+        _repository = repository;
+    }
 
-        public FetchExercisesAction(IWorkoutRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public async Task Execute(IDispatcher dispatcher)
-        {
-            var exercises = await _repository.GetExercises();
-            dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
-        }
+    protected override async Task Execute(IDispatcher dispatcher, Dictionary<string, string> trackableProperties)
+    {
+        var exercises = await _repository.GetExercises();
+        dispatcher.Dispatch(new ReceiveExercisesAction(exercises));
+        trackableProperties.Add("ExerciseCount", exercises.Count().ToString());
     }
 }

@@ -1,10 +1,13 @@
-﻿namespace WorkoutTracker.Data.Props;
+﻿using BlazorState.Redux.Utilities;
+using WorkoutTracker.Data.Actions;
 
-public class EditMuiscleProps
+namespace WorkoutTracker.Data.Props;
+
+public class EditMuscleFormProps
 {
     public MuscleViewModel Muscle { get; set; }
 
-    public Action<MuscleViewModel> Save { get; set; }
+    public AsyncAction<SaveMuscleModel> Save { get; set; }
 
     public Action Cancel { get; set; }
 }

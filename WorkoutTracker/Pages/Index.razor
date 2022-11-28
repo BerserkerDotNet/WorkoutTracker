@@ -1,47 +1,38 @@
 @page "/"
+@using WorkoutTracker.Components.Presentational
+@using WorkoutTracker.Data.Actions
+@using WorkoutTracker.Data.Selectors
 @attribute [Authorize]
-@inherits ConnectedComponentBase<RootState, ExerciseScheduleProps>
+@inject IStore<RootState> Store
 
-<h2>Today's schedule</h2>
+<Header Title="Workout">
+    <ExerciseTimerBadge TargetRestTime="TimeSpan.FromMinutes(2)" />
+</Header>
+<ExerciseSchedule />
 
-<MudMenu Class="mb-2" StartIcon="@Icons.Filled.Schedule" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="Exercise profile" Color="Color.Primary" Variant="Variant.Filled"  >
-    <MudMenuItem OnClick="() => Props.Rebuild.InvokeAsync(ExerciseProfile.UpperBody)" >Upper body</MudMenuItem>
-    <MudMenuItem OnClick="() => Props.Rebuild.InvokeAsync(ExerciseProfile.LowerBody)" >Lower body</MudMenuItem>
-</MudMenu>
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        var state = Store.State;
 
-@if (!Props.Schedule.Any())
-{
-	<MudCard>
-		<MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="300px" />
-		<MudCardContent>
-			<MudSkeleton Width="30%" Height="42px;" />
-			<MudSkeleton Width="80%" />
-			<MudSkeleton Width="100%" />
-		</MudCardContent>
-		<MudCardActions>
-			<MudSkeleton Width="64px" Height="40px" Class="ml-2" />
-			<MudSkeleton Width="105px" Height="40px" Class="ml-3" />
-		</MudCardActions>
-	</MudCard>
-}
+        if (state.ExerciseSchedule is null)
+        {
+            await Store.Dispatch<FetchExercisesAction>();
+            await Store.Dispatch<BuildExerciseScheduleAction, ExerciseProfile>(state.SelectCurrentProfile());
+        }
 
-@foreach (var scheduleItem in Props.Schedule)
-{
-	var item = scheduleItem.Exercise;
-	<MudCard Class="mb-4" Outlined="true">
-		<Image Path="@item.ImagePath" ImageName="@item.Name" />
-		<MudCardContent>
-			<MudText Align="Align.Center" Typo="Typo.h5">@item.Name</MudText>
-			<MudText Typo="Typo.body2">@item.Description</MudText>
-		</MudCardContent>
-		<MudCardActions>
-			<div class="d-flex align-center justify-space-between" style="width:100%">
-				<MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="() => Props.Previous.InvokeAsync(scheduleItem.Category)" />
-				<MudBadge Origin="Origin.TopRight" Content="@(Props.ExerciseCountLookup.ContainsKey(item.Id) ? Props.ExerciseCountLookup[item.Id] : 1)" Color="Color.Primary" Class="mx-6 my-4">
-					<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" OnClick="() => Props.Start.InvokeAsync(scheduleItem)">Start</MudButton>
-				</MudBadge>
-				<MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="() => Props.Next.InvokeAsync(scheduleItem.Category)" />
-			</div>
-		</MudCardActions>
-	</MudCard>
+        var isSummariesLoaded = state.SelectSummaries().Any();
+        if (!isSummariesLoaded)
+        {
+            await Store.Dispatch<FetchWorkoutStatsAction, WorkoutStatsRequest>(new WorkoutStatsRequest(DateTime.Today.AddMonths(-6), DateTime.Today.AddDays(1)));
+        }
+
+        var history = Store.State.SelectHistory();
+        if (history.ContainsKey(DateTime.Today.ToDateOnly()))
+        {
+            return;
+        }
+
+        await Store.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today);
+    }
 }

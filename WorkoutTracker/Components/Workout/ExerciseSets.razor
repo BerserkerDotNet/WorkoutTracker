@@ -1,0 +1,26 @@
+﻿@inherits ComponentWithProps<ExerciseSetsProps>
+
+@foreach (var set in _sets)
+{
+    var isCompleted = set.Status == SetStatus.Completed;
+    var isRunning = set.Status == SetStatus.InProgress;
+    <MudPaper Class="d-flex align-center my-2" @key="set.Index">
+        @if (isCompleted)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium" Class="mx-2" OnClick="() => OnEditSet(set)" />
+        }
+        else if (isRunning)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.RunCircle" Color="Color.Info" Size="Size.Medium" Class="mx-2" OnClick="() => OnFinishSet(set)" />
+        }
+        else
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.PlayCircleOutline" Color="Color.Primary" Size="Size.Medium" Class="mx-2" OnClick="() => OnStartSet(set)" />
+        }
+
+        <MudTextField T="double" Variant="Variant.Text" DisableUnderLine="true" Label="Weight" ReadOnly="isCompleted" Value="@set.Weight" ValueChanged="(value) => OnWeightChanged(value, set)" />
+        <MudTextField T="int" Variant="Variant.Text" DisableUnderLine="true" Label="Reps" ReadOnly="isCompleted" Value="@set.Reps" ValueChanged="(value) => OnRepsChanged(value, set)" />
+    </MudPaper>
+}
+
+

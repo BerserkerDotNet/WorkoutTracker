@@ -3,21 +3,25 @@
 namespace WorkoutTracker.Data.Actions;
 
 public record struct SaveMuscleModel(MuscleViewModel Model, IBrowserFile ImageFile);
-public class SaveMuscleAction : IAsyncAction<SaveMuscleModel>
+
+public class SaveMuscleAction : TrackableAction<SaveMuscleModel>
 {
     private readonly IWorkoutRepository _repository;
-    private readonly INotificationService _notificationService;
 
-    public SaveMuscleAction(IWorkoutRepository repository, INotificationService notificationService)
+    public SaveMuscleAction(IWorkoutRepository repository, ApplicationContext<SaveMuscleAction> context)
+        : base(context)
     {
         _repository = repository;
-        _notificationService = notificationService;
     }
 
-    public async Task Execute(IDispatcher dispatcher, SaveMuscleModel context)
+    protected override async Task Execute(IDispatcher dispatcher, SaveMuscleModel viewModel, Dictionary<string, string> trackableProperties)
     {
-        await _repository.UpdateMuscle(context.Model, context.ImageFile);
+        var model = viewModel.Model;
+        trackableProperties.Add(nameof(model.Id), model.Id.ToString());
+        trackableProperties.Add(nameof(model.Name), model.Name);
+        
+        await _repository.UpdateMuscle(model, viewModel.ImageFile);
         await dispatcher.Dispatch<FetchMusclesAction>();
-        _notificationService.ShowToast("Muscle updated.");
+        Context.ShowToast("Muscle updated.");
     }
 }

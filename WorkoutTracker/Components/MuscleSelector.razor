@@ -1,0 +1,51 @@
+﻿<MudSelect MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
+		   MultiSelection="true"
+		   Required="true"
+		   SelectedValues="_selectedMuscles"
+		   SelectedValuesChanged="OnSelectedValuesChanged"
+		   T="string"
+		   Label="@Label"
+		   AdornmentIcon="@Icons.Material.Filled.Search"
+		   AnchorOrigin="Origin.BottomCenter">
+	@foreach (var muscle in Muscles)
+	{
+		<MudSelectItem T="string" Value="@(muscle.Id.ToString())">@muscle.MuscleGroup - @muscle.Name</MudSelectItem>
+	}
+</MudSelect>
+
+@code {
+
+	private IEnumerable<string> _selectedMuscles = new HashSet<string>();
+	private Dictionary<string, MuscleViewModel> _musclesLookup = new Dictionary<string, MuscleViewModel>();
+
+	[Parameter]
+	public string Label { get; set; } = "Muscles";
+
+	[Parameter]
+	[EditorRequired]
+	public IEnumerable<MuscleViewModel> Muscles { get; set; }
+
+	[Parameter]
+	public IEnumerable<MuscleViewModel> SelectedMuscles { get; set; }
+
+	[Parameter]
+	public EventCallback<IEnumerable<MuscleViewModel>> SelectedMusclesChanged { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		_selectedMuscles = new HashSet<string>(SelectedMuscles.OrderBy(m => m.MuscleGroup).Select(m => m.Id.ToString()));
+		_musclesLookup = Muscles.ToDictionary(k => k.Id.ToString(), v => v);
+	}
+
+	private string GetMultiSelectionText(List<string> selectedValues)
+	{
+		return $"Selected muscle{(selectedValues.Count > 1 ? "s" : "")}: {string.Join(", ", selectedValues.Select(x => _musclesLookup[x].Name))}";
+	}
+
+	private async Task OnSelectedValuesChanged(IEnumerable<string> values)
+	{
+		SelectedMuscles = values.Select(x => _musclesLookup[x]);
+		_selectedMuscles = new HashSet<string>(SelectedMuscles.OrderBy(m => m.MuscleGroup).Select(m => m.Id.ToString()));
+		await SelectedMusclesChanged.InvokeAsync(SelectedMuscles);
+	}
+}

@@ -1,94 +1,65 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using UnitsNet;
+﻿using BlazorState.Redux.Utilities;
+using WorkoutTracker.Models.Contracts;
 
 namespace WorkoutTracker.Data.Props
 {
-    public record ExerciseWithCategoryViewModel(string Category, ExerciseViewModel Exercise);
-
-    public record PreviousLogRecordStats(double? Weight, int Repetitions) 
+    public record PreviousLogRecordStats(WorkoutSummary BestWorkout, WorkoutSummary LastWorkout)
     {
-        public double WeightInLB => Weight.HasValue ? Math.Floor(Mass.FromKilograms(Weight.Value).Pounds) : 0.0d;
-    } 
+        public string MaxWeightFormatted => $"{BestWorkout.Max.WeightLb} LB";
+
+        public string LastWeightFormatted => $"{LastWorkout.Max.WeightLb} LB";
+    }
 
     public class ExerciseScheduleProps
     {
-        public IEnumerable<ExerciseWithCategoryViewModel> Schedule { get; set; }
+        public IEnumerable<WorkoutViewModel> Schedule { get; set; }
 
-        public Dictionary<Guid, int> ExerciseCountLookup { get; set; }
+        public IEnumerable<ExerciseViewModel> AllExercises { get; set; }
 
-        public EventCallback<ExerciseWithCategoryViewModel> Start { get; set; }
-
-        public EventCallback<string> Previous { get; set; }
-
-        public EventCallback<string> Next { get; set; }
-
-        public EventCallback<ExerciseProfile> Rebuild { get; set; }
-
-        public EventCallback OpenLog { get; set; }
+        public AsyncAction<IExerciseSelector> AddExercise { get; set; }
     }
 
-    public class ExercisesLogProps
+    public class ExerciseSchedulePanelProps
     {
-        public Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> Log { get; set; }
-
-        public DateOnly SelectedDate { get; set; }
-
-        public EventCallback<Guid> Delete { get; set; }
-
-        public EventCallback<LogEntryViewModel> Save { get; set; }
-
-        public EventCallback<DateTime> Load { get; set; }
+        public Dictionary<Guid, PreviousLogRecordStats> PreviousSessionLog { get; set; }
     }
 
-    public class EditExerciseLogProps
-    {
-        public ExerciseWithCategoryViewModel NextExerciseId { get; set; }
+    public record ExerciseActionBarProps(IEnumerable<ExerciseViewModel> AllExercises, Action<Guid> IncreaseSets, Action<Guid> DecreaseSets, Action<Guid, ExerciseViewModel> ReplaceExercise, AsyncAction<Guid> RemoveExercise);
 
-        public ExerciseWithCategoryViewModel PreviousExerciseId { get; set; }
-
-        public int SetNumber { get; set; }
-
-		public LogEntryViewModel Log { get; set; }
-
-        public PreviousLogRecordStats PreviousLog { get; set; }
-
-        public bool PreviousLogLoading { get; set; }
-
-        public EventCallback<LogEntryViewModel> Save { get; set; }
-
-        public EventCallback<ExerciseWithCategoryViewModel> Next { get; set; }
-
-        public EventCallback<ExerciseWithCategoryViewModel> Previous { get; set; }
-
-        public EventCallback Cancel { get; set; }
-    }
+    public record ExerciseSetsProps(Dictionary<Guid, LogEntryViewModel> TodayLogByExercise, Action<Guid, int> StartSet, Action<Guid, int> FinishSet, Action<Guid, WorkoutExerciseSetViewModel> UpdateSet, AsyncAction<LogEntryViewModel> Save);
 
     public class EditExerciseProps
     {
         public EditExerciseViewModel Exercise { get; set; }
 
-        public Dictionary<Guid, MuscleViewModel> Muscles { get; set; }
+        public IEnumerable<MuscleViewModel> Muscles { get; set; }
 
         public IEnumerable<string> Tags { get; set; }
 
         public bool IsLoading => !Muscles.Any();
 
-        public EventCallback<EditExerciseViewModel> Save { get; set; }
+        public AsyncAction<EditExerciseViewModel> Save { get; set; }
 
-        public EventCallback Cancel { get; set; }
+        public Action Cancel { get; set; }
     }
 
-    public class ExerciseListProps
+    public class ExercisesListProps
+    {
+        public ICollection<ExerciseViewModel> List { get; set; }
+
+        public Action<ExerciseViewModel> Edit { get; set; }
+
+        public AsyncAction<Guid> Delete { get; set; }
+    }
+
+    public class ExercisesFilterProps
     {
         public IEnumerable<string> MuscleGroups { get; set; }
 
-        public ICollection<ExerciseViewModel> List { get; set; }
+        public ExercisesFilterViewModel Filter { get; set; }
 
-        public EventCallback<ExerciseViewModel> Edit { get; set; }
+        public Action Add { get; set; }
 
-        public EventCallback<Guid> Delete { get; set; }
-
-        public EventCallback Add { get; set; }
+        public Action<ExercisesFilterViewModel> ApplyFilter { get; set; }
     }
 }

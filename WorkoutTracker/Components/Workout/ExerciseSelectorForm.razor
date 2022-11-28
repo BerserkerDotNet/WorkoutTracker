@@ -1,0 +1,35 @@
+﻿@if (isOpen)
+{
+    <ExerciseSelector ActionText="@ActionText" Exercises="Exercises" OnExerciseSelected="OnSelectionConfirmed" OnCancel="ToggleView" />
+}
+else
+{
+    <MudButton Color="Color.Primary" OnClick="ToggleView" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="py-2">@ActionText</MudButton>
+}
+
+@code
+{
+    private bool isOpen = false;
+
+    [Parameter]
+    [EditorRequired]
+    public string ActionText { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<ExerciseViewModel> Exercises { get; set; }
+
+    [Parameter]
+    public EventCallback<ExerciseViewModel> OnExerciseSelected { get; set; }
+
+    private async Task OnSelectionConfirmed(ExerciseViewModel selectedExercise)
+    {
+        await OnExerciseSelected.InvokeAsync(selectedExercise);
+        ToggleView();
+    }
+
+    private void ToggleView()
+    {
+        isOpen = !isOpen;
+    }
+}

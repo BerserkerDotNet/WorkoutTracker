@@ -1,0 +1,70 @@
+﻿@inherits BaseComponentTest
+@code {
+
+    [Test]
+    public void ShouldRenderAutoCompleteWithItemTemplate()
+    {
+        var exercises = new Faker<ExerciseViewModel>()
+            .RuleFor(e => e.Name, f => f.Random.Words())
+            .Generate(10)
+            .ToArray();
+        TestContext.ComponentFactories.AddStub<MudAutocomplete<ExerciseViewModel>>();
+        var cut = Render(@<ItemSearch Items="exercises" ItemNameFunc="e => e.Name" />);
+
+        cut.FindComponent<Stub<MudAutocomplete<ExerciseViewModel>>>().Should().NotBeNull();
+
+        var itemTemplate = cut.FindComponent<Stub<MudAutocomplete<ExerciseViewModel>>>().Instance.Parameters.Get(e => e.ItemTemplate);
+        var exercise = exercises.ElementAt(0);
+        var template = Render(itemTemplate(exercise));
+
+        template.MarkupMatches(@<MudText>@exercise.Name</MudText>);
+    }
+
+    [Test]
+    public void ShouldSearchForItemsByName()
+    {
+        var items = new[]
+        {
+            "Pull-down",
+            "pull-up",
+            "bench press",
+            "bicep curls"
+        };
+
+        TestContext.ComponentFactories.AddStub<MudAutocomplete<string>>();
+        var cut = Render(@<ItemSearch Items="items" ItemNameFunc="e => e" />);
+
+        var searchFunc = cut.FindComponent<Stub<MudAutocomplete<string>>>().Instance.Parameters.Get(e => e.SearchFunc);
+
+        searchFunc("pull").GetAwaiter().GetResult().Should().HaveCount(2);
+        searchFunc("pr").GetAwaiter().GetResult().Should().HaveCount(1);
+        searchFunc("cur").GetAwaiter().GetResult().Should().HaveCount(1);
+        searchFunc("").GetAwaiter().GetResult().Should().HaveCount(4);
+        searchFunc(null).GetAwaiter().GetResult().Should().HaveCount(4);
+        searchFunc("foo").GetAwaiter().GetResult().Should().HaveCount(0);
+        searchFunc("p").GetAwaiter().GetResult().Should().HaveCount(4);
+        searchFunc("u").GetAwaiter().GetResult().Should().HaveCount(3);
+    }
+
+    [Test]
+    public async Task ShouldInvokeValueChangedOnSelection()
+    {
+        var exercises = new Faker<ExerciseViewModel>()
+            .RuleFor(e => e.Name, f => f.Random.Words())
+            .Generate(10)
+            .ToArray();
+
+        TestContext.ComponentFactories.AddStub<MudAutocomplete<ExerciseViewModel>>();
+        ExerciseViewModel selectedItem = null;
+        var cut = Render(@<ItemSearch TItem="ExerciseViewModel" Items="exercises" ItemNameFunc="e => e.Name" ValueChanged="e => selectedItem = e" />);
+
+        cut.FindComponent<Stub<MudAutocomplete<ExerciseViewModel>>>().Should().NotBeNull();
+
+        var onValueChanged = cut.FindComponent<Stub<MudAutocomplete<ExerciseViewModel>>>().Instance.Parameters.Get(e => e.ValueChanged);
+        
+        var exercise = exercises.ElementAt(0);
+        await cut.InvokeAsync(() => onValueChanged.InvokeAsync(exercise));
+
+        selectedItem.Should().BeEquivalentTo(exercise);
+    }
+}

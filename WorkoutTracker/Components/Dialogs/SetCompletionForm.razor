@@ -1,0 +1,66 @@
+﻿<MudDialog>
+	<DialogContent>
+		<WeightSelector @bind-Weight="CurrentWeight" Variant="Variant.Outlined" />
+		<MudNumericField @bind-Value="repetitions" Label="Repetetions:" Variant="Variant.Outlined" Min="0" />
+		<MudNumericField @bind-Value="duration" Label="Duration:" Variant="Variant.Outlined" Min="0" />
+		<MudNumericField @bind-Value="restTime" Label="Rest time:" Variant="Variant.Outlined" Min="0" />
+		<MudTextField T="string" Label="Notes:" Variant="Variant.Outlined" @bind-Text="@notes" Lines="4" />
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+		<MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+	</DialogActions>
+</MudDialog>
+
+@code {
+
+	private int duration = 0;
+	private int restTime = 0;
+	private int repetitions = 0;
+	private string notes = "";
+
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+	[Parameter]
+	public int Repetitions { get; set; }
+
+	[Parameter]
+	public int CurrentDuration { get; set; }
+
+	[Parameter]
+	public int CurrentRestTime { get; set; }
+
+	[Parameter]
+	public Mass CurrentWeight { get; set; }
+
+	[Parameter]
+	public string Notes { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		duration = CurrentDuration;
+		restTime = CurrentRestTime;
+		repetitions = Repetitions;
+		notes = Notes;
+		base.OnParametersSet();
+	}
+
+	private void Save()
+	{
+		MudDialog.Close(DialogResult.Ok(new Set
+			{
+				CompletionTime = DateTime.UtcNow,
+				Duration = TimeSpan.FromSeconds(duration),
+				RestTime = TimeSpan.FromSeconds(restTime),
+				Repetitions = repetitions,
+				WeightKG = CurrentWeight.Kilograms,
+				WeightLB = CurrentWeight.Pounds,
+				Note = notes,
+			}));
+	}
+
+	private void Cancel()
+	{
+		MudDialog.Close(DialogResult.Cancel());
+	}
+}

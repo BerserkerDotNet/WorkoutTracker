@@ -1,24 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android</TargetFrameworks>
+    <TargetFramework>net7.0-android</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<SingleProject>true</SingleProject>
 		<UseMaui>true</UseMaui>
 		<RootNamespace>WorkoutTracker.MAUI</RootNamespace>
 		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
+    <EnableDefaultCssItems>false</EnableDefaultCssItems>
 
 		<!-- Display name -->
 		<ApplicationTitle>Workout tracker</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.andriisnihyr.WorkoutTracker</ApplicationId>
+    <ApplicationIdGuid>a977f55f-d146-4e1f-b5c4-d36aa1d5649c</ApplicationIdGuid>
 
 		<!-- Versions -->
 		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>1.3</ApplicationDisplayVersion>
 
 		<UseInterpreter Condition="'$(TargetFramework)' == 'net6.0-android'">False</UseInterpreter>
 		<LangVersion>preview</LangVersion>
-		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">28.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -44,11 +47,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.41.0" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.0-rc.2.*" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0-rc.2.*" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.2" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0-rc.2.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0-rc.2.*" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\WorkoutTracker\WorkoutTracker.csproj" />

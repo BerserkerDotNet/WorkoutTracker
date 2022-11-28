@@ -1,7 +1,9 @@
-﻿global using System;
-global using WorkoutTracker.Data;
-global using WorkoutTracker.ViewModels;
-global using WorkoutTracker.Interfaces;
-global using WorkoutTracker.Data.Props;
+﻿global using BlazorState.Redux.Blazor;
 global using BlazorState.Redux.Interfaces;
 global using MudBlazor;
+global using System;
+global using WorkoutTracker.Components.Dialogs;
+global using WorkoutTracker.Data;
+global using WorkoutTracker.Data.Props;
+global using WorkoutTracker.Interfaces;
+global using WorkoutTracker.ViewModels;

@@ -1,0 +1,29 @@
+﻿@inherits ComponentWithProps<ExerciseScheduleProps>
+
+<If Condition="!Props.Schedule.Any()">
+    <Then>
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100px" Class="mb-2" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100px" Class="mb-2" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100px" Class="mb-2" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100px" Class="mb-2" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100px" Class="mb-2" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100px" Class="mb-2" />
+    </Then>
+    <Else>
+        <MudExpansionPanels MultiExpansion="true">
+            @foreach (var scheduleItem in Props.Schedule)
+            {
+                <ExercisePanel @key="scheduleItem.Id" Schedule="scheduleItem" />
+            }
+        </MudExpansionPanels>
+        <ExerciseSelectorForm ActionText="Add exercise" Exercises="Props.AllExercises" OnExerciseSelected="OnAddExercise" />
+    </Else>
+</If>
+
+@code{
+
+    private async Task OnAddExercise(ExerciseViewModel exercise)
+    {
+        await Props.AddExercise(new SpecificExerciseSelector(exercise.Id));
+    }
+}

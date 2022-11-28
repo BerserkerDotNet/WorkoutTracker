@@ -1,21 +1,19 @@
-﻿namespace WorkoutTracker.Data.Actions
+﻿namespace WorkoutTracker.Data.Actions;
+
+public class DeleteExerciseLogEntryAction : TrackableAction<Guid>
 {
-    public class DeleteExerciseLogEntryAction : IAsyncAction<Guid>
+    private readonly IWorkoutRepository _repository;
+
+    public DeleteExerciseLogEntryAction(IWorkoutRepository repository, ApplicationContext<DeleteExerciseLogEntryAction> context)
+        : base(context, "Deleting log entry")
     {
-        private readonly IWorkoutRepository _repository;
-        private readonly INotificationService _notificationService;
+        _repository = repository;
+    }
 
-        public DeleteExerciseLogEntryAction(IWorkoutRepository repository, INotificationService notificationService)
-        {
-            _repository = repository;
-            _notificationService = notificationService;
-        }
-
-        public async Task Execute(IDispatcher dispatcher, Guid id)
-        {
-            await _repository.DeleteLog(id);
-            _notificationService.ShowToast("Log entry deleted.");
-            await dispatcher.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today.ToUniversalTime());
-        }
+    protected override async Task Execute(IDispatcher dispatcher, Guid id, Dictionary<string, string> trackableProperties)
+    {
+        await _repository.DeleteLog(id);
+        Context.ShowToast("Log entry deleted.");
+        await dispatcher.Dispatch<FetchExerciseLogsAction, DateTime>(DateTime.Today);
     }
 }

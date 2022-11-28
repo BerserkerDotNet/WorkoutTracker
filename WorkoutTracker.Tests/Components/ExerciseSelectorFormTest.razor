@@ -1,0 +1,94 @@
+﻿@inherits BaseComponentTest
+@code {
+
+    private IEnumerable<ExerciseViewModel> _exercises;
+
+    public override void Initialize()
+    {
+        _exercises = new Faker<ExerciseViewModel>()
+            .RuleFor(e => e.Name, f => f.Random.Words())
+            .Generate(10)
+            .ToArray();
+    }
+
+    [Test]
+    public void ShouldRenderCallToActionButton()
+    {
+        var buttonText = "Add";
+        var cut = Render(@<ExerciseSelectorForm ActionText="@buttonText" Exercises="_exercises" />);
+
+        cut.MarkupMatches(@<MudButton Color="Color.Primary" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="py-2">@buttonText</MudButton>);
+    }
+
+    [Test]
+    public void ShouldSwitchToSelectorWhenCallToActionClicked()
+    {
+        var autoCompleteMock = new Mock<ItemSearch<ExerciseViewModel>>(MockBehavior.Loose);
+        TestContext.ComponentFactories.Add(autoCompleteMock.Object);
+
+        var buttonText = "Add";
+        var cut = Render(@<ExerciseSelectorForm ActionText="@buttonText" Exercises="_exercises" />);
+
+        var callToActionButton = cut.Find("button");
+        callToActionButton.Click(new MouseEventArgs());
+
+        cut.HasComponent<MudPaper>().Should().BeTrue();
+        cut.HasComponent<ItemSearch<ExerciseViewModel>>().Should().BeTrue();
+        cut.FindComponents<MudButton>().Should().HaveCount(2);
+        var confirmButton = cut.FindComponent<MudButton>(".btn-confirm");
+        confirmButton.Should().NotBeNull();
+        confirmButton.Instance.Disabled.Should().BeTrue();
+
+        var cancelButton = cut.FindComponent<MudButton>(".btn-cancel");
+        cancelButton.Should().NotBeNull();
+        cancelButton.Instance.Disabled.Should().BeFalse();
+    }
+
+    [Test]
+    public void ShouldCancelAction()
+    {
+        var autoCompleteMock = new Mock<ItemSearch<ExerciseViewModel>>(MockBehavior.Loose);
+        TestContext.ComponentFactories.Add(autoCompleteMock.Object);
+
+        var buttonText = "Add";
+        ExerciseViewModel selectedExercise = null;
+        var cut = Render(@<ExerciseSelectorForm ActionText="@buttonText" Exercises="_exercises" OnExerciseSelected="e => selectedExercise = e" />);
+
+        var callToActionButton = cut.Find("button");
+        callToActionButton.Click(new MouseEventArgs());
+
+        var cancelButton = cut.FindComponent<MudButton>(".btn-cancel");
+        cancelButton.Find("button").Click(new MouseEventArgs());
+
+        selectedExercise.Should().BeNull();
+        cut.MarkupMatches(@<MudButton Color="Color.Primary" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="py-2">@buttonText</MudButton>);
+    }
+
+    [Test]
+    public async Task ShouldSelectItemOnConfirmation()
+    {
+        TestContext.ComponentFactories.AddStub<ItemSearch<ExerciseViewModel>>();
+
+        var buttonText = "Add";
+        ExerciseViewModel selectedExercise = null;
+        var cut = Render(@<ExerciseSelectorForm ActionText="@buttonText" Exercises="_exercises" OnExerciseSelected="e => selectedExercise = e" />);
+
+        var callToActionButton = cut.Find("button");
+        callToActionButton.Click(new MouseEventArgs());
+
+        var confirmButton = cut.FindComponent<MudButton>(".btn-confirm");
+        confirmButton.Instance.Disabled.Should().BeTrue();
+
+        var itemSearchStub = cut.FindComponent<Stub<ItemSearch<ExerciseViewModel>>>();
+
+        var valueChangedDelegate = itemSearchStub.Instance.Parameters.Get(c => c.ValueChanged);
+        var expectedExercise = _exercises.ElementAt(Random.Shared.Next(0, _exercises.Count() - 1));
+        await cut.InvokeAsync(() => valueChangedDelegate.InvokeAsync(expectedExercise));
+        confirmButton.Instance.Disabled.Should().BeFalse();
+
+        cut.Find(".btn-confirm").Click(new MouseEventArgs());
+
+        selectedExercise.Should().BeEquivalentTo(expectedExercise);
+        cut.MarkupMatches(@<MudButton Color="Color.Primary" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="py-2">@buttonText</MudButton>);
+    }
+}

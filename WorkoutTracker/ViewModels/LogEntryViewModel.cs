@@ -1,16 +1,9 @@
-﻿using System.Collections.Generic;
-using WorkoutTracker.Models;
+﻿using WorkoutTracker.Models.Entities;
 
-namespace WorkoutTracker.ViewModels
-{
-    public class LogEntryViewModel
-    {
-        public Guid Id { get; set; }
+namespace WorkoutTracker.ViewModels;
 
-        public ExerciseViewModel Exercise { get; set; }
+public record WorkoutSummary(DateTime Date, WorkoutSetSummary Max, WorkoutSetSummary Min, WorkoutSetSummary Avg, WorkoutSetSummary Total, int SetsCount, Guid ExerciseId);
 
-        public IEnumerable<Set> Sets { get; set; }
+public record WorkoutSetSummary(double WeightKg, double WeightLb, int Repetitions, TimeSpan Duration, TimeSpan RestTime, IEnumerable<Set> Sets);
 
-        public DateTime Date { get; set; }
-    }
-}
+public record ExerciseIndicatorDescriptor(Guid Id, string Name, double Target, Func<WorkoutSetSummary, double> ValueSelector);

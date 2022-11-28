@@ -1,26 +1,21 @@
 ﻿using WorkoutTracker.Data.Reducers;
+using WorkoutTracker.Models.Entities;
 
-namespace WorkoutTracker
+namespace WorkoutTracker;
+
+public class RootState
 {
-	public class RootState
-    {
-        public ExercisesState Exercises { get; set; }
+    public ExercisesState Exercises { get; set; }
 
-        public LogEntriesState ExerciseLogs { get; set; }
+    public LogEntriesState ExerciseLogs { get; set; }
 
-        public ExerciseScheduleState ExerciseSchedule { get; set; }
-    }
+    public ExerciseScheduleState ExerciseSchedule { get; set; }
 
-    public static class DateExetnsions 
-    {
-        public static DateOnly ToDateOnly(this DateTime date) 
-        {
-            return DateOnly.FromDateTime(date);
-        }
+    public UserPreferencesState Preferences { get; set; }
 
-        public static DateTime ToDateTime(this DateOnly date)
-        {
-            return date.ToDateTime(TimeOnly.MinValue);
-        }
-    }
+    public UIState UI { get; set; }
+
+    public WorkoutDataState Data { get; set; }
 }
+
+public record WorkoutDataState(IEnumerable<Exercise> Exercises, IEnumerable<Muscle> Muscles);

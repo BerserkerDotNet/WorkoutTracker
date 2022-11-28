@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
-using Microsoft.Maui.Essentials;
-using System;
+using Microsoft.Maui.ApplicationModel;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -15,47 +13,32 @@ namespace WorkoutTracker.MAUI;
 public class AuthService : AuthenticationStateProvider, IRemoteAuthenticationService<RemoteAuthenticationState>, IAccessTokenProvider
 {
     private readonly IPublicClientApplication _authenticationClient;
-    private readonly ICacheService _cacheService;
-    private AccessToken _idToken;
-    private ClaimsPrincipal _principal;
     private RemoteAuthenticationStatus? _lastStatus;
+    private AuthenticationState _currentAuthState;
+    private string[] _scopes = new[] { "openid", "offline_access" };
 
-    public AuthService(ICacheService cacheService, IConfiguration config)
+    public AuthService(IConfiguration config)
     {
+        var claimsIdentity = new ClaimsIdentity();
+        var principal = new ClaimsPrincipal(claimsIdentity);
+        _currentAuthState = new AuthenticationState(principal);
+
         _authenticationClient = PublicClientApplicationBuilder.Create(config["clientId"])
             .WithRedirectUri(config["redirectUrl"])
             .WithParentActivityOrWindow(() => Platform.CurrentActivity)
             .Build();
-        _cacheService = cacheService;
     }
 
-    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        _idToken = await _cacheService.GetToken();
-        var claimsIdentity = new ClaimsIdentity();
-        if (!string.IsNullOrEmpty(_idToken?.Value) && _idToken.Expires > DateTime.Now)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var data = handler.ReadJwtToken(_idToken.Value);
-            if (data is object)
-            {
-                claimsIdentity = GetIdentityFrom(data.Claims);
-            }
-        }
-
-        _principal = new ClaimsPrincipal(claimsIdentity);
-        var authState = new AuthenticationState(_principal);
-
-        return authState;
+        return Task.FromResult(_currentAuthState);
     }
 
     public async Task<RemoteAuthenticationResult<RemoteAuthenticationState>> SignInAsync(RemoteAuthenticationContext<RemoteAuthenticationState> context)
     {
         try
         {
-            var tokenExpired = _idToken?.Expires <= DateTime.Now;
-
-            if (_idToken is object && !tokenExpired && _lastStatus == RemoteAuthenticationStatus.Success)
+            if (_lastStatus == RemoteAuthenticationStatus.Success)
             {
                 return new RemoteAuthenticationResult<RemoteAuthenticationState>
                 {
@@ -64,26 +47,35 @@ public class AuthService : AuthenticationStateProvider, IRemoteAuthenticationSer
                 };
             }
 
-            if (_idToken is null || tokenExpired)
+            var accounts = await _authenticationClient.GetAccountsAsync();
+
+            AuthenticationResult result = null;
+
+            if (accounts.Any())
             {
-                var result = await _authenticationClient
-                    .AcquireTokenInteractive(new[] { "openid", "offline_access" })
+                result = await _authenticationClient
+                    .AcquireTokenSilent(_scopes, accounts.First())
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                result = await _authenticationClient
+                    .AcquireTokenInteractive(_scopes)
                     .WithPrompt(Prompt.ForceLogin)
                     .ExecuteAsync()
                     .ConfigureAwait(false);
+
                 if (result.IdToken is null)
                 {
                     throw new MsalClientException("Token is null");
                 }
-
-                _idToken = new AccessToken { Value = result.IdToken, Expires = result.ExpiresOn, GrantedScopes = result.Scopes.ToList() };
-                _principal = new ClaimsPrincipal(GetIdentityFrom(result.ClaimsPrincipal.Claims));
-                await _cacheService.SaveToken(_idToken);
             }
 
             _lastStatus = RemoteAuthenticationStatus.Success;
-
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_principal)));
+            var principal = new ClaimsPrincipal(GetIdentityFrom(result.ClaimsPrincipal.Claims));
+            _currentAuthState = new AuthenticationState(principal);
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
             return new RemoteAuthenticationResult<RemoteAuthenticationState>
             {
@@ -103,9 +95,15 @@ public class AuthService : AuthenticationStateProvider, IRemoteAuthenticationSer
         }
     }
 
-    public ValueTask<AccessTokenResult> RequestAccessToken()
+    public async ValueTask<AccessTokenResult> RequestAccessToken()
     {
-        return new ValueTask<AccessTokenResult>(Task.FromResult(new AccessTokenResult(AccessTokenResultStatus.Success, _idToken, "/")));
+        var accounts = await _authenticationClient.GetAccountsAsync();
+        var result = await _authenticationClient
+            .AcquireTokenSilent(_scopes, accounts.First())
+            .ExecuteAsync()
+            .ConfigureAwait(false);
+        var token = new AccessToken { Value = result.IdToken, Expires = result.ExpiresOn, GrantedScopes = result.Scopes.ToList() };
+        return new AccessTokenResult(AccessTokenResultStatus.Success, token, "/");
     }
 
     public ValueTask<AccessTokenResult> RequestAccessToken(AccessTokenRequestOptions options)
@@ -119,7 +117,7 @@ public class AuthService : AuthenticationStateProvider, IRemoteAuthenticationSer
 
     public Task<RemoteAuthenticationResult<RemoteAuthenticationState>> SignOutAsync(RemoteAuthenticationContext<RemoteAuthenticationState> context) => throw new System.NotImplementedException();
 
-    private ClaimsIdentity GetIdentityFrom(IEnumerable<Claim> claims) 
+    private ClaimsIdentity GetIdentityFrom(IEnumerable<Claim> claims)
     {
         return new ClaimsIdentity(claims, authenticationType: "Bearer", nameType: "name", null);
     }

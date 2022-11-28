@@ -9,9 +9,18 @@
             _snackbar = snackbar;
         }
 
+        public void ShowError(string message)
+        {
+            _snackbar.Add(message, Severity.Error, cfg =>
+            {
+                cfg.ShowCloseIcon = true;
+                cfg.VisibleStateDuration = int.MaxValue;
+            });
+        }
+
         public void ShowToast(string message)
         {
-            _snackbar.Add(message);
+            _snackbar.Add(message, Severity.Success);
         }
     }
 }

@@ -1,39 +1,36 @@
 ﻿@inherits LayoutComponentBase
 <div class="content">
-	<MudThemeProvider />
-	<MudDialogProvider />
-	<MudSnackbarProvider />
-
-	<MudLayout>
-		<MudAppBar>
-			<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-			Workout Tracker
-			<MudSpacer />
-			<MudText>
-				<AuthorizeView>
-					<Authorized>
-						Hello, @context.User.Identity.Name!
-					</Authorized>
-					<NotAuthorized>
-						Log in
-					</NotAuthorized>
-				</AuthorizeView>
-			</MudText>
-		</MudAppBar>
-		<MudDrawer @bind-Open="@_drawerOpen" Anchor="Anchor.Top" Elevation="1" Variant="@DrawerVariant.Temporary">
-			<NavMenu />
-		</MudDrawer>
-		<MudMainContent Class="px-4">
-			@Body
-		</MudMainContent>
-	</MudLayout>
+    <MudThemeProvider Theme="MyCustomTheme" />
+    <MudDialogProvider DisableBackdropClick="true" CloseOnEscapeKey="false" Position="DialogPosition.Center" />
+    <MudSnackbarProvider />
+    <PropsProvider>
+        <MudLayout>
+            <MudMainContent Class="px-1 pb-16" Style="height:100vh; overflow-y: scroll">
+                @Body
+                <ProgressIndicatorConnected />
+                <Footer />
+            </MudMainContent>
+        </MudLayout>
+    </PropsProvider>
 </div>
 
 @code {
-	bool _drawerOpen = true;
+    bool _drawerOpen = true;
 
-	void DrawerToggle()
-	{
-		_drawerOpen = !_drawerOpen;
-	}
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            LayoutProperties = new LayoutProperties()
+            {
+                AppbarHeight = "120px",
+            },
+            Palette = new Palette
+            {
+                Background = Colors.Grey.Lighten4
+            }
+        };
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
 }

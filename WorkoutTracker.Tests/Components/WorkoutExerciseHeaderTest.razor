@@ -1,0 +1,54 @@
+﻿@inherits BaseComponentTest
+@code {
+    const string BaseImagePath = "https://images.com/";
+    public override void Initialize()
+    {
+        Services.AddSingleton(new CDNImageProvider(new Uri(BaseImagePath)));
+    }
+
+    [Test]
+    public void ShouldRenderImageWithText()
+    {
+        var cut = Render(@<WorkoutExerciseHeader Name="The Exercise" ImagePath="foo.png" Status="SetStatus.NotStarted" />);
+
+        cut.HasComponent<MudBadge>().Should().BeFalse();
+
+        var avatar = cut.FindComponent<MudAvatar>();
+        avatar.Instance.Image.Should().Be($"{BaseImagePath}foo.png");
+
+        var text = cut.FindComponent<MudText>();
+        text.MarkupMatches(@<MudText Class="ml-3">The Exercise</MudText>);
+    }
+
+    [Test]
+    public void ShouldRenderHeaderWithInProgressBadge()
+    {
+        var cut = Render(@<WorkoutExerciseHeader Name="The Exercise 2" ImagePath="foo.png" Status="SetStatus.InProgress" />);
+
+        var badge = cut.FindComponent<MudBadge>();
+        badge.Instance.Icon.Should().Be(Icons.Material.Filled.RunCircle);
+        badge.Instance.Color.Should().Be(Color.Info);
+
+        var avatar = badge.FindComponent<MudAvatar>();
+        avatar.Instance.Image.Should().Be($"{BaseImagePath}foo.png");
+
+        var text = cut.FindComponent<MudText>();
+        text.MarkupMatches(@<MudText Class="ml-3">The Exercise 2</MudText>);
+    }
+
+    [Test]
+    public void ShouldRenderHeaderWithCompletedBadge()
+    {
+        var cut = Render(@<WorkoutExerciseHeader Name="The Exercise 3" ImagePath="foo.png" Status="SetStatus.Completed" />);
+
+        var badge = cut.FindComponent<MudBadge>();
+        badge.Instance.Icon.Should().Be(Icons.Material.Filled.CheckCircle);
+        badge.Instance.Color.Should().Be(Color.Success);
+
+        var avatar = badge.FindComponent<MudAvatar>();
+        avatar.Instance.Image.Should().Be($"{BaseImagePath}foo.png");
+
+        var text = cut.FindComponent<MudText>();
+        text.MarkupMatches(@<MudText Class="ml-3">The Exercise 3</MudText>);
+    }
+}

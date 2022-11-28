@@ -5,7 +5,7 @@ namespace WorkoutTracker.Data.Services
     public class InMemoryCacheService : ICacheService
     {
         private IEnumerable<ExerciseViewModel> _exercisesInMemoryCache;
-        private AccessToken _token;
+        private IEnumerable<WorkoutSummary> _summariesInMemoryCache;
 
         public Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
         {
@@ -24,24 +24,37 @@ namespace WorkoutTracker.Data.Services
             return Task.FromResult(Enumerable.Empty<ExerciseViewModel>());
         }
 
-        public void ResetExercisesCache()
+        public Task ResetExercisesCache()
         {
             _exercisesInMemoryCache = null;
+
+            return Task.CompletedTask;
         }
 
-        public bool IsExercisesCached()
+        public Task<bool> IsExercisesCached()
         {
-            return _exercisesInMemoryCache is object;
+            return Task.FromResult(_exercisesInMemoryCache is object);
         }
 
-        public Task<AccessToken> GetToken()
+        public Task<bool> IsSummariesCached()
         {
-            return Task.FromResult(_token);
+            return Task.FromResult(_summariesInMemoryCache is object);
         }
 
-        public Task SaveToken(AccessToken token)
+        public Task<IEnumerable<WorkoutSummary>> GetSummaries()
         {
-            _token = token;
+            return Task.FromResult(_summariesInMemoryCache);
+        }
+
+        public Task SaveSummaries(IEnumerable<WorkoutSummary> summaries)
+        {
+            _summariesInMemoryCache = summaries;
+            return Task.CompletedTask;
+        }
+
+        public Task ResetSummariesCache()
+        {
+            _summariesInMemoryCache = null;
             return Task.CompletedTask;
         }
     }

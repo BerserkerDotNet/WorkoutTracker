@@ -4,77 +4,92 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using WorkoutTracker.Models;
 using Microsoft.Azure.Cosmos;
 using System.IO;
 using Newtonsoft.Json;
+using System;
+using WorkoutTracker.Models.Entities;
 
-namespace WorkoutTracker.Functions
+namespace WorkoutTracker.Functions;
+
+public static class ExerciseOperations
 {
-    public static class ExerciseOperations
+    [Authorize]
+    [FunctionName(EndpointNames.ExercisePluralName)]
+    public static async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
+        ILogger log)
     {
-        [Authorize]
-        [FunctionName(EndpointNames.ExercisePluralName)]
-        public static Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", "patch", Route = null)] HttpRequest request,
-            ILogger log)
+        try
         {
+            log.LogInformation("Processing '{Method}' request to '{Entity}'", request.Method, EndpointNames.ExercisePluralName);
             switch (request.Method)
             {
                 case "GET":
-                    return Get(request, log);
+                    return await Get(request, log);
                 case "POST":
-                    return Create(request, log);
+                    return await Create(request, log);
                 case "DELETE":
-                    return Delete(request, log);
+                    return await Delete(request, log);
                 default:
-                    return Task.FromResult<IActionResult>(new BadRequestObjectResult($"Method {request.Method} is not supported."));
+                    return new BadRequestObjectResult($"Method {request.Method} is not supported.");
             }
         }
-
-        private static async Task<IActionResult> Get(HttpRequest request, ILogger log)
+        catch (Exception ex)
         {
-            var id = request.Query["id"];
-            var container = await CosmosUtils.GetContainer<Exercise>();
+            log.LogError(ex, "Error processing '{Method}' on '{Entity}'", request.Method, EndpointNames.ExercisePluralName);
+            throw;
+        }
+    }
 
-            if (string.IsNullOrEmpty(id))
-            {
-                var items = container.GetItemLinqQueryable<Exercise>(allowSynchronousQueryExecution: true);
-                return new OkObjectResult(items);
-            }
-            else
-            {
-                var item = await container.ReadItemAsync<Exercise>(id, new PartitionKey(id));
-                return new OkObjectResult(item.Resource);
-            }
+    private static async Task<IActionResult> Get(HttpRequest request, ILogger log)
+    {
+        var id = request.Query["id"];
+        var container = await CosmosUtils.GetContainer<Exercise>();
+
+        if (string.IsNullOrEmpty(id))
+        {
+            log.LogInformation("Fetching all exercises");
+            var items = container.GetItemLinqQueryable<Exercise>(allowSynchronousQueryExecution: true);
+            return new OkObjectResult(items);
+        }
+        else
+        {
+            log.LogInformation("Fetching exercise '{Id}'", id);
+            var item = await container.ReadItemAsync<Exercise>(id, new PartitionKey(id));
+            return new OkObjectResult(item.Resource);
+        }
+    }
+
+    private static async Task<IActionResult> Delete(HttpRequest request, ILogger log)
+    {
+        var id = request.Query["id"];
+        if (string.IsNullOrEmpty(id))
+        {
+            log.LogWarning("Failed deleting exercise. Id of an item is required.");
+            return new BadRequestObjectResult("Id of an item is required.");
         }
 
-        private static async Task<IActionResult> Delete(HttpRequest request, ILogger log)
-        {
-            var id = request.Query["id"];
-            if (string.IsNullOrEmpty(id))
-            {
-                return new BadRequestObjectResult("Id of an item is required.");
-            }
+        log.LogInformation("Deleting exercise '{Id}'", id);
+        var container = await CosmosUtils.GetContainer<Exercise>();
+        var response = await container.DeleteItemAsync<Exercise>(id, new PartitionKey(id));
+        return new StatusCodeResult((int)response.StatusCode);
+    }
 
-            var container = await CosmosUtils.GetContainer<Exercise>();
-            var response = await container.DeleteItemAsync<Exercise>(id, new PartitionKey(id));
+    private static async Task<IActionResult> Create(HttpRequest request, ILogger log)
+    {
+        var requestBody = await new StreamReader(request.Body).ReadToEndAsync();
+        var entry = JsonConvert.DeserializeObject<Exercise>(requestBody);
+        var container = await CosmosUtils.GetContainer<Exercise>();
+        var response = await container.UpsertItemAsync(entry);
+
+        if (response.StatusCode != System.Net.HttpStatusCode.Created)
+        {
+            log.LogError("Failed to create exercise with '{StatusCode}'", response.StatusCode);
             return new StatusCodeResult((int)response.StatusCode);
         }
 
-        private static async Task<IActionResult> Create(HttpRequest request, ILogger log)
-        {
-            var requestBody = await new StreamReader(request.Body).ReadToEndAsync();
-            var entry = JsonConvert.DeserializeObject<Exercise>(requestBody);
-            var container = await CosmosUtils.GetContainer<Exercise>();
-            var response = await container.UpsertItemAsync(entry);
-
-            if (response.StatusCode != System.Net.HttpStatusCode.Created)
-            {
-                return new StatusCodeResult((int)response.StatusCode);
-            }
-
-            return new OkObjectResult(response.Resource);
-        }
+        log.LogInformation("Exercise '{Id}' is created.", response.Resource.Id);
+        return new OkObjectResult(response.Resource);
     }
 }

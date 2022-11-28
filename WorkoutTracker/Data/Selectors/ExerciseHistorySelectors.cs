@@ -1,24 +1,26 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace WorkoutTracker.Data.Selectors;
+﻿namespace WorkoutTracker.Data.Selectors;
 
 public static class ExerciseHistorySelectors
 {
-    public static Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> SelectHistory(RootState state)
+    public static Dictionary<DateOnly, IEnumerable<LogEntryViewModel>> SelectHistory(this RootState state)
     {
         return state.ExerciseLogs?.History ?? new Dictionary<DateOnly, IEnumerable<LogEntryViewModel>>();
     }
 
-    public static DateOnly SelectDate(RootState state)
+    public static IEnumerable<WorkoutSummary> SelectSummaries(this RootState state)
     {
-        var uiState = state.ExerciseLogs?.UIState;
-        if (uiState is null) 
+        return state.ExerciseLogs?.Summaries ?? Enumerable.Empty<WorkoutSummary>();
+    }
+
+    public static DateOnly SelectDate(this RootState state)
+    {
+        var date = state.ExerciseLogs?.SelectedDate;
+        if (date is null)
         {
             return DateOnly.FromDateTime(DateTime.Today.ToUniversalTime());
         }
 
-        return uiState.SelectedDate;
+        return date.Value;
     }
 
     public static Dictionary<Guid, LogEntryViewModel> SelectLastLogByExerciseLookup(RootState state)
@@ -26,7 +28,7 @@ public static class ExerciseHistorySelectors
         return state.ExerciseLogs?.LastLogByExercise ?? new Dictionary<Guid, LogEntryViewModel>();
     }
 
-    public static Dictionary<Guid, int> SelectTodayExerciseCountLookup(RootState state)
+    public static Dictionary<Guid, int> SelectTodayExerciseCountLookup(this RootState state)
     {
         var history = SelectHistory(state);
 
@@ -34,45 +36,56 @@ public static class ExerciseHistorySelectors
         return history.ContainsKey(today) ? history[today].ToDictionary(k => k.Exercise.Id, v => v.Sets.Count()) : new Dictionary<Guid, int>();
     }
 
-    public static IEnumerable<LogEntryViewModel> SelectExercisesByDate(RootState state, DateTime date)
+    public static Dictionary<Guid, LogEntryViewModel> SelectTodayExerciseLogLookup(this RootState state)
     {
         var history = SelectHistory(state);
-        var key = DateOnly.FromDateTime(date);
-        return history.ContainsKey(key) ? history[key] : Enumerable.Empty<LogEntryViewModel>();
+
+        var today = DateOnly.FromDateTime(DateTime.Today.ToUniversalTime());
+        return history.ContainsKey(today) ? history[today].ToDictionary(k => k.Exercise.Id, v => v) : new Dictionary<Guid, LogEntryViewModel>();
+    }
+
+    public static IEnumerable<LogEntryViewModel> SelectExercisesByDate(this RootState state, DateOnly date)
+    {
+        var history = SelectHistory(state);
+        return history.ContainsKey(date) ? history[date] : Enumerable.Empty<LogEntryViewModel>();
     }
 
     public static IEnumerable<LogEntryViewModel> SelectTodayExercises(RootState state)
     {
-        return SelectExercisesByDate(state, DateTime.Today.ToUniversalTime());
+        return SelectExercisesByDate(state, DateOnly.FromDateTime(DateTime.Today.ToUniversalTime()));
     }
 
-    public static LogEntryViewModel SelectTodayExerciseById(RootState state, Guid id)
+    public static LogEntryViewModel SelectTodayExerciseById(this RootState state, Guid id)
     {
         return SelectTodayExercises(state).FirstOrDefault(e => e.Exercise.Id == id);
     }
 
-    public static LogEntryViewModel SelectExerciseLog(RootState state, DateTime date, Guid id)
+    public static LogEntryViewModel SelectExerciseLog(this RootState state, DateOnly date, Guid id)
     {
         return SelectExercisesByDate(state, date).FirstOrDefault(e => e.Id == id);
     }
 
-    public static PreviousLogRecordStats SelectLastLogByExercise(RootState state, Guid id)
+    public static Dictionary<Guid, PreviousLogRecordStats> SelectLastLogByExercise(this RootState state, IEnumerable<WorkoutViewModel> schedule)
     {
-        var lookup = SelectLastLogByExerciseLookup(state);
-        var record = lookup.ContainsKey(id) ? lookup[id] : null;
-        if (record is null || !record.Sets.Any()) 
+        return schedule.ToDictionary(k => k.Exercise.Id, v => state.SelectLastLogByExercise(v.Exercise.Id));
+    }
+
+    public static PreviousLogRecordStats SelectLastLogByExercise(this RootState state, Guid id)
+    {
+        var summaries = state.SelectSummaries()
+            .Where(s => s.ExerciseId == id)
+            .OrderByDescending(s => s.Date);
+
+        var maxWeight = summaries.MaxBy(s => s.Max.WeightLb);
+        if (maxWeight is null)
         {
             return null;
         }
 
-        var maxWeightSet = record.Sets.MaxBy(s => s.Weight);
+        var showKG = state.SelectShowWeightInKG();
+        var weight = showKG ? maxWeight.Max.WeightKg : maxWeight.Max.WeightLb;
+        var weightUnit = showKG ? "KG" : "LB";
 
-        return new PreviousLogRecordStats(maxWeightSet.Weight, maxWeightSet.Repetitions);
-    }
-
-    public static bool IsLastLogByExerciseLoaded(RootState state, Guid id)
-    {
-        var lookup = SelectLastLogByExerciseLookup(state);
-        return lookup.ContainsKey(id);
+        return new PreviousLogRecordStats(maxWeight, summaries.First());
     }
 }

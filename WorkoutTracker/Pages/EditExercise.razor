@@ -1,9 +1,9 @@
 ﻿@page "/editexercise/{exerciseid:guid}"
 @attribute [Authorize]
 
-<EditExerciseConnected ExerciseId="@ExerciseId"  />
+<EditExerciseConnected ExerciseId="ExerciseId" />
 
 @code {
-    [Parameter]
-    public Guid ExerciseId { get; set; }
+	[Parameter]
+	public Guid ExerciseId { get; set; }
 }
