@@ -1,14 +1,14 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Microsoft.Azure.Cosmos;
-using System;
 using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Functions;
@@ -61,7 +61,7 @@ public static class ExerciseLogOperations
             return await GetById(id, container);
         }
 
-        if (request.Query.ContainsKey("from") && request.Query.ContainsKey("to")) 
+        if (request.Query.ContainsKey("from") && request.Query.ContainsKey("to"))
         {
             var fromString = request.Query["from"];
             var toString = request.Query["to"];
@@ -81,7 +81,7 @@ public static class ExerciseLogOperations
         return new BadRequestObjectResult("Not supported Get operation");
     }
 
-    private static async Task<IActionResult> GetById(string id, Container container) 
+    private static async Task<IActionResult> GetById(string id, Container container)
     {
         var item = await container.ReadItemAsync<ExerciseLogEntry>(id, new PartitionKey(id));
         return new OkObjectResult(item.Resource);
@@ -89,7 +89,7 @@ public static class ExerciseLogOperations
 
     private static IActionResult GetByDateRange(DateTime from, DateTime to, Container container)
     {
-        
+
         var items = container.GetItemLinqQueryable<ExerciseLogEntry>(allowSynchronousQueryExecution: true)
             .Where(e => e.Date >= from && e.Date < to)
             .OrderByDescending(e => e.Date);

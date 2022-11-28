@@ -57,8 +57,8 @@ public partial class ExerciseSets
         {
             var set = result.Data as Set;
             var newSets = model.Sets.Union(new[] { set });
-            var newLog = model with { Sets = newSets };
-            await Props.Save(newLog);
+            model.Sets = newSets;
+            await Props.Save(model);
             var finalSet = workoutSet with { Reps = set.Repetitions, Weight = set.WeightLB.Value, Duration = set.Duration, RestTime = set.RestTime, Status = SetStatus.Completed };
             Props.UpdateSet(Schedule.Id, finalSet);
         }
@@ -75,8 +75,8 @@ public partial class ExerciseSets
             var set = result.Data as Set;
             var currentSets = model.Sets.ToArray();
             currentSets[workoutSet.Index] = set;
-            var newLog = model with { Sets = currentSets };
-            await Props.Save(newLog);
+            model.Sets = currentSets;
+            await Props.Save(model);
             var finalSet = workoutSet with { Reps = set.Repetitions, Weight = set.WeightLB.Value, Duration = set.Duration, RestTime = set.RestTime, Status = SetStatus.Completed };
             Props.UpdateSet(Schedule.Id, finalSet);
         }

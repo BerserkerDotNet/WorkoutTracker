@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using Azure.Identity;
 using Microsoft.Azure.Cosmos;
 using System;
 using System.Linq;
-using Azure.Identity;
+using System.Threading.Tasks;
 using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Functions
 {
-    public static class CosmosUtils 
+    public static class CosmosUtils
     {
         public static async Task<Container> GetContainer<T>()
             where T : EntityBase

@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{55A78DF5-240
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4A758A8A-EF2C-4E43-8855-5A2AD07D3CED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutTracker.Api", "WorkoutTracker.Api\WorkoutTracker.Api.csproj", "{08EBF0BF-13C7-4C41-94A1-749C8841CC19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{8C76A351-3871-40E8-9140-5DB524FEE5D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C76A351-3871-40E8-9140-5DB524FEE5D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C76A351-3871-40E8-9140-5DB524FEE5D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08EBF0BF-13C7-4C41-94A1-749C8841CC19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08EBF0BF-13C7-4C41-94A1-749C8841CC19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08EBF0BF-13C7-4C41-94A1-749C8841CC19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08EBF0BF-13C7-4C41-94A1-749C8841CC19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{73F0A755-B847-47CF-8E28-628652D32E95} = {55A78DF5-2401-45B7-A692-5655BBF3498F}
 		{423AE438-8528-41E0-AE96-774B6E68716F} = {55A78DF5-2401-45B7-A692-5655BBF3498F}
 		{8C76A351-3871-40E8-9140-5DB524FEE5D7} = {45DF4815-A952-4F0F-B3BF-07FCBCFE8CF8}
+		{08EBF0BF-13C7-4C41-94A1-749C8841CC19} = {55A78DF5-2401-45B7-A692-5655BBF3498F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4A0D70EA-4114-4414-A8D2-270B4663ACD3}
