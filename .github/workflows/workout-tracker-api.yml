@@ -2,7 +2,7 @@ name: Build and deploy .NET application to container app workout-tracker-api
 on:
   push:
     branches:
-    - main
+    - master
 env:
   CONTAINER_APP_CONTAINER_NAME: simple-hello-world-container
   CONTAINER_APP_NAME: workout-tracker-api
