@@ -28,7 +28,7 @@ jobs:
         username: ${{ secrets.berserkerdotnetcregistry_USERNAME_6A79 }}
         password: ${{ secrets.berserkerdotnetcregistry_PASSWORD_6A79 }}
     - name: Build and push container image to registry
-      run: dotnet publish WorkoutTracker.Api/WorkoutTracker.Api.csproj --os linux -c Release -r linux-x64 -p:PublishProfile=DefaultContainer -p:ContainerImageTag=${{ github.sha }} --no-self-contained -p:ContainerRegistry=${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }} -bl
+      run: dotnet publish WorkoutTracker.Api/WorkoutTracker.Api.csproj -c Release -r linux-x64 -p:PublishProfile=DefaultContainer -p:ContainerImageTag=${{ github.sha }} --no-self-contained -p:ContainerRegistry=${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }} -bl
     - name: Upload binlog for investigation
       uses: actions/upload-artifact@v3
       with:
