@@ -45,6 +45,8 @@ var app = builder.Build();
 app.UseCors(config =>
 {
     config.AllowAnyOrigin();
+    config.AllowAnyHeader();
+    config.AllowAnyMethod();
 });
 app.UseSwagger();
 app.UseSwaggerUI();
