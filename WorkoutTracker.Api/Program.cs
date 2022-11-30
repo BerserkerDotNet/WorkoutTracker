@@ -14,10 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediator();
+builder.Services.AddCors();
 
 var dbEndpoint = builder.Configuration.GetValue<string>("DbEndpoint");
 var cosmosClient = new CosmosClient(dbEndpoint, new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true }));
@@ -42,6 +42,7 @@ builder.Services.AddSingleton(containerClient);
 
 var app = builder.Build();
 
+app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 
