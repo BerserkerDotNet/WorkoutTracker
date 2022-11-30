@@ -25,9 +25,9 @@ public static class Routes
             .MapExerciseLogRoutes();
 
         group.MapGet("/GetPreviousWorkoutStatsByExercise/{id:guid}", async (IMediator mediator, Guid id) => await mediator.Send(new GetPreviousWorkoutStatsByExercise(id)));
-        group.MapPost("/ExerciseImage", async (IMediator mediator, IFormFileCollection files) =>
+        group.MapPost("/UploadImage", async (IMediator mediator, IFormFileCollection files) =>
         {
-            await mediator.Send(new UploadExerciseImage(files.First()));
+            await mediator.Send(new UploadImage(files.First()));
             return Results.NoContent();
         });
 

@@ -28,20 +28,20 @@ public sealed class DeleteLogByIdHandler : ICommandHandler<DeleteLogById>
     }
 }
 
-public sealed record UploadExerciseImage(IFormFile File) : ICommand;
+public sealed record UploadImage(IFormFile File) : ICommand;
 
-public sealed class UploadExerciseImageHandler : ICommandHandler<UploadExerciseImage>
+public sealed class UploadmageHandler : ICommandHandler<UploadImage>
 {
     private readonly BlobContainerClient _containerClient;
-    private readonly ILogger<UploadExerciseImageHandler> _logger;
+    private readonly ILogger<UploadmageHandler> _logger;
 
-    public UploadExerciseImageHandler(BlobContainerClient containerClient, ILogger<UploadExerciseImageHandler> logger)
+    public UploadmageHandler(BlobContainerClient containerClient, ILogger<UploadmageHandler> logger)
     {
         _containerClient = containerClient;
         _logger = logger;
     }
 
-    public async ValueTask<Unit> Handle(UploadExerciseImage command, CancellationToken cancellationToken)
+    public async ValueTask<Unit> Handle(UploadImage command, CancellationToken cancellationToken)
     {
         var file = command.File;
         _logger.LogInformation("Uploading {File} of size {FileSize} to blob", file.FileName, file.Length);
