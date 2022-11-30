@@ -20,16 +20,6 @@ public static class ServiceCollectionExtensions
         var trackerServicesConfig = WorkoutTrackerConfigurator.Default;
         configurator?.Invoke(trackerServicesConfig);
 
-        var httpBuilder = services.AddHttpClient("api", (services, cfg) =>
-        {
-            cfg.BaseAddress = new Uri(configuration["ApiEndpoint"]);
-        });
-
-        if (trackerServicesConfig.MessageHandler is object)
-        {
-            httpBuilder.ConfigurePrimaryHttpMessageHandler(() => trackerServicesConfig.MessageHandler);
-        }
-
         services.AddBlazorApplicationInsights(async applicationInsights =>
         {
             var telemetryItem = new TelemetryItem()
@@ -51,7 +41,21 @@ public static class ServiceCollectionExtensions
         services.AddScoped<PropsProvider>();
         services.AddScoped(typeof(ApplicationContext<>));
         services.AddScoped<WorkoutSetsService>();
-        services.AddScoped<IWorkoutRepository, CachedWorkoutRepository>();
+        services.AddScoped<AuthenticatedClientHandler>();
+
+        var httpClientBuilder = services.AddHttpClient<IWorkoutRepository, CachedWorkoutRepositoryDecorator>((client, sp) =>
+        {
+            client.BaseAddress = new Uri(configuration["ApiEndpoint"]);
+            var apiRepo = new ApiRepositoryClient(client, sp.GetRequiredService<ApplicationContext<ApiRepositoryClient>>());
+            return new CachedWorkoutRepositoryDecorator(apiRepo, sp.GetRequiredService<ICacheService>(), sp.GetRequiredService<ApplicationContext<CachedWorkoutRepositoryDecorator>>());
+        })
+        .AddHttpMessageHandler<AuthenticatedClientHandler>();
+
+        if (trackerServicesConfig.MessageHandler is object)
+        {
+            httpClientBuilder.ConfigurePrimaryHttpMessageHandler(() => trackerServicesConfig.MessageHandler);
+        }
+
         services.AddScoped(typeof(ICacheService), trackerServicesConfig.CacheService);
         services.AddScoped(typeof(INotificationService), trackerServicesConfig.NotificationService);
         services.AddScoped(typeof(IConfigurationService), trackerServicesConfig.ConfigurationService);
@@ -132,7 +136,7 @@ public class WorkoutTrackerConfigurator
     }
 
     public static WorkoutTrackerConfigurator Default => new WorkoutTrackerConfigurator()
-        .WithCacheService<InMemoryCacheService>()
+        .WithCacheService<NullCacheService>()
         .WithNotificationService<MudNotificationService>()
         .WithConfigurationService<NullConfigurationService>()
         .WithAuthenticationRedirectUrl("https://localhost:7210");

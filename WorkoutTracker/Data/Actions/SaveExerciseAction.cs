@@ -15,6 +15,12 @@ public class SaveExerciseAction : TrackableAction<EditExerciseViewModel>
         trackableProperties.Add(nameof(exercise.Id), exercise.Id.ToString());
         trackableProperties.Add(nameof(exercise.Name), exercise.Name);
 
+        var isImageUploaded = await _repository.UploadImage(exercise.ImageFile, exercise.ImagePath);
+        if (!isImageUploaded)
+        {
+            throw new Exception("Not able to upload image. Aborting muscle update");
+        }
+
         await _repository.UpdateExercise(exercise);
         await dispatcher.Dispatch<ReFetchExercisesAction>();
         Context.ShowToast("Exercise updated.");

@@ -26,7 +26,7 @@
 		if (result.HasValue && result.Value)
 		{
 			var newSets = Props.LogRecord.Sets.Where(s => s != set).ToArray();
-			Props.LogRecord = Props.LogRecord with { Sets = newSets };
+			Props.LogRecord.Sets = newSets;
 			await Props.Save(Props.LogRecord);
 		}
 	}

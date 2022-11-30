@@ -1,77 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WorkoutTracker.ViewModels;
 
-namespace WorkoutTracker.MAUI.Android
+namespace WorkoutTracker.MAUI.Android;
+
+public class AndroidCacheService : ICacheService
 {
-    public class AndroidCacheService : ICacheService
+    public async ValueTask<T> GetAsync<T>(string key) where T : class
     {
-        private IEnumerable<ExerciseViewModel> _exercisesInMemoryCache;
-        private string exercisesFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "exercises.json");
-        private string summaryFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "workoutSummaries.json");
+        var json = await File.ReadAllTextAsync(GetFilePath(key));
+        return JsonSerializer.Deserialize<T>(json);
+    }
 
-        public async Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
+    public async ValueTask SetAsync<T>(string key, T entry) where T : class
+    {
+        using (var writer = File.CreateText(GetFilePath(key)))
         {
-            using (var writer = File.CreateText(exercisesFile))
-            {
-                var json = JsonSerializer.Serialize(exercises);
-                await writer.WriteLineAsync(json);
-            }
-        }
-
-        public async Task<IEnumerable<ExerciseViewModel>> GetExercises()
-        {
-            if (_exercisesInMemoryCache is object)
-            {
-                return _exercisesInMemoryCache;
-            }
-
-            var json = await File.ReadAllTextAsync(exercisesFile);
-            _exercisesInMemoryCache = JsonSerializer.Deserialize<IEnumerable<ExerciseViewModel>>(json);
-
-            return _exercisesInMemoryCache;
-        }
-
-        public Task ResetExercisesCache()
-        {
-            File.Delete(exercisesFile);
-
-            return Task.CompletedTask;
-        }
-
-        public Task<bool> IsExercisesCached()
-        {
-            return Task.FromResult(File.Exists(exercisesFile));
-        }
-
-        public Task<bool> IsSummariesCached()
-        {
-            return Task.FromResult(File.Exists(summaryFile));
-        }
-
-        public async Task<IEnumerable<WorkoutSummary>> GetSummaries()
-        {
-            var json = await File.ReadAllTextAsync(summaryFile);
-            return JsonSerializer.Deserialize<IEnumerable<WorkoutSummary>>(json);
-        }
-
-        public async Task SaveSummaries(IEnumerable<WorkoutSummary> summaries)
-        {
-            using (var writer = File.CreateText(summaryFile))
-            {
-                var json = JsonSerializer.Serialize(summaries);
-                await writer.WriteLineAsync(json);
-            }
-        }
-
-        public Task ResetSummariesCache()
-        {
-            File.Delete(summaryFile);
-
-            return Task.CompletedTask;
+            var json = JsonSerializer.Serialize(entry);
+            await writer.WriteAsync(json);
         }
     }
+
+    public ValueTask RemoveAsync(string key)
+    {
+        File.Delete(GetFilePath(key));
+        return ValueTask.CompletedTask;
+    }
+
+    public ValueTask<bool> HasKey(string key)
+    {
+        return ValueTask.FromResult(File.Exists(GetFilePath(key)));
+    }
+
+    private string GetFilePath(string key) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), $"{key}.json");
 }

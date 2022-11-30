@@ -2,30 +2,17 @@
 
 namespace WorkoutTracker;
 
-public interface ICacheService : IExercisesCache, IWorkoutSummariesCache
+public interface ICacheService
 {
-}
+    ValueTask<T> GetAsync<T>(string key)
+        where T : class;
 
-public interface IExercisesCache
-{
-    Task<bool> IsExercisesCached();
+    ValueTask SetAsync<T>(string key, T entry)
+        where T : class;
 
-    Task<IEnumerable<ExerciseViewModel>> GetExercises();
+    ValueTask RemoveAsync(string key);
 
-    Task SaveExercises(IEnumerable<ExerciseViewModel> exercises);
-
-    Task ResetExercisesCache();
-}
-
-public interface IWorkoutSummariesCache
-{
-    Task<bool> IsSummariesCached();
-
-    Task<IEnumerable<WorkoutSummary>> GetSummaries();
-
-    Task SaveSummaries(IEnumerable<WorkoutSummary> summaries);
-
-    Task ResetSummariesCache();
+    ValueTask<bool> HasKey(string key);
 }
 
 public interface ISetsProvider

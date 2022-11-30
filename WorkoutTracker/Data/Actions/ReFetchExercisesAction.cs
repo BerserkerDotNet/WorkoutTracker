@@ -12,7 +12,6 @@ public class ReFetchExercisesAction : TrackableAction
 
     protected override async Task Execute(IDispatcher dispatcher, Dictionary<string, string> trackableProperties)
     {
-        await _cacheService.ResetExercisesCache();
         await dispatcher.Dispatch<FetchExercisesAction>();
     }
 }

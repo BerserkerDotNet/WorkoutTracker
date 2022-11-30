@@ -22,11 +22,11 @@ builder.Services.AddMsalAuthentication(options =>
     var configuration = builder.Configuration;
 
     var authentication = options.ProviderOptions.Authentication;
-    authentication.Authority = "https://login.microsoftonline.com/common";
+    authentication.Authority = "https://login.microsoftonline.com/563fec59-dcd7-47a5-a09a-6d44ab624093";
 
     authentication.ClientId = configuration["clientId"];
     authentication.PostLogoutRedirectUri = "https://localhost:7210";
-    options.ProviderOptions.DefaultAccessTokenScopes.Add($"{authentication.ClientId}/user_impersonation");
+    options.ProviderOptions.DefaultAccessTokenScopes.Add($"{authentication.ClientId}/access_as_user");
 });
 
 await builder.Build().RunAsync();

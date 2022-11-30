@@ -82,27 +82,14 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
         return MapLog(exerciseLog, exercisesDictionary);
     }
 
-    public virtual async Task UpdateExercise(EditExerciseViewModel exercise)
+    public virtual async Task UpdateExercise(ExerciseViewModel exercise)
     {
-        var isImageUploaded = await UploadImage(exercise.ImageFile, exercise.ImagePath);
-        if (!isImageUploaded)
-        {
-            throw new Exception("Not able to upload image. Aborting exercise update");
-        }
-
         var exerciseDto = exercise.Adapt<Exercise>();
-
         await Create(exerciseDto, EndpointNames.ExercisePluralName); // Works by upserting the record
     }
 
-    public async Task UpdateMuscle(MuscleViewModel muscle, IBrowserFile imageFile)
+    public async Task UpdateMuscle(MuscleViewModel muscle)
     {
-        var isImageUploaded = await UploadImage(imageFile, muscle.ImagePath);
-        if (!isImageUploaded)
-        {
-            throw new Exception("Not able to upload image. Aborting muscle update");
-        }
-
         var muscleDto = muscle.Adapt<Muscle>();
         await Create(muscleDto, EndpointNames.MusclePluralName); // Works by upserting the record
     }
@@ -205,7 +192,7 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
         }
     }
 
-    private async Task<bool> UploadImage(IBrowserFile file, string imagePath)
+    public async Task<bool> UploadImage(IBrowserFile file, string imagePath)
     {
         if (file is null)
         {
@@ -286,6 +273,12 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
             return null;
         }
 
-        return new LogEntryViewModel(logEntry.Id, exercisesDictionary[logEntry.ExerciseId], logEntry.Date, logEntry.Sets);
+        return new LogEntryViewModel
+        {
+            Id = logEntry.Id,
+            Exercise = exercisesDictionary[logEntry.ExerciseId],
+            Date = logEntry.Date,
+            Sets = logEntry.Sets
+        };
     }
 }

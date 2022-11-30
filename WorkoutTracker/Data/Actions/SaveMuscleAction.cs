@@ -19,8 +19,14 @@ public class SaveMuscleAction : TrackableAction<SaveMuscleModel>
         var model = viewModel.Model;
         trackableProperties.Add(nameof(model.Id), model.Id.ToString());
         trackableProperties.Add(nameof(model.Name), model.Name);
-        
-        await _repository.UpdateMuscle(model, viewModel.ImageFile);
+
+        var isImageUploaded = await _repository.UploadImage(viewModel.ImageFile, model.ImagePath);
+        if (!isImageUploaded)
+        {
+            throw new Exception("Not able to upload image. Aborting muscle update");
+        }
+
+        await _repository.UpdateMuscle(model);
         await dispatcher.Dispatch<FetchMusclesAction>();
         Context.ShowToast("Muscle updated.");
     }

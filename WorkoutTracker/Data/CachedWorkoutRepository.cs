@@ -1,70 +1,104 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 
 namespace WorkoutTracker.Data;
 
-public class CachedWorkoutRepository : CosmosDbWorkoutRepository // Inheritance because internally Cosmos repo needs cached exercises
+public class CachedWorkoutRepositoryDecorator : IWorkoutRepository
 {
-    private readonly ICacheService _cacheService;
-    private readonly Dictionary<string, IEnumerable<LogEntryViewModel>> _logsCache = new Dictionary<string, IEnumerable<LogEntryViewModel>>();
+    const string ExercisesKey = "exercises";
+    const string MusclesKey = "muscles";
+    const string WorkoutSummariesKey = "WorkoutSummaries";
+    const string WorkoutLogKey = "WorkoutLog";
 
-    public CachedWorkoutRepository(IHttpClientFactory clientFactory, ICacheService cacheService, IAccessTokenProvider accessTokenProvider, ApplicationContext<IWorkoutRepository> context)
-        : base(clientFactory, accessTokenProvider, context)
+    private readonly IWorkoutRepository _decoratedRepository;
+    private readonly ICacheService _cacheService;
+    private readonly ApplicationContext<CachedWorkoutRepositoryDecorator> _context;
+
+    public CachedWorkoutRepositoryDecorator(IWorkoutRepository decoratedRepository, ICacheService cacheService, ApplicationContext<CachedWorkoutRepositoryDecorator> context)
     {
+        _decoratedRepository = decoratedRepository;
         _cacheService = cacheService;
+        _context = context;
     }
 
-    public override async Task<IEnumerable<ExerciseViewModel>> GetExercises()
+    public async Task<IEnumerable<ExerciseViewModel>> GetExercises()
     {
-        if (await _cacheService.IsExercisesCached())
+        if (await _cacheService.HasKey(ExercisesKey))
         {
-            Context.LogInformation("Cache hit, returning cached exercises.");
-            return await _cacheService.GetExercises();
+            return await _cacheService.GetAsync<IEnumerable<ExerciseViewModel>>(ExercisesKey);
         }
 
-        Context.LogWarning("Cache miss, fetching exercises from server.");
-        var exercises = await base.GetExercises();
-        await _cacheService.SaveExercises(exercises);
+        _context.LogInformation($"Cache miss for {nameof(GetExercises)}");
+        var exercises = await _decoratedRepository.GetExercises();
+        await _cacheService.SetAsync(ExercisesKey, exercises);
 
         return exercises;
     }
 
-    public override async Task<IEnumerable<WorkoutSummary>> GetWorkoutSummaries(DateTime from, DateTime to)
+    public async Task<IEnumerable<MuscleViewModel>> GetMuscles()
     {
-        var isCached = await _cacheService.IsSummariesCached();
+        if (await _cacheService.HasKey(MusclesKey))
+        {
+            return await _cacheService.GetAsync<IEnumerable<MuscleViewModel>>(MusclesKey);
+        }
+
+        _context.LogInformation($"Cache miss for {nameof(GetMuscles)}");
+        var muscles = await _decoratedRepository.GetMuscles();
+        await _cacheService.SetAsync(MusclesKey, muscles);
+
+        return muscles;
+    }
+
+    public async Task<IEnumerable<WorkoutSummary>> GetWorkoutSummaries(DateTime from, DateTime to)
+    {
+        var isCached = await _cacheService.HasKey(WorkoutSummariesKey);
         var summaries = Enumerable.Empty<WorkoutSummary>();
         if (isCached)
         {
-            summaries = await _cacheService.GetSummaries();
+            summaries = await _cacheService.GetAsync<IEnumerable<WorkoutSummary>>(WorkoutSummariesKey);
             from = summaries.MaxBy(s => s.Date).Date.Date.AddDays(1); // TODO: Store date with summaries
         }
 
-        var newSummaries = await base.GetWorkoutSummaries(from, to);
+        var newSummaries = await _decoratedRepository.GetWorkoutSummaries(from, to);
 
         summaries = summaries.Union(newSummaries).ToArray();
-        await _cacheService.SaveSummaries(summaries);
+        await _cacheService.SetAsync(WorkoutSummariesKey, summaries);
 
         return summaries;
     }
 
-    public override async Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date)
+    public async Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime date)
     {
-        var key = date.ToString("O");
-        if (_logsCache.ContainsKey(key))
+        var isCached = await _cacheService.HasKey(WorkoutLogKey);
+        var logCache = isCached ? await _cacheService.GetAsync<Dictionary<DateTime, IEnumerable<LogEntryViewModel>>>(WorkoutLogKey) : new Dictionary<DateTime, IEnumerable<LogEntryViewModel>>();
+
+        if (logCache.ContainsKey(date))
         {
-            return _logsCache[key];
+            return logCache[date];
         }
 
-        var logs = await base.GetLogs(date);
-        _logsCache[key] = logs;
+        _context.LogInformation($"Cache miss for {nameof(GetLogs)}");
+        var logs = await _decoratedRepository.GetLogs(date);
+        logCache[date] = logs;
+
+        await _cacheService.SetAsync(WorkoutLogKey, logCache);
 
         return logs;
     }
 
-    public override Task AddLogRecord(LogEntryViewModel model)
-    {
-        var key = model.Date.ToString("O");
-        _logsCache.Remove(key);
-        return base.AddLogRecord(model);
-    }
+    public Task AddLogRecord(LogEntryViewModel model) => _decoratedRepository.AddLogRecord(model);
+
+    public Task DeleteExercise(Guid id) => _decoratedRepository.DeleteExercise(id);
+
+    public Task DeleteLog(Guid id) => _decoratedRepository.DeleteLog(id);
+
+    public Task<IEnumerable<LogEntryViewModel>> GetLogs(DateTime from, DateTime to) => _decoratedRepository.GetLogs(from, to);
+
+    public Task<LogEntryViewModel> GetPreviousWorkoutStatsBy(Guid exerciseId) => _decoratedRepository.GetPreviousWorkoutStatsBy(exerciseId);
+
+    public Task UpdateExercise(ExerciseViewModel exercise) => _decoratedRepository.UpdateExercise(exercise);
+
+    public Task UpdateMuscle(MuscleViewModel muscle) => _decoratedRepository.UpdateMuscle(muscle);
+
+    public Task<bool> UploadImage(IBrowserFile file, string imagePath) => _decoratedRepository.UploadImage(file, imagePath);
 }

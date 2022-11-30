@@ -1,12 +1,9 @@
 ﻿using BlazorStorage.Interfaces;
-using WorkoutTracker.ViewModels;
 
 namespace WorkoutTracker.Web;
 
 public class LocalStorageCacheService : ICacheService
 {
-    private const string ExercisesKey = "WT_EXERCISES";
-    private const string SummariesKey = "WT_SUMMARIES";
     private readonly ILocalStorage _storage;
 
     public LocalStorageCacheService(ILocalStorage storage)
@@ -14,45 +11,24 @@ public class LocalStorageCacheService : ICacheService
         _storage = storage;
     }
 
-    public async Task<IEnumerable<ExerciseViewModel>> GetExercises()
+    public ValueTask<T> GetAsync<T>(string key) where T : class
     {
-        return await _storage.GetItem<IEnumerable<ExerciseViewModel>>(ExercisesKey);
+        return _storage.GetItem<T>(key);
     }
 
-    public async Task ResetExercisesCache()
+    public async ValueTask<bool> HasKey(string key)
     {
-        await _storage.RemoveItem(ExercisesKey);
+        var result = await _storage.GetItem<object>(key);
+        return result is not null;
     }
 
-    public async Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
+    public ValueTask RemoveAsync(string key)
     {
-        await _storage.SetItem(ExercisesKey, exercises);
+        return _storage.RemoveItem(key);
     }
 
-    public async Task<bool> IsExercisesCached()
+    public ValueTask SetAsync<T>(string key, T entry) where T : class
     {
-        var exercises = await GetExercises();
-        return exercises is object;
-    }
-
-    public async Task ResetSummariesCache()
-    {
-        await _storage.RemoveItem(SummariesKey);
-    }
-
-    public async Task SaveSummaries(IEnumerable<WorkoutSummary> summaries)
-    {
-        await _storage.SetItem(SummariesKey, summaries);
-    }
-
-    public async Task<IEnumerable<WorkoutSummary>> GetSummaries()
-    {
-        return await _storage.GetItem<IEnumerable<WorkoutSummary>>(SummariesKey);
-    }
-
-    public async Task<bool> IsSummariesCached()
-    {
-        var exercises = await GetSummaries();
-        return exercises is object;
+        return _storage.SetItem<T>(key, entry);
     }
 }

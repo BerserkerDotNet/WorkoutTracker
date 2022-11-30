@@ -1,61 +1,24 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+﻿namespace WorkoutTracker.Data.Services;
 
-namespace WorkoutTracker.Data.Services
+public class NullCacheService : ICacheService
 {
-    public class InMemoryCacheService : ICacheService
+    public ValueTask<T> GetAsync<T>(string key) where T : class
     {
-        private IEnumerable<ExerciseViewModel> _exercisesInMemoryCache;
-        private IEnumerable<WorkoutSummary> _summariesInMemoryCache;
+        return ValueTask.FromResult<T>(default);
+    }
 
-        public Task SaveExercises(IEnumerable<ExerciseViewModel> exercises)
-        {
-            _exercisesInMemoryCache = exercises;
+    public ValueTask<bool> HasKey(string key)
+    {
+        return ValueTask.FromResult(false);
+    }
 
-            return Task.CompletedTask;
-        }
+    public ValueTask RemoveAsync(string key)
+    {
+        return ValueTask.CompletedTask;
+    }
 
-        public Task<IEnumerable<ExerciseViewModel>> GetExercises()
-        {
-            if (_exercisesInMemoryCache is object)
-            {
-                return Task.FromResult(_exercisesInMemoryCache);
-            }
-
-            return Task.FromResult(Enumerable.Empty<ExerciseViewModel>());
-        }
-
-        public Task ResetExercisesCache()
-        {
-            _exercisesInMemoryCache = null;
-
-            return Task.CompletedTask;
-        }
-
-        public Task<bool> IsExercisesCached()
-        {
-            return Task.FromResult(_exercisesInMemoryCache is object);
-        }
-
-        public Task<bool> IsSummariesCached()
-        {
-            return Task.FromResult(_summariesInMemoryCache is object);
-        }
-
-        public Task<IEnumerable<WorkoutSummary>> GetSummaries()
-        {
-            return Task.FromResult(_summariesInMemoryCache);
-        }
-
-        public Task SaveSummaries(IEnumerable<WorkoutSummary> summaries)
-        {
-            _summariesInMemoryCache = summaries;
-            return Task.CompletedTask;
-        }
-
-        public Task ResetSummariesCache()
-        {
-            _summariesInMemoryCache = null;
-            return Task.CompletedTask;
-        }
+    public ValueTask SetAsync<T>(string key, T entry) where T : class
+    {
+        return ValueTask.CompletedTask;
     }
 }

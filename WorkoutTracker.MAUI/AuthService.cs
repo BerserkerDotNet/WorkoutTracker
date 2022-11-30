@@ -15,7 +15,7 @@ public class AuthService : AuthenticationStateProvider, IRemoteAuthenticationSer
     private readonly IPublicClientApplication _authenticationClient;
     private RemoteAuthenticationStatus? _lastStatus;
     private AuthenticationState _currentAuthState;
-    private string[] _scopes = new[] { "openid", "offline_access" };
+    private string[] _scopes = new[] { "234eb3af-aa5d-45ad-a950-c69d7f3e0c8d/access_as_user" };
 
     public AuthService(IConfiguration config)
     {
@@ -24,6 +24,7 @@ public class AuthService : AuthenticationStateProvider, IRemoteAuthenticationSer
         _currentAuthState = new AuthenticationState(principal);
 
         _authenticationClient = PublicClientApplicationBuilder.Create(config["clientId"])
+            .WithAuthority("https://login.microsoftonline.com/563fec59-dcd7-47a5-a09a-6d44ab624093/")
             .WithRedirectUri(config["redirectUrl"])
             .WithParentActivityOrWindow(() => Platform.CurrentActivity)
             .Build();
@@ -102,7 +103,7 @@ public class AuthService : AuthenticationStateProvider, IRemoteAuthenticationSer
             .AcquireTokenSilent(_scopes, accounts.First())
             .ExecuteAsync()
             .ConfigureAwait(false);
-        var token = new AccessToken { Value = result.IdToken, Expires = result.ExpiresOn, GrantedScopes = result.Scopes.ToList() };
+        var token = new AccessToken { Value = result.AccessToken, Expires = result.ExpiresOn, GrantedScopes = result.Scopes.ToList() };
         return new AccessTokenResult(AccessTokenResultStatus.Success, token, "/");
     }
 
