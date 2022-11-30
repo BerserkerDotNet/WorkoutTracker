@@ -42,7 +42,10 @@ builder.Services.AddSingleton(containerClient);
 
 var app = builder.Build();
 
-app.UseCors();
+app.UseCors(config =>
+{
+    config.AllowAnyOrigin();
+});
 app.UseSwagger();
 app.UseSwaggerUI();
 
