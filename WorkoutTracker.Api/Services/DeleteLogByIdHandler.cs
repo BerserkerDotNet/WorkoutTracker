@@ -28,6 +28,26 @@ public sealed class DeleteLogByIdHandler : ICommandHandler<DeleteLogById>
     }
 }
 
+public sealed record DeleteWorkoutProgramById(Guid Id) : ICommand;
+
+public sealed class DeleteWorkoutProgramByIdHandler : ICommandHandler<DeleteWorkoutProgramById>
+{
+    private readonly WorkoutProgramsContainer _container;
+    private readonly ILogger<DeleteWorkoutProgramByIdHandler> _logger;
+
+    public DeleteWorkoutProgramByIdHandler(WorkoutProgramsContainer container, ILogger<DeleteWorkoutProgramByIdHandler> logger)
+    {
+        _container = container;
+        _logger = logger;
+    }
+
+    public async ValueTask<Unit> Handle(DeleteWorkoutProgramById command, CancellationToken cancellationToken)
+    {
+        await _container.DeleteEntity<WorkoutProgram>(command.Id, _logger);
+        return Unit.Value;
+    }
+}
+
 public sealed record UploadImage(IFormFile File) : ICommand;
 
 public sealed class UploadmageHandler : ICommandHandler<UploadImage>

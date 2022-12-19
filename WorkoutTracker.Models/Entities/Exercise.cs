@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
+using WorkoutTracker.Models.Contracts;
 
 namespace WorkoutTracker.Models.Entities;
 
@@ -21,28 +24,77 @@ public class Exercise : EntityBase
     public string[] Tags { get; set; }
 }
 
-[PluralName("WorkoutSchedule")]
-public class WorkoutSchedule : EntityBase
+[PluralName(EndpointNames.WorkoutProgramPluralName)]
+public class WorkoutProgram : EntityBase
 {
+    public required string Name { get; set; }
+
+    public required Schedule Schedule { get; set; }
 }
 
-[PluralName("WorkoutProfiles")]
-public class WorkoutProfile : EntityBase
+public class Schedule
 {
-    public string Name { get; set; }
+    public required WorkoutDefinition Monday { get; set; }
 
-    public IEnumerable<WorkoutExerciseDecriptor> ExerciseDecriptors { get; set; }
+    public required WorkoutDefinition Tuesday { get; set; }
+
+    public required WorkoutDefinition Wednesday { get; set; }
+
+    public required WorkoutDefinition Thursday { get; set; }
+
+    public required WorkoutDefinition Friday { get; set; }
+
+    public required WorkoutDefinition Saturday { get; set; }
+
+    public required WorkoutDefinition Sunday { get; set; }
 }
 
-public class WorkoutExerciseDecriptor
+public class WorkoutDefinition
 {
-    public string ExerciseSelectorType { get; set; }
+    public required string Name { get; set; }
 
-    public Dictionary<string, object> ExerciseSelectorParameters { get; set; }
+    public IList<ExerciseDefinition> Exercises { get; set; }
 
-    public string SetsProviderType { get; set; }
+    public static WorkoutDefinition Rest => new WorkoutDefinition() { Name = "Rest", Exercises = Enumerable.Empty<ExerciseDefinition>().ToList() };
+}
 
-    public TimeSpan DefaultRestTime { get; set; }
+public class ExerciseDefinition
+{
+    public IExerciseSelector ExerciseSelector { get; set; }
 
-    public TimeSpan DefaultSetsCount { get; set; }
+    public required IProgressiveOverloadFactor OverloadFactor { get; set; }
+
+    public required int NumberOfSets { get; set; }
+
+    public required int NumberOfReps { get; set; }
+}
+
+[JsonDerivedType(typeof(OneRepMaxProgressiveOverloadFactor), nameof(OneRepMaxProgressiveOverloadFactor))]
+public interface IProgressiveOverloadFactor
+{
+    string GetDisplayText();
+}
+
+public record class OneRepMaxProgressiveOverloadFactor(int Percentage) : IProgressiveOverloadFactor
+{
+    public string GetDisplayText() => $"{Percentage}% of 1RM";
+}
+
+public record class PowerLadderOverloadFactor(int StepIncrement, int Overload, int WarmupSets, int WorkingSets, int TargetReps) : IProgressiveOverloadFactor
+{
+    public string GetDisplayText() => $"Ladder of {StepIncrement}LB with {Overload}LB bump";
+}
+
+public enum ProgressiveOverloadType
+{
+    PowerLadder,
+    OneRepMaxPercentage
+}
+
+public enum ExerciseSelectorType
+{
+    SpecificExercise,
+    ExerciseGroup,
+    SpecificMuscle,
+    MuscleGroup
 }

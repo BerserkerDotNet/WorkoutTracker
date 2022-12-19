@@ -18,4 +18,4 @@ public class RootState
     public WorkoutDataState Data { get; set; }
 }
 
-public record WorkoutDataState(IEnumerable<Exercise> Exercises, IEnumerable<Muscle> Muscles);
+public record WorkoutDataState(IEnumerable<WorkoutProgram> WorkoutPrograms);

@@ -1,44 +1,97 @@
-﻿@page "/schedule"
+﻿@page "/programs"
+@using Microsoft.AspNetCore.Components.Rendering;
+@inherits ComponentWithProps<ProgramsEditorProps>
+
+@inject IDialogService Dialog
+@inject IStore<RootState> Store
 @attribute [Authorize]
 
 <Header Title="Schedule">
-    <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Info">Manage profiles</MudButton>
+    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" Variant="Variant.Filled" Color="Color.Success" OnClick="AddNewProgram">New Program</MudButton>
 </Header>
 
-@foreach (var profile in profiles)
+@if (Props is null)
+{
+    return;
+}
+
+@foreach (var program in Props.AllPrograms)
 {
     <MudCard>
         <MudCardContent>
-            <MudText Typo="Typo.h5">@profile.Name</MudText>
-            @foreach (var descriptor in profile.ExerciseDecriptors)
-            {
-                <MudText Typo="Typo.body2">@descriptor.ExerciseSelectorType (@descriptor.ExerciseSelectorParameters["GroupName"] )</MudText>
-            }
+            <MudText Typo="Typo.h5">@program.Name</MudText>
+            <ul>
+                
+                <li>
+                    Monday: @program.Schedule.Monday.Name
+                </li>
+                <li>Tuesday: @program.Schedule.Tuesday.Name</li>
+                    <li>Wednesday: @program.Schedule.Wednesday.Name</li>
+                    <li>Thursday: @program.Schedule.Thursday.Name  </li>
+                    <li>Friday: @program.Schedule.Friday.Name      </li>
+                    <li>Saturday: @program.Schedule.Saturday.Name  </li>
+                    <li>Sunday: @program.Schedule.Sunday.Name      </li>
+                
+            </ul>
         </MudCardContent>
         <MudCardActions>
-            <MudButton Variant="Variant.Text" Color="Color.Primary">Change</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="() => EditProgram(program)">Change</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="() => EditProgram(program)">Set as Current</MudButton>
             <MudButton Variant="Variant.Text" Color="Color.Error">Delete</MudButton>
         </MudCardActions>
     </MudCard>
 }
 
-
 @code {
-    private IEnumerable<WorkoutProfile> profiles = new[]
-    {
-        new WorkoutProfile { Id = Guid.NewGuid(), Name = "Back and Biceps", ExerciseDecriptors = new WorkoutExerciseDecriptor[]
-        {
-            new WorkoutExerciseDecriptor() {  ExerciseSelectorType = typeof(MuscleGroupExerciseSelector).FullName,
-                    ExerciseSelectorParameters = new Dictionary<string, object> { { "GroupName", "Back" } }
-           },
-          new WorkoutExerciseDecriptor() {  ExerciseSelectorType = typeof(MuscleGroupExerciseSelector).FullName,
-                    ExerciseSelectorParameters = new Dictionary<string, object> { { "GroupName", "Back" } }
-        },
-        new WorkoutExerciseDecriptor() {  ExerciseSelectorType = typeof(MuscleGroupExerciseSelector).FullName,
-                    ExerciseSelectorParameters = new Dictionary<string, object> { { "GroupName", "Biceps" } }
-           }
-        }
-        }
-    };
 
+    private async Task AddNewProgram()
+    {
+        var program = new WorkoutProgram
+            {
+                Id = Guid.NewGuid(),
+                Name = "Rest all week",
+                Schedule = new Schedule
+                {
+                    Monday = WorkoutDefinition.Rest,
+                    Tuesday = WorkoutDefinition.Rest,
+                    Wednesday = WorkoutDefinition.Rest,
+                    Thursday = WorkoutDefinition.Rest,
+                    Friday = WorkoutDefinition.Rest,
+                    Saturday = WorkoutDefinition.Rest,
+                    Sunday = WorkoutDefinition.Rest,
+                }
+            };
+
+        await EditProgram(program);
+    }
+
+    private async Task EditProgram(WorkoutProgram program)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(EditProgramForm.Program), program);
+        var options = new DialogOptions { FullScreen = true };
+        var dialog = Dialog.Show<EditProgramForm>("Edit Program", parameters, options);
+        var dialogResult = await dialog.Result;
+
+        if (dialogResult.Cancelled)
+        {
+            return;
+        }
+
+        await Props.SaveProgram(program);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = Store.State;
+        if (state.Exercises is null || !state.Exercises.List.Any())
+        {
+            await Store.Dispatch<FetchExercisesAction>();
+        }
+
+        if (state.Data?.WorkoutPrograms is null)
+        {
+            await Store.Dispatch<FetchWorkoutProgramAction>();
+        }
+    }
 }

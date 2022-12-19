@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 using WorkoutTracker.Data.Actions;
 using WorkoutTracker.Data.Selectors;
 using WorkoutTracker.Models.Contracts;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker;
 
@@ -54,6 +55,8 @@ public class PropsProvider : ComponentBase, IDisposable
         where TProps : class
     {
         var key = typeof(TProps);
+
+        Console.WriteLine($"Getting props of type: {key}");
 
         if (_mappedProps.ContainsKey(key))
         {
@@ -120,6 +123,8 @@ public class PropsConfigurations : IPropsConfig
         context.Register(ExerciseSchedulePanelProps);
         context.Register(ExerciseActionBarProps);
         context.Register(ExerciseSetsProps);
+        context.Register(ExerciseSelectorEditorProps);
+        context.Register(ProgramsEditorProps);
     }
 
     public ExerciseScheduleProps ExerciseScheduleProps(RootState state, IDispatcher dispatcher)
@@ -167,6 +172,18 @@ public class PropsConfigurations : IPropsConfig
         Action<Guid, WorkoutExerciseSetViewModel> updateSet = (id, set) => Callback(() => dispatcher.Dispatch(new UpdateSet(id, set)))();
 
         return new ExerciseSetsProps(todayLogByExercise, startSet, finishSet, updateSet, save);
+    }
+
+    public ExerciseSelectorEditorProps ExerciseSelectorEditorProps(RootState state, IDispatcher dispatcher) => new ExerciseSelectorEditorProps(state.SelectExercises());
+
+    public ProgramsEditorProps ProgramsEditorProps(RootState state, IDispatcher dispatcher)
+    {
+        var saveProgram = CallbackAsync<WorkoutProgram>(dispatcher.Dispatch<UpsertWorkoutProgramAction, WorkoutProgram>);
+
+        var programs = state.SelectPrograms();
+        var props = new ProgramsEditorProps(programs, saveProgram);
+
+        return props;
     }
 
     protected Action Callback(Action callback)

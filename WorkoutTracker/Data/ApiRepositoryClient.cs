@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using UnitsNet;
 using WorkoutTracker.Exceptions;
 using WorkoutTracker.Models.Entities;
@@ -43,6 +43,21 @@ public class ApiRepositoryClient : IWorkoutRepository
     public Task UpdateMuscle(MuscleViewModel muscle)
     {
         return Create(muscle, EndpointNames.MusclePluralName);
+    }
+
+    public Task UpdateProgram(WorkoutProgram program)
+    {
+        return Create(program, "workoutprograms");
+    }
+
+    public Task<IEnumerable<WorkoutProgram>> GetWorkoutPrograms()
+    {
+        return GetMultiple<WorkoutProgram>("workoutprograms");
+    }
+
+    public Task DeleteWorkoutProgram(Guid id)
+    {
+        return Delete(id, "workoutprograms");
     }
 
     public Task<IEnumerable<ExerciseViewModel>> GetExercises()
@@ -141,7 +156,7 @@ public class ApiRepositoryClient : IWorkoutRepository
         }
 
         var content = await response.Content.ReadAsStringAsync();
-        return JsonConvert.DeserializeObject<IEnumerable<T>>(content);
+        return JsonSerializer.Deserialize<IEnumerable<T>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
     private async Task<T> Get<T>(string endpoint)
@@ -160,7 +175,7 @@ public class ApiRepositoryClient : IWorkoutRepository
         }
 
         var content = await response.Content.ReadAsStringAsync();
-        return JsonConvert.DeserializeObject<T>(content);
+        return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
     private async Task Delete(Guid id, string endpoint)
@@ -176,7 +191,7 @@ public class ApiRepositoryClient : IWorkoutRepository
 
     private async Task<T> Create<T>(T entity, string endpoint)
     {
-        var content = JsonConvert.SerializeObject(entity);
+        var content = JsonSerializer.Serialize(entity, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         var response = await _client.PostAsync(endpoint, new StringContent(content, System.Text.Encoding.UTF8, "application/json"));
         if (!response.IsSuccessStatusCode)
         {

@@ -63,6 +63,7 @@ public static class ServiceCollectionExtensions
         {
             cfg.RegisterActionsFromAssemblyContaining<FetchExercisesAction>();
             cfg.Map<ExercisesReducer, ExercisesState>(s => s.Exercises);
+            cfg.Map<WorkoutDataReducer, WorkoutDataState>(s => s.Data);
             cfg.Map<ExerciseScheduleReducer, ExerciseScheduleState>(s => s.ExerciseSchedule);
             cfg.Map<LogEntriesReducer, LogEntriesState>(s => s.ExerciseLogs);
             cfg.Map<UIReducer, UIState>(s => s.UI);

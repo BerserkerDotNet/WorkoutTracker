@@ -3,15 +3,15 @@
 <MudAutocomplete T="TItem"
                  Label="@Hint"
                  Variant="Variant.Text"
+                 Value="Value"
                  ValueChanged="OnSelected"
                  SearchFunc="Search"
                  ToStringFunc="ItemNameFunc"
                  ResetValueOnEmptyText="true"
                  CoerceText="true"
                  CoerceValue="true"
-                 Class="mx-2 mt-n2"
                  DisableUnderLine="true"
-                 Margin="Margin.Dense">
+                 Margin="Margin.Normal">
     <ItemTemplate Context="item">
         <MudText>@ItemNameFunc(item)</MudText>
     </ItemTemplate>

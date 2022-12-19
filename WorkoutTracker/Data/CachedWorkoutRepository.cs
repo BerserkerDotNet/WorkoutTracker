@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Data;
 
@@ -101,4 +102,10 @@ public class CachedWorkoutRepositoryDecorator : IWorkoutRepository
     public Task UpdateMuscle(MuscleViewModel muscle) => _decoratedRepository.UpdateMuscle(muscle);
 
     public Task<bool> UploadImage(IBrowserFile file, string imagePath) => _decoratedRepository.UploadImage(file, imagePath);
+
+    public Task UpdateProgram(WorkoutProgram program) => _decoratedRepository.UpdateProgram(program);
+
+    public Task<IEnumerable<WorkoutProgram>> GetWorkoutPrograms() => _decoratedRepository.GetWorkoutPrograms();
+
+    public Task DeleteWorkoutProgram(Guid id) => _decoratedRepository.DeleteWorkoutProgram(id);
 }

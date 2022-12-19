@@ -281,4 +281,19 @@ public class CosmosDbWorkoutRepository : IWorkoutRepository
             Sets = logEntry.Sets
         };
     }
+
+    public Task UpdateProgram(WorkoutProgram program)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<WorkoutProgram>> GetWorkoutPrograms()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteWorkoutProgram(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,0 +1,70 @@
+﻿@inject IDialogService Dialog
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="Program.Name" Label="Name" />
+        <div>
+            <MudText>Monday:</MudText>
+            <MudButton OnClick="() => EditWorkout(Program.Schedule.Monday, d => Program.Schedule.Monday = d)" Color="Color.Info">@Program.Schedule.Monday.Name</MudButton>
+        </div>
+        <div>
+            <MudText>Tuesday:</MudText>
+            <MudButton OnClick="() => EditWorkout(Program.Schedule.Tuesday, d => Program.Schedule.Tuesday = d)" Color="Color.Info">@Program.Schedule.Tuesday.Name</MudButton>
+        </div>
+        <div>
+            <MudText>Wednesday:</MudText>
+            <MudButton OnClick="() => EditWorkout(Program.Schedule.Wednesday, d => Program.Schedule.Wednesday = d)" Color="Color.Info">@Program.Schedule.Wednesday.Name</MudButton>
+        </div>
+        <div>
+            <MudText>Thursday:</MudText>
+            <MudButton OnClick="() => EditWorkout(Program.Schedule.Thursday, d => Program.Schedule.Thursday = d)" Color="Color.Info">@Program.Schedule.Thursday.Name</MudButton>
+        </div>
+        <div>
+            <MudText>Friday:</MudText>
+            <MudButton OnClick="() => EditWorkout(Program.Schedule.Friday, d => Program.Schedule.Friday = d)" Color="Color.Info">@Program.Schedule.Friday.Name</MudButton>
+        </div>
+        <div>
+            <MudText>Saturday:</MudText>
+            <MudButton OnClick="() => EditWorkout(Program.Schedule.Saturday, d => Program.Schedule.Saturday = d)" Color="Color.Info">@Program.Schedule.Saturday.Name</MudButton>
+        </div>
+        <div>
+            <MudText>Sunday:</MudText>
+            <MudButton OnClick="() => EditWorkout(Program.Schedule.Sunday, d => Program.Schedule.Sunday = d)" Color="Color.Info">@Program.Schedule.Sunday.Name</MudButton>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+        <MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public WorkoutProgram Program { get; set; }
+
+    private void Save()
+    {
+        MudDialog.Close(DialogResult.Ok(Program));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+
+    private async Task EditWorkout(WorkoutDefinition definition, Action<WorkoutDefinition> onSave)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(EditWorkoutDefinitionForm.Definition), definition);
+        var options = new DialogOptions { FullScreen = true };
+        var dialog = Dialog.Show<EditWorkoutDefinitionForm>("Edit Workout", parameters, options);
+        var dialogResult = await dialog.Result;
+        if (dialogResult.Cancelled)
+        {
+            return;
+        }
+
+        onSave((WorkoutDefinition)dialogResult.Data);
+    }
+}

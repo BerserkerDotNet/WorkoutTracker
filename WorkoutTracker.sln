@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{55A78DF5-240
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4A758A8A-EF2C-4E43-8855-5A2AD07D3CED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutTracker.Api", "WorkoutTracker.Api\WorkoutTracker.Api.csproj", "{08EBF0BF-13C7-4C41-94A1-749C8841CC19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutTracker.Api", "WorkoutTracker.Api\WorkoutTracker.Api.csproj", "{08EBF0BF-13C7-4C41-94A1-749C8841CC19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

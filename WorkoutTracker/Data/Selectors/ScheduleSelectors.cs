@@ -1,4 +1,6 @@
-﻿namespace WorkoutTracker.Data.Selectors;
+﻿using WorkoutTracker.Models.Entities;
+
+namespace WorkoutTracker.Data.Selectors;
 
 public static class ScheduleSelectors
 {
@@ -30,5 +32,13 @@ public static class ScheduleSelectors
     public static ExerciseProfile SelectCurrentProfile(this RootState state)
     {
         return state?.ExerciseSchedule?.SelectedProfile ?? ExerciseProfile.GetDefaultProfile();
+    }
+}
+
+public static class WorkoutProgramSelectors
+{
+    public static IEnumerable<WorkoutProgram> SelectPrograms(this RootState state)
+    {
+        return state?.Data?.WorkoutPrograms ?? Enumerable.Empty<WorkoutProgram>();
     }
 }

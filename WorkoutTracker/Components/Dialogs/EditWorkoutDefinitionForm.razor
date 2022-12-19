@@ -1,0 +1,54 @@
+﻿@using System.Text.Json;
+@inherits ComponentWithProps<ExerciseSelectorEditorProps>
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="_currentDefinition.Name" Label="Name" />
+        <MudButton Color="@Color.Primary" StartIcon="@Icons.Material.Rounded.Add" OnClick="NewExerciseDefinition">Add new</MudButton>
+
+        <MudExpansionPanels>
+            @foreach (var exerciseDef in _currentDefinition.Exercises)
+            {
+                <ExerciseSelectorEditor Definition="exerciseDef" />
+            }
+        </MudExpansionPanels>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Save">Ok</MudButton>
+        <MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private WorkoutDefinition _currentDefinition = WorkoutDefinition.Rest;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public WorkoutDefinition Definition { get; set; }
+
+    protected override void OnAfterParametersSet()
+    {
+        _currentDefinition = Definition.Clone();
+    }
+
+    private void Save()
+    {
+        MudDialog.Close(DialogResult.Ok(_currentDefinition));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+
+    private void NewExerciseDefinition()
+    {
+        _currentDefinition.Exercises.Add(new ExerciseDefinition
+        {
+            ExerciseSelector = new SpecificExerciseSelector(Props.AllExercises.First().Id),
+            OverloadFactor = new OneRepMaxProgressiveOverloadFactor(60),
+            NumberOfReps = 10,
+            NumberOfSets = 3
+        });
+    }
+}

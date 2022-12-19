@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker;
 
@@ -16,6 +17,10 @@ public interface IWorkoutRepository
 
     Task<IEnumerable<WorkoutSummary>> GetWorkoutSummaries(DateTime from, DateTime to);
 
+    Task<IEnumerable<WorkoutProgram>> GetWorkoutPrograms();
+
+    Task DeleteWorkoutProgram(Guid id);
+
     Task AddLogRecord(LogEntryViewModel model);
 
     Task DeleteLog(Guid id);
@@ -25,6 +30,8 @@ public interface IWorkoutRepository
     Task UpdateExercise(ExerciseViewModel exercise);
 
     Task UpdateMuscle(MuscleViewModel muscle);
+
+    Task UpdateProgram(WorkoutProgram program);
 
     Task<bool> UploadImage(IBrowserFile file, string imagePath);
 }

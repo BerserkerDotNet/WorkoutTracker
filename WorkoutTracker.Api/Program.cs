@@ -3,6 +3,8 @@ using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Api.RouteMaps;
 using WorkoutTracker.Api.Utils;
@@ -20,7 +22,20 @@ builder.Services.AddMediator();
 builder.Services.AddCors();
 
 var dbEndpoint = builder.Configuration.GetValue<string>("DbEndpoint");
-var cosmosClient = new CosmosClient(dbEndpoint, new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true }));
+var cosmosClient = new CosmosClient(dbEndpoint, new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true }), new CosmosClientOptions
+{
+    Serializer = new CosmosSystemTextJsonSerializer(new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+        Converters =
+                        {
+                            new JsonStringEnumConverter()
+                        },
+        IgnoreNullValues = true,
+        IgnoreReadOnlyFields = true
+    })
+});
 
 Database database = await cosmosClient.CreateDatabaseIfNotExistsAsync("WorkoutTrackerData");
 
@@ -32,6 +47,9 @@ builder.Services.AddSingleton(musclesContainer);
 
 var logEntriesContainer = await ExerciseLogsContainer.Create(database);
 builder.Services.AddSingleton(logEntriesContainer);
+
+var workoutProgramsContainer = await WorkoutProgramsContainer.Create(database);
+builder.Services.AddSingleton(workoutProgramsContainer);
 
 var accountName = builder.Configuration.GetValue<string>("CDNAccountName");
 var containerEndpoint = string.Format("https://{0}.blob.core.windows.net/images", accountName);

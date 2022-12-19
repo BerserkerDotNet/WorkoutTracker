@@ -1,5 +1,6 @@
 ﻿using BlazorState.Redux.Utilities;
 using WorkoutTracker.Models.Contracts;
+using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Data.Props
 {
@@ -9,6 +10,10 @@ namespace WorkoutTracker.Data.Props
 
         public string LastWeightFormatted => $"{LastWorkout.Max.WeightLb} LB";
     }
+
+    public record ProgramsEditorProps(IEnumerable<WorkoutProgram> AllPrograms, AsyncAction<WorkoutProgram> SaveProgram);
+
+    public record ExerciseSelectorEditorProps(IEnumerable<ExerciseViewModel> AllExercises);
 
     public class ExerciseScheduleProps
     {

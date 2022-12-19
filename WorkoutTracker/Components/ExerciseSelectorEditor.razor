@@ -1,0 +1,128 @@
+﻿@inherits ComponentWithProps<ExerciseSelectorEditorProps>
+
+@using System.Text.Json;
+@using WorkoutTracker.Models.Contracts;
+
+<MudExpansionPanel Text="@_dispalyName" Class="mt-3">
+    <TitleContent>
+        <MudText>@_dispalyName</MudText>
+    </TitleContent>
+    <ChildContent>
+        <MudSelect T="ExerciseSelectorType" Class="my-2" Label="Type" AnchorOrigin="Origin.BottomCenter" Value="GetExerciseSelectorType(Definition.ExerciseSelector)" ValueChanged="ChangeSelectorType">
+            <MudSelectItem Value="@(ExerciseSelectorType.SpecificExercise)" />
+            <MudSelectItem Value="@(ExerciseSelectorType.MuscleGroup)" />
+            <MudSelectItem Value="@(ExerciseSelectorType.SpecificMuscle)" />
+        </MudSelect>
+        @_selectorParametersRenderer
+ @*       <MudPaper Class="d-flex align-center my-2" Elevation="0">
+            <MudTextField T="int" Variant="Variant.Text" DisableUnderLine="false" Label="# of sets" @bind-Value="Definition.NumberOfSets" />
+            <MudTextField T="int" Variant="Variant.Text" DisableUnderLine="false" Label="# of reps" @bind-Value="Definition.NumberOfReps" />
+        </MudPaper>*@
+        <MudSelect T="ProgressiveOverloadType" Class="my-2" Label="Type" AnchorOrigin="Origin.BottomCenter" Value="GetOverloadSelectorType(Definition.OverloadFactor)" ValueChanged="ChangeOverloadType">
+            <MudSelectItem Value="@(ProgressiveOverloadType.PowerLadder)" />
+            <MudSelectItem Value="@(ProgressiveOverloadType.OneRepMaxPercentage)" />
+        </MudSelect>
+        @_overloadParametersRenderer
+        <MudButton StartIcon="@Icons.Material.Filled.Delete" Color="Color.Secondary">Delete</MudButton>
+    </ChildContent>
+</MudExpansionPanel>
+
+@code {
+    private RenderFragment _selectorParametersRenderer = @<div></div>;
+    private RenderFragment _overloadParametersRenderer = @<div></div>;
+    private string _dispalyName = string.Empty;
+
+    [Parameter]
+    [EditorRequired]
+    public ExerciseDefinition Definition { get; set; }
+
+    protected override void OnAfterParametersSet()
+    {
+        DefineParameters();
+    }
+
+    private void ChangeSelectorType(ExerciseSelectorType newType)
+    {
+        Definition.ExerciseSelector = newType switch
+        {
+            ExerciseSelectorType.SpecificExercise => new SpecificExerciseSelector(Props.AllExercises.First().Id),
+            ExerciseSelectorType.MuscleGroup => new MuscleGroupExerciseSelector("Back"),
+            _ => new MuscleGroupExerciseSelector("WAT!")
+        };
+
+        DefineParameters();
+    }
+
+    private void ChangeOverloadType(ProgressiveOverloadType newType)
+    {
+        Definition.OverloadFactor = newType switch
+        {
+            ProgressiveOverloadType.PowerLadder => new PowerLadderOverloadFactor(10, 5, 2, 4, 8),
+            ProgressiveOverloadType.OneRepMaxPercentage => new OneRepMaxProgressiveOverloadFactor(80),
+            _ => new OneRepMaxProgressiveOverloadFactor(80)
+        };
+
+        DefineParameters();
+    }
+
+    private ExerciseSelectorType GetExerciseSelectorType(IExerciseSelector selector) => selector switch
+    {
+        SpecificExerciseSelector => ExerciseSelectorType.SpecificExercise,
+        MuscleGroupExerciseSelector => ExerciseSelectorType.MuscleGroup,
+        _ => ExerciseSelectorType.SpecificExercise
+    };
+
+    private ProgressiveOverloadType GetOverloadSelectorType(IProgressiveOverloadFactor factor) => factor switch
+    {
+        PowerLadderOverloadFactor => ProgressiveOverloadType.PowerLadder,
+        OneRepMaxProgressiveOverloadFactor => ProgressiveOverloadType.OneRepMaxPercentage,
+        _ => ProgressiveOverloadType.PowerLadder
+    };
+
+    private void DefineParameters()
+    {
+        @switch(Definition.ExerciseSelector)
+        {
+            case SpecificExerciseSelector specificExerciseSelector:
+                var exercise = Props.AllExercises.First(e => e.Id == specificExerciseSelector.ExerciseId);
+                _dispalyName = $"{exercise.Name} {Definition.OverloadFactor.GetDisplayText()}";
+                _selectorParametersRenderer = @<WorkoutTracker.Components.WorkoutDefinition.SpecificExerciseSelectorEditor ExerciseId="@specificExerciseSelector.ExerciseId" Exercises="@Props.AllExercises" SelectedExerciseChanged="SpecificExerciseSelected" />;
+                break;
+            case MuscleGroupExerciseSelector muscleGroupExerciseSelector:
+                _dispalyName = $"{muscleGroupExerciseSelector.GroupName} exercise {Definition.OverloadFactor.GetDisplayText()}";
+                _selectorParametersRenderer =@<MudTextField Label="Muscle Group" Value="@muscleGroupExerciseSelector.GroupName" />;
+                break;
+            default:
+                _selectorParametersRenderer =@<MudAlert>Not implemented</MudAlert>;
+                break;
+        }
+
+        @switch (Definition.OverloadFactor)
+        {
+            case PowerLadderOverloadFactor pl:
+                _overloadParametersRenderer =@<PowerLadderEditor />;
+                break;
+        }
+    }
+
+    private void SpecificExerciseSelected(ExerciseViewModel exercise)
+    {
+        if (exercise is null)
+        {
+            return;
+        }
+
+        OnSelectorChanged(new SpecificExerciseSelector(exercise.Id));
+    }
+
+    private void OnSelectorChanged(IExerciseSelector selector)
+    {
+        if (selector is null)
+        {
+            return;
+        }
+
+        Definition.ExerciseSelector = selector;
+        DefineParameters();
+    }
+}

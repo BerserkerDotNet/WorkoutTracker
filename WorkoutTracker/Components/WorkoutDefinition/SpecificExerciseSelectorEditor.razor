@@ -1,0 +1,28 @@
+﻿<ItemSearch TItem="ExerciseViewModel" Items="Exercises" Value="_selectedExercise" ValueChanged="OnChange" ItemNameFunc="e => e.Name" Hint="Exercise" />
+@code {
+    private ExerciseViewModel _selectedExercise = new ExerciseViewModel();
+
+    [Parameter]
+    [EditorRequired]
+    public Guid ExerciseId { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<ExerciseViewModel> Exercises { get; set; }
+
+    [Parameter]
+    public EventCallback<ExerciseViewModel> SelectedExerciseChanged { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _selectedExercise = Exercises.First(e => e.Id == ExerciseId);
+
+        base.OnParametersSet();
+    }
+
+    private async Task OnChange(ExerciseViewModel model)
+    {
+        _selectedExercise = model;
+        await SelectedExerciseChanged.InvokeAsync(model);
+    }
+}
