@@ -9,7 +9,7 @@ public static class ContainerExtensions
         where TEntity : EntityBase
     {
         var response = await container.UpsertItemAsync(entity);
-        if (response.StatusCode != System.Net.HttpStatusCode.Created)
+        if (response.StatusCode != System.Net.HttpStatusCode.Created && response.StatusCode != System.Net.HttpStatusCode.OK)
         {
             logger.LogError("Failed to create exercise with '{StatusCode}'", response.StatusCode);
             throw new Exception($"Failed to create exercise with '{response.StatusCode}'");
