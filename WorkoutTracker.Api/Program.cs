@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Api.RouteMaps;
 using WorkoutTracker.Api.Utils;
+using WorkoutTracker.Models.Contracts;
 
 Mappings.Configure();
 
@@ -30,7 +31,8 @@ var cosmosClient = new CosmosClient(dbEndpoint, new DefaultAzureCredential(new D
         PropertyNameCaseInsensitive = true,
         Converters =
                         {
-                            new JsonStringEnumConverter()
+                            new JsonStringEnumConverter(),
+                            new IExerciseSetPolymorphicJsonConverter()
                         },
         IgnoreNullValues = true,
         IgnoreReadOnlyFields = true
