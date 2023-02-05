@@ -5,6 +5,7 @@ using Microsoft.Azure.Cosmos;
 using System.Text.Json;
 using WorkoutTracker.Api.Services;
 using WorkoutTracker.Models.Entities;
+using WorkoutTracker.Models.Presentation;
 
 namespace WorkoutTracker.Api.RouteMaps;
 

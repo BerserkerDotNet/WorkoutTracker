@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace WorkoutTracker.Models.Presentation;
+
 public class MuscleViewModel
 {
     public Guid Id { get; set; }

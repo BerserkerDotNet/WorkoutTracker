@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WorkoutTracker.Models.Contracts;
+using WorkoutTracker.Models.Presentation;
 
 public record MuscleExerciseSelector(Guid MuscleId, int? TargetSets = null, TimeSpan? TargetRestTime = default) : IExerciseSelector
 {

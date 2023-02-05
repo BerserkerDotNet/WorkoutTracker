@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using WorkoutTracker.Models.Presentation;
 
 namespace WorkoutTracker.Models.Contracts;
 

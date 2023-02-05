@@ -63,21 +63,23 @@ public class ExerciseDefinition
     public IExerciseSelector ExerciseSelector { get; set; }
 
     public required IProgressiveOverloadFactor OverloadFactor { get; set; }
-
-    public required int NumberOfSets { get; set; }
-
-    public required int NumberOfReps { get; set; }
 }
 
 [JsonDerivedType(typeof(OneRepMaxProgressiveOverloadFactor), nameof(OneRepMaxProgressiveOverloadFactor))]
+[JsonDerivedType(typeof(SteadyStateProgressiveOverloadFactor), nameof(SteadyStateProgressiveOverloadFactor))]
 public interface IProgressiveOverloadFactor
 {
     string GetDisplayText();
 }
 
-public record class OneRepMaxProgressiveOverloadFactor(int Percentage) : IProgressiveOverloadFactor
+public record class OneRepMaxProgressiveOverloadFactor(int Percentage, int NumberOfSets) : IProgressiveOverloadFactor
 {
     public string GetDisplayText() => $"{Percentage}% of 1RM";
+}
+
+public record class SteadyStateProgressiveOverloadFactor(int Weight, int NumberOfSets, int NumberOfReps) : IProgressiveOverloadFactor
+{
+    public string GetDisplayText() => $"Steady state";
 }
 
 public record class PowerLadderOverloadFactor(int StepIncrement, int Overload, int WarmupSets, int WorkingSets, int TargetReps) : IProgressiveOverloadFactor

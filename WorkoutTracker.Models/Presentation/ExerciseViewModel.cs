@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
 
-public class ExerciseViewModel
+namespace WorkoutTracker.Models.Presentation;
+
+public class ExerciseViewModel : IComparable<ExerciseViewModel>
 {
     public Guid Id { get; set; }
 
@@ -17,5 +21,18 @@ public class ExerciseViewModel
 
     public IEnumerable<MuscleViewModel> Muscles { get; set; }
 
-    public IEnumerable<string> Tags { get; set; }
+    public IList<string> Tags { get; set; }
+
+    [JsonIgnore]
+    public string[] MuscleGroups => Muscles.Select(m => m.MuscleGroup).Distinct().ToArray();
+
+    public int CompareTo(ExerciseViewModel other)
+    {
+        if (Id == other.Id)
+        {
+            return 0;
+        }
+
+        return 1;
+    }
 }

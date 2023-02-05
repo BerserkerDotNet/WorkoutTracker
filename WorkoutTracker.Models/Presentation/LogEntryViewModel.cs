@@ -1,31 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using WorkoutTracker.Models.Entities;
+using WorkoutTracker.Models.Contracts;
+
+namespace WorkoutTracker.Models.Presentation;
 
 public class LogEntryViewModel
 {
     public required Guid Id { get; set; }
+    public int Order { get; set; }
     public required ExerciseViewModel Exercise { get; set; }
     public required DateTime Date { get; set; }
-    public required IEnumerable<Set> Sets { get; set; }
-
-    public double TotalDuration => Math.Ceiling(Sets.Sum(s => s.Duration.TotalMinutes));
-
-    public double TotalRest => Math.Ceiling(Sets.Sum(s => s.RestTime.TotalMinutes));
-
-    public double TotalWeightKG => Math.Ceiling(Sets.Sum(s => (s.WeightKG ?? 0) * s.Repetitions));
-
-    public double TotalWeightLB => Math.Ceiling(Sets.Sum(s => (s.WeightLB ?? 0) * s.Repetitions));
-
-    public static LogEntryViewModel New(WorkoutExerciseViewModel exercise) => new LogEntryViewModel
-    {
-        Id = Guid.NewGuid(),
-        Exercise = new ExerciseViewModel { Id = exercise.Id, ImagePath = exercise.ImagePath, Name = exercise.Name },
-        Date = DateTime.UtcNow,
-        Sets = Enumerable.Empty<Set>()
-    };
+    public required IEnumerable<IExerciseSet> Sets { get; set; }
 }
+
+public record WorkoutSummary(DateTime Date, WorkoutSetSummary Max, WorkoutSetSummary Min, WorkoutSetSummary Avg, WorkoutSetSummary Total, int SetsCount, Guid ExerciseId);
+
+public record WorkoutSetSummary(double WeightKg, double WeightLb, int Repetitions, TimeSpan Duration, TimeSpan RestTime, IEnumerable<IExerciseSet> Sets);
 
 public record WorkoutExerciseSetViewModel(int Index, SetStatus Status, double Weight, int Reps, TimeSpan RestTime, TimeSpan Duration);
 

@@ -1,8 +1,10 @@
 ﻿using System;
+using UnitsNet;
+using WorkoutTracker.Models.Contracts;
 
 namespace WorkoutTracker.Models.Entities;
 
-public class Set
+public class LegacySet : IExerciseSet
 {
     public double? WeightLB { get; set; }
 
@@ -17,4 +19,46 @@ public class Set
     public DateTime CompletionTime { get; set; } = DateTime.UtcNow;
 
     public string Note { get; set; }
+
+    public double Weight
+    {
+        get
+        {
+            return WeightLB ?? 0;
+        }
+        set
+        {
+            WeightLB = value;
+            WeightKG = Mass.FromPounds(value).ToUnit(UnitsNet.Units.MassUnit.Kilogram).Value;
+        }
+    }
+}
+
+public sealed class ProposedSet : IExerciseSet
+{
+    public required double Weight { get; set; }
+
+    public required int Repetitions { get; set; }
+}
+
+public sealed class InProgressSet : IExerciseSet
+{
+    public required double Weight { get; set; }
+
+    public required int Repetitions { get; set; }
+
+    public required TimeSpan RestTime { get; set; }
+}
+
+public sealed class CompletedSet : IExerciseSet
+{
+    public required double Weight { get; set; }
+
+    public required int Repetitions { get; set; }
+
+    public required TimeSpan RestTime { get; set; }
+
+    public required TimeSpan Duration { get; set; }
+
+    public required DateTime CompletionTime { get; set; }
 }

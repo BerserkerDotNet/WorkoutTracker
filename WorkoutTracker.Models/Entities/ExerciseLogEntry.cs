@@ -1,4 +1,5 @@
 ﻿using System;
+using WorkoutTracker.Models.Contracts;
 
 namespace WorkoutTracker.Models.Entities;
 
@@ -7,7 +8,7 @@ public class ExerciseLogEntry : EntityBase
 {
     public Guid ExerciseId { get; set; }
 
-    public Set[] Sets { get; set; }
+    public IExerciseSet[] Sets { get; set; }
 
     public DateTime Date { get; set; }
 }
