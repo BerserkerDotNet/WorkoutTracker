@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Mediator;
+﻿using Mediator;
 using Microsoft.Azure.Cosmos.Linq;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Models.Entities;
@@ -35,9 +34,7 @@ public sealed class GetAllExercisesHandler : IRequestHandler<GetAllExercises, IE
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var viewModel = item.Adapt<ExerciseViewModel>();
-                viewModel.Muscles = allMuscles.Where(m => item.Muscles.Contains(m.Id));
-
+                var viewModel = item.ToViewModel(allMuscles);
                 allExercises.Add(viewModel);
             }
         }

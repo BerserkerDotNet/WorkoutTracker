@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Mediator;
+﻿using Mediator;
 using Microsoft.Azure.Cosmos;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Models.Entities;
@@ -25,8 +24,7 @@ public sealed class GetExerciseLogByIdHandler : IRequestHandler<GetExerciseLogBy
     {
         var item = await _logsContainer.ReadItemAsync<ExerciseLogEntry>(request.Id.ToString(), new PartitionKey(request.Id.ToString()));
         var exercise = await _mediator.Send(new GetExerciseById(item.Resource.ExerciseId));
-        var result = item.Resource.Adapt<LogEntryViewModel>();
-        result.Exercise = exercise;
+        var result = item.Resource.ToViewModel(exercise);
         return result;
     }
 }

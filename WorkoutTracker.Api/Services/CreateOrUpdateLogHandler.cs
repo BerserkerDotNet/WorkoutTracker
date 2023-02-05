@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Mediator;
+﻿using Mediator;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Api.Extensions;
 using WorkoutTracker.Models.Entities;
@@ -21,11 +20,9 @@ public sealed class CreateOrUpdateLogHandler : ICommandHandler<CreateOrUpdateLog
 
     public async ValueTask<LogEntryViewModel> Handle(CreateOrUpdateLog command, CancellationToken cancellationToken)
     {
-        var entity = command.Model.Adapt<ExerciseLogEntry>();
+        var entity = ExerciseLogEntry.FromViewModel(command.Model);
         var response = await _container.UpsertEntity(entity, _logger);
-        var result = response.Adapt<LogEntryViewModel>();
-        result.Exercise = command.Model.Exercise;
-
+        var result = response.ToViewModel(command.Model.Exercise);
         return result;
     }
 }

@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Mediator;
+﻿using Mediator;
 using Microsoft.Azure.Cosmos.Linq;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Models.Entities;
@@ -35,10 +34,14 @@ public sealed class GetExerciseLogByDateRangeHandler : IRequestHandler<GetExerci
             foreach (var item in await iterator.ReadNextAsync())
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                var viewModel = item.Adapt<LogEntryViewModel>();
                 var exercise = exercises.Single(e => e.Id == item.ExerciseId);
-                viewModel.Exercise = exercise;
+                var viewModel = new LogEntryViewModel
+                {
+                    Date = item.Date,
+                    Id = item.Id,
+                    Sets = item.Sets,
+                    Exercise = exercise
+                };
                 logs.Add(viewModel);
             }
         }
@@ -79,9 +82,8 @@ public sealed class GetPreviousWorkoutStatsByExerciseHandler : IRequestHandler<G
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var viewModel = item.Adapt<LogEntryViewModel>();
                 var exercise = exercises.Single(e => e.Id == item.ExerciseId);
-                viewModel.Exercise = exercise;
+                var viewModel = item.ToViewModel(exercise);
                 logs.Add(viewModel);
             }
         }

@@ -7,10 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Api.RouteMaps;
-using WorkoutTracker.Api.Utils;
 using WorkoutTracker.Models.Contracts;
-
-Mappings.Configure();
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using WorkoutTracker.Models.Contracts;
+using WorkoutTracker.Models.Presentation;
 
 namespace WorkoutTracker.Models.Entities;
 
@@ -22,6 +23,37 @@ public class Exercise : EntityBase
     public Guid[] Muscles { get; set; }
 
     public string[] Tags { get; set; }
+
+    public ExerciseViewModel ToViewModel(IEnumerable<MuscleViewModel> musclesList)
+    {
+        return new ExerciseViewModel
+        {
+            Id = Id,
+            Name = Name,
+            Description = Description,
+            Steps = Steps,
+            TutorialUrl = TutorialUrl,
+            ImagePath = ImagePath,
+            Tags = Tags,
+            Muscles = musclesList.Where(m => Muscles.Contains(m.Id)).ToArray()
+        };
+    }
+
+    public static Exercise FromViewModel(ExerciseViewModel vm)
+    {
+        return new Exercise
+        {
+            Id = vm.Id,
+            Name = vm.Name,
+            Description = vm.Description,
+            Steps = vm.Steps,
+            TutorialUrl = vm.TutorialUrl,
+            ImagePath = vm.ImagePath,
+            Tags = vm.Tags.ToArray(),
+            Muscles = vm.Muscles.Select(m => m.Id).ToArray()
+        };
+    }
+
 }
 
 [PluralName(EndpointNames.WorkoutProgramPluralName)]

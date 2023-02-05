@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Mediator;
+﻿using Mediator;
 using Microsoft.Azure.Cosmos.Linq;
 using WorkoutTracker.Api.Data;
 
@@ -27,7 +26,7 @@ public sealed class GetAllMusclesHandler : IRequestHandler<GetAllMuscles, IEnume
             foreach (var item in await iterator.ReadNextAsync())
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                result.Add(item.Adapt<MuscleViewModel>());
+                result.Add(item);
             }
         }
 

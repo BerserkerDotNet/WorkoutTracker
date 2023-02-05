@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Mediator;
+﻿using Mediator;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Api.Extensions;
 using WorkoutTracker.Models.Entities;
@@ -20,9 +19,9 @@ public sealed class CreateOrUpdateMuscleHandler : ICommandHandler<CreateOrUpdate
 
     public async ValueTask<MuscleViewModel> Handle(CreateOrUpdateMuscle command, CancellationToken cancellationToken)
     {
-        var entity = command.Model.Adapt<Muscle>();
+        var entity = Muscle.FromViewModel(command.Model);
         var response = await _container.UpsertEntity(entity, _logger);
-        var result = response.Adapt<MuscleViewModel>();
+        var result = response.ToViewModel();
         return result;
     }
 }
