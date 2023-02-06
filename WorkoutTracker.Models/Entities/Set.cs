@@ -28,8 +28,8 @@ public class LegacySet : IExerciseSet
         }
         set
         {
-            WeightLB = Mass.FromKilograms(value).ToUnit(UnitsNet.Units.MassUnit.Pound).Value;
-            WeightKG = value;
+            WeightLB = value;
+            WeightKG = Mass.FromPounds(value).ToUnit(UnitsNet.Units.MassUnit.Kilogram).Value;
         }
     }
 }
