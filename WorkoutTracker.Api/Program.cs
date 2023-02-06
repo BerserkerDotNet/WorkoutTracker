@@ -24,7 +24,6 @@ var cosmosClient = new CosmosClient(dbEndpoint, new DefaultAzureCredential(new D
 {
     Serializer = new CosmosSystemTextJsonSerializer(new JsonSerializerOptions
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = true,
         Converters =
                         {
