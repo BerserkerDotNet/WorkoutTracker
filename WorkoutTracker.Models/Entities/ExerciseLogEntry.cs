@@ -14,6 +14,8 @@ public class ExerciseLogEntry : EntityBase
 
     public DateTime Date { get; set; }
 
+    public int Order { get; set; }
+
     public static ExerciseLogEntry FromViewModel(LogEntryViewModel vm)
     {
         return new ExerciseLogEntry
@@ -21,7 +23,8 @@ public class ExerciseLogEntry : EntityBase
             Id = vm.Id,
             Date = vm.Date,
             ExerciseId = vm.Exercise.Id,
-            Sets = vm.Sets.ToArray()
+            Sets = vm.Sets.ToArray(),
+            Order = vm.Order
         };
     }
 
@@ -32,7 +35,8 @@ public class ExerciseLogEntry : EntityBase
             Id = Id,
             Date = Date,
             Sets = Sets,
-            Exercise = exercise
+            Exercise = exercise,
+            Order = Order
         };
     }
 }
