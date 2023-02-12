@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:ctrl="clr-namespace:WorkoutTracker.MAUI.Controls"
+             x:Class="WorkoutTracker.MAUI.Controls.ExerciseSetView">
+    <Grid Margin="0,0,8,0" x:DataType="ctrl:SetWrapper">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <dxe:Chip Text="{Binding Number}" BackgroundColor="{Binding Color}" Grid.Column="0" HeightRequest="40" WidthRequest="40" Tap="OnTap" />
+        <dxe:NumericEdit Value="{Binding Set.Weight, Mode=TwoWay}" Prefix="Weight:" Suffix="LB" Grid.Column="1" BoxMode="Filled" BackgroundColor="Transparent" MinValue="0" />
+        <dxe:NumericEdit Value="{Binding Set.Repetitions}" Prefix="Reps:" Grid.Column="2" BoxMode="Filled" BackgroundColor="Transparent" MinValue="0" />
+    </Grid>
+</ContentView>

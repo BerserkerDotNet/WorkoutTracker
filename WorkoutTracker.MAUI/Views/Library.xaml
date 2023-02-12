@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
+             xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             x:DataType="vm:LibraryViewModel"
+             Title="Library"
+             x:Class="WorkoutTracker.MAUI.Views.Library">
+    <ContentPage.Resources>
+        <conv:ImagePathConverter x:Key="ImagePathConverter"></conv:ImagePathConverter>
+        <Style x:Key="SeparatorStyle" TargetType="BoxView">
+            <Setter Property="BackgroundColor" Value="#EBEBEB"/>
+            <Setter Property="HeightRequest" Value="1"/>
+        </Style>
+        <Style x:Key="ButtonStyle" TargetType="dxco:SimpleButton">
+            <Setter Property="IconColor" Value="#404144"/>
+            <Setter Property="TextColor" Value="#404144"/>
+            <Setter Property="Padding" Value="24,8"/>
+            <Setter Property="IconIndent" Value="16"/>
+            <Setter Property="HorizontalContentAlignment" Value="Start"/>
+            <Setter Property="PressedBackgroundColor" Value="#e8e8e8"/>
+            <Setter Property="HorizontalOptions" Value="Fill"/>
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Sync" Command="{Binding SyncDataCommand}" IconImageSource="sync.svg" />
+        <ToolbarItem Text="Filter" Command="{Binding ShowFilterCommand}" IconImageSource="filter_add.svg" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout>
+            <dxcv:DXCollectionView
+                FilterExpression="{Binding CurrentFilter}"
+                ItemsSource="{Binding Exercises}"
+                IsPullToRefreshEnabled="true"
+                PullToRefreshCommand="{Binding LoadExercisesCommand}"
+                IsRefreshing="{Binding IsRefreshingData, Mode=TwoWay}"
+                IndicatorColor="Purple"
+                SelectionMode="Single"
+                TapCommand="{Binding EditExerciseCommand}">
+                <dxcv:DXCollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:ExerciseViewModel">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Margin="0" Padding="0" ColumnSpacing="0" RowSpacing="0">
+                                <Image Source="{Binding ImagePath, Converter = {StaticResource ImagePathConverter}}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="80" HeightRequest="80">
+                                    <Image.Clip>
+                                        <EllipseGeometry RadiusX="40" RadiusY="40" Center="40, 40" />
+                                    </Image.Clip>
+                                </Image>
+                                <Ellipse Margin="0"
+                                 Fill="Transparent"
+                                 Stroke="LightGray" 
+                                 StrokeThickness="1"
+                                 HeightRequest="80"
+                                 WidthRequest="80"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center">
+                                </Ellipse>
+                            </Grid>
+
+                            <StackLayout Padding="18,1,18,7" Grid.Column="1" >
+                                <Label Text="{Binding Name}"
+                                   Margin="10,2"
+                                   FontSize="18"
+                                   TextColor="#55575c"/>
+                                <dxe:ChipGroup ItemsSource="{Binding MuscleGroups}" />
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </dxcv:DXCollectionView.ItemTemplate>
+                <dxcv:DXCollectionView.Margin>
+                    <x:OnIdiom Phone="16,0,0,0" Tablet="71,0,0,0"/>
+                </dxcv:DXCollectionView.Margin>
+                <dxcv:DXCollectionView.SortDescriptions>
+                    <dxcv:SortDescription FieldName="Name" SortOrder="Descending"/>
+                </dxcv:DXCollectionView.SortDescriptions>
+            </dxcv:DXCollectionView>
+            <dxco:DXPopup x:Name="Popup" IsOpen="{Binding IsFilterVisible}" AllowScrim="True" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" >
+                <StackLayout Orientation="Vertical">
+                    <Label Text="Filter"
+                           TextColor="#404144"
+                           Margin="24,16,24,14"
+                           HorizontalTextAlignment="Center"/>
+                    <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                    <dxe:FilterChipGroup ItemsSource="{Binding MuscleGroups}" x:Name="filterChipGroup" />
+
+                    <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                    <dxco:SimpleButton Text="Done"
+                                      Command="{Binding ApplyFilterCommand}"
+                                      CommandParameter="{Binding Source={x:Reference filterChipGroup}, Path=SelectedItems}"
+                                      TextColor="#2088ff"
+                                      PressedBackgroundColor="#e8e8e8"
+                                      BackgroundColor="Transparent"
+                                      Margin="0,0,0,6"/>
+                </StackLayout>
+            </dxco:DXPopup>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

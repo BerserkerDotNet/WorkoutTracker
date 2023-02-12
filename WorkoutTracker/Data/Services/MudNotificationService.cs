@@ -1,26 +1,36 @@
-﻿namespace WorkoutTracker.Data.Services
+﻿namespace WorkoutTracker.Data.Services;
+
+public class MudNotificationService : INotificationService
 {
-    public class MudNotificationService : INotificationService
+    private readonly ISnackbar _snackbar;
+
+    public MudNotificationService(ISnackbar snackbar)
     {
-        private readonly ISnackbar _snackbar;
+        _snackbar = snackbar;
+    }
 
-        public MudNotificationService(ISnackbar snackbar)
+    public void ShowError(string message)
+    {
+        _snackbar.Add(message, Severity.Error, cfg =>
         {
-            _snackbar = snackbar;
-        }
+            cfg.ShowCloseIcon = true;
+            cfg.VisibleStateDuration = int.MaxValue;
+        });
+    }
 
-        public void ShowError(string message)
-        {
-            _snackbar.Add(message, Severity.Error, cfg =>
-            {
-                cfg.ShowCloseIcon = true;
-                cfg.VisibleStateDuration = int.MaxValue;
-            });
-        }
+    public void ShowToast(string message)
+    {
+        _snackbar.Add(message, Severity.Success);
+    }
+}
 
-        public void ShowToast(string message)
-        {
-            _snackbar.Add(message, Severity.Success);
-        }
+public class NullNotificationService : INotificationService
+{
+    public void ShowError(string message)
+    {
+    }
+
+    public void ShowToast(string message)
+    {
     }
 }

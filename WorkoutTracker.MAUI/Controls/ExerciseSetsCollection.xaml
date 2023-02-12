@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ctrl="clr-namespace:WorkoutTracker.MAUI.Controls"
+             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
+             x:Class="WorkoutTracker.MAUI.Controls.ExerciseSetsCollection"
+             x:DataType="model:LogEntryViewModel">
+    <ContentView.Resources>
+        <conv:ImagePathConverter x:Key="ImagePathConverter"></conv:ImagePathConverter>
+        <conv:SetsToStatusConverter x:Key="SetsToStatusConverter"></conv:SetsToStatusConverter>
+        <conv:SetsToColorConverter x:Key="SetsToColorConverter"></conv:SetsToColorConverter>
+        <Style x:Key="SeparatorStyle" TargetType="BoxView">
+            <Setter Property="BackgroundColor" Value="#EBEBEB"/>
+            <Setter Property="HeightRequest" Value="1"/>
+        </Style>
+    </ContentView.Resources>
+    <ContentView.GestureRecognizers>
+        <TapGestureRecognizer Tapped="OnExpandCollapse" />
+    </ContentView.GestureRecognizers>
+    <Grid Margin="5, 15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Margin="0" Padding="0" ColumnSpacing="0" RowSpacing="0">
+            <Image x:Name="headerImage" Source="{Binding Exercise.ImagePath, Converter = {StaticResource ImagePathConverter}}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="80" HeightRequest="80">
+                <Image.Clip>
+                    <EllipseGeometry RadiusX="40" RadiusY="40" Center="40, 40" />
+                </Image.Clip>
+            </Image>
+            <Ellipse Margin="0"
+                                 Fill="Transparent"
+                                 Stroke="LightGray" 
+                                 StrokeThickness="1"
+                                 HeightRequest="80"
+                                 WidthRequest="80"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center">
+            </Ellipse>
+        </Grid>
+
+        <Grid Padding="18,1,18,7" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+            <StackLayout Orientation="Vertical">
+                <Label Text="{Binding Exercise.Name}"
+                   HorizontalTextAlignment="Start"
+                                       Margin="10,2"
+                                       FontSize="18"
+                                       TextColor="#55575c"/>
+                <dxe:Chip 
+                    HorizontalOptions="Start"
+                    x:Name="setsStatus"
+                    Margin="10,2"
+                    HeightRequest="40"
+                    WidthRequest="50" />
+            </StackLayout>
+            <dxe:Chip x:Name="contextMenuBtn"
+                      Grid.Column="1"
+                      Icon="more_menu"
+                      IconSize="32,32"
+                      IconColor="Black"
+                      HorizontalOptions="EndAndExpand"
+                      VerticalOptions="CenterAndExpand"
+                      Tap="OnHeaderMenuClicked"
+                      HeightRequest="36"
+                      WidthRequest="36"
+                      BorderThickness="0"
+                      IsIconVisible="True"
+                      />
+        </Grid>
+        
+        <StackLayout x:Name="expandArea" Grid.ColumnSpan="2" Grid.Row="1" IsVisible="False" Opacity="0">
+        </StackLayout>
+        <!-- Exercise menu -->
+        <dxco:DXPopup PlacementTarget="{x:Reference contextMenuBtn}" x:Name="contextMenu" Placement="Bottom" HorizontalAlignment="Right" AllowShadow="True">
+            <StackLayout WidthRequest="200">
+                <dxco:SimpleButton Text="Add sets" TextColor="#2088ff"
+                                      PressedBackgroundColor="#e8e8e8"
+                                      BackgroundColor="Transparent"
+                                      Margin="0,0,0,6"
+                                   Clicked="OnAddSetClicked"/>
+                <dxco:SimpleButton Text="Reduce sets"
+                                   TextColor="#2088ff"
+                                      PressedBackgroundColor="#e8e8e8"
+                                      BackgroundColor="Transparent"
+                                      Margin="0,0,0,6"
+                                   Clicked="OnReduceSetsClicked"/>
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <dxco:SimpleButton Text="Replace exercise" TextColor="#2088ff"
+                                      PressedBackgroundColor="#e8e8e8"
+                                      BackgroundColor="Transparent"
+                                      Margin="0,0,0,6"
+                                   Clicked="OnReplaceExerciseClicked" />
+                <dxco:SimpleButton Text="Remove exercise" TextColor="HotPink"
+                                      PressedBackgroundColor="#e8e8e8"
+                                      BackgroundColor="Transparent"
+                                      Margin="0,0,0,6"
+                                   Clicked="OnRemoveExerciseClicked" />
+            </StackLayout>
+        </dxco:DXPopup>
+    </Grid>
+</ContentView>

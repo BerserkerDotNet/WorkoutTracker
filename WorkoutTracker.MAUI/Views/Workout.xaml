@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:ctrl="clr-namespace:WorkoutTracker.MAUI.Controls"
+             xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
+             xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
+             xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="WorkoutTracker.MAUI.Views.Workout"
+             x:DataType="vm:WorkoutViewModel"
+             x:Name="workoutPage"
+             Title="Workout">
+    <ContentPage.Resources>
+        <conv:ImagePathConverter x:Key="ImagePathConverter"></conv:ImagePathConverter>
+        <conv:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"></conv:CollectionToVisibilityConverter>
+        <conv:TimeSpanToSecondsConverter x:Key="TimeSpanToSecondsConverter"></conv:TimeSpanToSecondsConverter>
+        <conv:TimerModeToColorConverter x:Key="TimerModeToColorConverter"></conv:TimerModeToColorConverter>
+        <Style x:Key="SeparatorStyle" TargetType="BoxView">
+            <Setter Property="BackgroundColor" Value="#EBEBEB"/>
+            <Setter Property="HeightRequest" Value="1"/>
+        </Style>
+        <Style x:Key="ButtonStyle" TargetType="dxco:SimpleButton">
+            <Setter Property="IconColor" Value="#404144"/>
+            <Setter Property="TextColor" Value="#404144"/>
+            <Setter Property="Padding" Value="24,8"/>
+            <Setter Property="IconIndent" Value="16"/>
+            <Setter Property="HorizontalContentAlignment" Value="Start"/>
+            <Setter Property="PressedBackgroundColor" Value="#e8e8e8"/>
+            <Setter Property="HorizontalOptions" Value="Fill"/>
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding ShowAddExerciseDialogCommand}" IconImageSource="add.svg" />
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <dxco:SimpleButton 
+            Text="{Binding CurrentTime}"
+            BackgroundColor="{Binding TimerMode, Converter= {x:StaticResource TimerModeToColorConverter}}"
+            Command="{Binding StartTimerCommand}"
+            CornerMode="Round" CornerRadius="0"
+            Icon="timer"
+            IconVisible="True"
+            IconColor="White" />
+        <Label Text="No exercises for today." HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Margin="8,0,0,0" IsVisible="{Binding TodaySets, Converter={StaticResource CollectionToVisibilityConverter}}" Grid.Row="1" />
+        <dxcv:DXCollectionView
+                x:Name="setsList"
+                Grid.Row="1"
+                ItemsSource="{Binding TodaySets}"
+                AllowDragDropItems="True"
+                AllowDragDropSortedItems="True"
+                IsRefreshing="{Binding IsLoadingData}"
+                SelectionMode="None">
+            <dxcv:DXCollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:LogEntryViewModel">
+                    <ctrl:ExerciseSetsCollection
+                        OnHeaderMenuClickedCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},Path = BindingContext.ShowReplaceDialogCommand }"
+                        SetClickedCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},Path = BindingContext.RunSetOperationCommand }"
+                        AddSetCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},Path = BindingContext.AddSetCommand }"
+                        ReduceSetsCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},Path = BindingContext.ReduceSetsCommand }"
+                        RemoveExerciseCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},Path = BindingContext.RemoveExerciseCommand }"
+                        />
+                </DataTemplate>
+            </dxcv:DXCollectionView.ItemTemplate>
+            <dxcv:DXCollectionView.SortDescriptions>
+                <dxcv:SortDescription FieldName="Order" SortOrder="Ascending"/>
+            </dxcv:DXCollectionView.SortDescriptions>
+            <dxcv:DXCollectionView.Margin>
+                <x:OnIdiom Phone="8,0,0,0" Tablet="71,0,0,0"/>
+            </dxcv:DXCollectionView.Margin>
+        </dxcv:DXCollectionView>
+
+        <!-- Save exercise-->
+        <dxco:DXPopup x:Name="SavePopup" IsOpen="{Binding IsSetEditorVisible}" AllowScrim="True" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" >
+            <StackLayout Orientation="Vertical">
+                <Label Text="Save set"
+                           TextColor="#404144"
+                           Margin="24,16,24,14"
+                           HorizontalTextAlignment="Center"/>
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <dxe:NumericEdit Value="{Binding CompletedSet.Weight, Mode=TwoWay}" LabelText="Weight:" Suffix="LB" BoxMode="Filled" BackgroundColor="Transparent" />
+                <dxe:NumericEdit Value="{Binding CompletedSet.Repetitions, Mode=TwoWay}" LabelText="Repetitions:" BoxMode="Filled" BackgroundColor="Transparent" />
+                <dxe:NumericEdit Value="{Binding CompletedSet.RestTime, Converter={StaticResource TimeSpanToSecondsConverter}, Mode=TwoWay}" LabelText="Rest time" Suffix="seconds" BoxMode="Filled" BackgroundColor="Transparent" />
+                <dxe:NumericEdit Value="{Binding CompletedSet.Duration, Converter={StaticResource TimeSpanToSecondsConverter}, Mode=TwoWay}" LabelText="Duration" Suffix="seconds" BoxMode="Filled" BackgroundColor="Transparent" />
+
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <dxco:SimpleButton Text="Save"
+                                      Command="{Binding SaveSetCommand}"
+                                      CommandParameter="{Binding Source={x:Reference setsList}, Path=SelectedItem}"
+                                      TextColor="#2088ff"
+                                      PressedBackgroundColor="#e8e8e8"
+                                      BackgroundColor="Transparent"
+                                      Margin="0,0,0,6"/>
+            </StackLayout>
+        </dxco:DXPopup>
+        <!-- Replace exercise-->
+        <dxco:DXPopup x:Name="ReplaceExercisePopup" IsOpen="{Binding IsReplaceExerciseVisible}" AllowScrim="True" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" >
+            <StackLayout Orientation="Vertical">
+                <Label Text="Pick exercise"
+                           TextColor="#404144"
+                           Margin="24,16,24,14"
+                           HorizontalTextAlignment="Center"/>
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <dxe:AutoCompleteEdit x:Name="replaceExercisePicker" DropDownBackgroundColor="White" PlaceholderText="Type exercise name" NoResultsFoundText="No exercises found" DisplayMember="Name" >
+                    <dxe:AutoCompleteEdit.ItemsSourceProvider>
+                        <dxe:FilteredItemsSourceProvider ItemsSource="{Binding Exercises}"
+                                         FilterCondition="Contains"
+                                         FilterComparisonType="CurrentCultureIgnoreCase"
+                                         FilterMembers="Name"/>
+                    </dxe:AutoCompleteEdit.ItemsSourceProvider>
+                    <dxe:AutoCompleteEdit.ItemTemplate>
+                        <DataTemplate x:DataType="model:ExerciseViewModel">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Margin="0" Padding="0" ColumnSpacing="0" RowSpacing="0">
+                                    <Image Source="{Binding ImagePath, Converter = {StaticResource ImagePathConverter}}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="80" HeightRequest="80">
+                                        <Image.Clip>
+                                            <EllipseGeometry RadiusX="40" RadiusY="40" Center="40, 40" />
+                                        </Image.Clip>
+                                    </Image>
+                                    <Ellipse Margin="0"
+                                 Fill="Transparent"
+                                 Stroke="LightGray" 
+                                 StrokeThickness="1"
+                                 HeightRequest="80"
+                                 WidthRequest="80"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center">
+                                    </Ellipse>
+                                </Grid>
+
+                                <StackLayout Padding="18,1,18,7" Grid.Column="1" >
+                                    <Label Text="{Binding Name}"
+                                       Margin="10,2"
+                                       FontSize="18"
+                                       TextColor="#55575c"/>
+                                </StackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </dxe:AutoCompleteEdit.ItemTemplate>
+                </dxe:AutoCompleteEdit>
+
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <dxco:SimpleButton Text="Done"
+                                      Command="{Binding ReplaceExerciseCommand}"
+                                      CommandParameter="{Binding Source={x:Reference replaceExercisePicker}, Path=SelectedItem}"
+                                      TextColor="#2088ff"
+                                      PressedBackgroundColor="#e8e8e8"
+                                      BackgroundColor="Transparent"
+                                      Margin="0,0,0,6"/>
+                    <dxco:SimpleButton Text="Cancel"
+                                      Command="{Binding CancelExerciseCommand}"
+                                      TextColor="HotPink"
+                                      PressedBackgroundColor="#e8e8e8"
+                                      BackgroundColor="Transparent"
+                                      Margin="0,0,0,6"/>
+                </HorizontalStackLayout>
+
+            </StackLayout>
+        </dxco:DXPopup>
+    </Grid>
+</ContentPage>

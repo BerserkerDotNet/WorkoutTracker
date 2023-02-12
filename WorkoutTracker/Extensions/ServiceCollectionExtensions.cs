@@ -3,11 +3,13 @@ using BlazorState.Redux.Extensions;
 using Mapster;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 using WorkoutTracker.Data.Actions;
 using WorkoutTracker.Data.Reducers;
 using WorkoutTracker.Data.Services;
 using WorkoutTracker.Models.Entities;
+using WorkoutTracker.Models.Presentation;
 
 namespace WorkoutTracker.Extensions;
 
@@ -46,6 +48,11 @@ public static class ServiceCollectionExtensions
         var httpClientBuilder = services.AddHttpClient<IWorkoutRepository, CachedWorkoutRepositoryDecorator>((client, sp) =>
         {
             client.BaseAddress = new Uri(configuration["ApiEndpoint"]);
+
+            // INotificationService notifications, IApplicationInsights appInsights, ILogger<TCategory> logger
+            var ns = sp.GetRequiredService<INotificationService>();
+            var ai = sp.GetRequiredService<IApplicationInsights>();
+            var l = sp.GetRequiredService<ILogger<ApiRepositoryClient>>();
             var apiRepo = new ApiRepositoryClient(client, sp.GetRequiredService<ApplicationContext<ApiRepositoryClient>>());
             return new CachedWorkoutRepositoryDecorator(apiRepo, sp.GetRequiredService<ICacheService>(), sp.GetRequiredService<ApplicationContext<CachedWorkoutRepositoryDecorator>>());
         })

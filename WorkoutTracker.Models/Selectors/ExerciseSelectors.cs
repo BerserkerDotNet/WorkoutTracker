@@ -31,7 +31,7 @@ public record MuscleGroupExerciseSelector(string GroupName, int? TargetSets = nu
 {
     public ExerciseDescriptor Select(IEnumerable<ExerciseViewModel> exercises)
     {
-        var matchedExercises = exercises.Where(e => string.Equals(e.Muscles.First().MuscleGroup, GroupName, StringComparison.OrdinalIgnoreCase));
+        var matchedExercises = exercises.Where(e => Array.IndexOf(e.MuscleGroups, GroupName) >= 0 && Array.IndexOf(e.MuscleGroups, GroupName) < 3);
         return matchedExercises.Any() ? new ExerciseDescriptor(matchedExercises, TargetSets, TargetRestTime) : null;
     }
 

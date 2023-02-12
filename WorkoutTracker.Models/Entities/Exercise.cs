@@ -79,6 +79,21 @@ public class Schedule
     public required WorkoutDefinition Saturday { get; set; }
 
     public required WorkoutDefinition Sunday { get; set; }
+
+    public WorkoutDefinition From(DayOfWeek dayOfWeek)
+    {
+        return dayOfWeek switch
+        {
+            DayOfWeek.Monday => Monday,
+            DayOfWeek.Tuesday => Tuesday,
+            DayOfWeek.Wednesday => Wednesday,
+            DayOfWeek.Thursday => Thursday,
+            DayOfWeek.Friday => Friday,
+            DayOfWeek.Saturday => Saturday,
+            DayOfWeek.Sunday => Sunday,
+            _ => WorkoutDefinition.Rest
+        };
+    }
 }
 
 public class WorkoutDefinition

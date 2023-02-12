@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
+             xmlns:dxdf="clr-namespace:DevExpress.Maui.DataForm;assembly=DevExpress.Maui.Editors"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
+             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             x:Class="WorkoutTracker.MAUI.Views.EditExercisePage"
+             x:DataType="vm:EditExercisePageViewModel"
+             Title="Edit Exercise">
+    <ContentPage.Resources>
+        <conv:ImagePathConverter x:Key="ImagePathConverter"></conv:ImagePathConverter>
+    </ContentPage.Resources>
+    <Grid x:Name="grid" RowSpacing="10" Margin="10,0">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <dxdf:DataFormView DataObject="{Binding Exercise, Mode=TwoWay}" EditorBoxMode="Filled" ValidationMode="PropertyChanged" IsEditorLabelVisible="True" IsAutoGenerationEnabled="False" EditorLabelPosition="Top">
+            <dxdf:DataFormCustomItem FieldName="ImagePath" RowOrder="0" x:DataType="model:ExerciseViewModel" IsLabelVisible="False">
+                <Grid Margin="0" Padding="16" ColumnSpacing="0" RowSpacing="0">
+                    <Image Source="{Binding ImagePath, Converter = {StaticResource ImagePathConverter}}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="300" HeightRequest="300">
+                        <Image.Clip>
+                            <EllipseGeometry RadiusX="150" RadiusY="150" Center="150, 150" />
+                        </Image.Clip>
+                    </Image>
+                    <Ellipse Margin="0"
+                                 Fill="Transparent"
+                                 Stroke="LightGray" 
+                                 StrokeThickness="1"
+                                 HeightRequest="300"
+                                 WidthRequest="300"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center">
+                    </Ellipse>
+                </Grid>
+            </dxdf:DataFormCustomItem>
+            <dxdf:DataFormCustomItem FieldName="Name" RowOrder="1" GroupName="Basic" x:DataType="model:ExerciseViewModel">
+                <dxe:TextEdit Text="{Binding Name,Mode=TwoWay}" PlaceholderText="Eexrcise name" />
+            </dxdf:DataFormCustomItem>
+            <dxdf:DataFormCustomItem FieldName="Description" RowOrder="2" GroupName="Basic" x:DataType="model:ExerciseViewModel">
+                <dxe:MultilineEdit Text="{Binding Description,Mode=TwoWay}" PlaceholderText="Exercise description" MaxLineCount="5" MinLineCount="2" />
+            </dxdf:DataFormCustomItem>
+
+            <dxdf:DataFormCustomItem FieldName="TutorialUrl" RowOrder="3" GroupName="Help" x:DataType="model:ExerciseViewModel">
+                <dxe:TextEdit Text="{Binding TutorialUrl,Mode=TwoWay}" PlaceholderText="Url to the tutorial" />
+            </dxdf:DataFormCustomItem>
+            <dxdf:DataFormCustomItem FieldName="Steps" RowOrder="4" GroupName="Help" x:DataType="model:ExerciseViewModel">
+                <dxe:MultilineEdit Text="{Binding Steps,Mode=TwoWay}" PlaceholderText="Steps to execute" MaxLineCount="6" MinLineCount="3" />
+            </dxdf:DataFormCustomItem>
+            
+            <dxdf:DataFormCustomItem FieldName="Tags" RowOrder="5" x:DataType="model:ExerciseViewModel" IsLabelVisible="True" LabelPosition="Top" GroupName="Additional">
+                <StackLayout Padding="16">
+                    <dxe:InputChipGroup ItemsSource="{Binding Tags}" Completed="InputChipGroup_Completed" EditorPlaceholderText="Type a tag name" ChipRemoveIconClicked="InputChipGroup_ChipRemoveIconClicked" />
+                </StackLayout>
+            </dxdf:DataFormCustomItem>
+            <dxdf:DataFormCustomItem FieldName="Muscles" RowOrder="6" x:DataType="model:ExerciseViewModel" IsLabelVisible="True" LabelPosition="Top" GroupName="Basic">
+                <StackLayout Padding="16">
+                    <dxe:AutoCompleteTokenEdit DisplayMember="Name" SelectedItems="{Binding Muscles}" IsEndIconVisible="True">
+                        <dxe:AutoCompleteTokenEdit.ItemsSourceProvider>
+                            <dxe:AsyncItemsSourceProvider ItemsRequested="AsyncItemsSourceProvider_ItemsRequested" />
+                        </dxe:AutoCompleteTokenEdit.ItemsSourceProvider>
+                    </dxe:AutoCompleteTokenEdit>
+                </StackLayout>
+            </dxdf:DataFormCustomItem>
+
+            <dxdf:DataFormCustomItem FieldName="Id" RowOrder="51" IsVisible="False" />
+            <dxdf:DataFormCustomItem FieldName="MuscleGroups" RowOrder="50" IsVisible="False" />
+        </dxdf:DataFormView>
+        <dxco:SimpleButton Grid.Row="1" HeightRequest="50" Text="Save" Command="{Binding SaveExerciseCommand}"/>
+    </Grid>
+</ContentPage>

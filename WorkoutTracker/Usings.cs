@@ -6,4 +6,5 @@ global using WorkoutTracker.Components.Dialogs;
 global using WorkoutTracker.Data;
 global using WorkoutTracker.Data.Props;
 global using WorkoutTracker.Interfaces;
+global using WorkoutTracker.Models.Presentation;
 global using WorkoutTracker.ViewModels;
