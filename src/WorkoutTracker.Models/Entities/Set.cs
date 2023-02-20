@@ -1,5 +1,4 @@
 ﻿using System;
-using UnitsNet;
 using WorkoutTracker.Models.Contracts;
 
 namespace WorkoutTracker.Models.Entities;
@@ -29,7 +28,7 @@ public class LegacySet : IExerciseSet
         set
         {
             WeightLB = value;
-            WeightKG = Mass.FromPounds(value).ToUnit(UnitsNet.Units.MassUnit.Kilogram).Value;
+            WeightKG = Math.Ceiling(value * 0.453592);
         }
     }
 }

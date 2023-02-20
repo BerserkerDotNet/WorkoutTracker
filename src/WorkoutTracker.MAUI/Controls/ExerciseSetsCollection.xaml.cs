@@ -62,23 +62,7 @@ public partial class ExerciseSetsCollection : ContentView
 
     private void OnExpandCollapse(object sender, System.EventArgs e)
     {
-        var fadeDirection = expandArea.Opacity == 0 ? 1 : 0;
-        if (fadeDirection == 0)
-        {
-            expandArea.FadeTo(fadeDirection).ContinueWith((_) =>
-            {
-                Dispatcher.Dispatch(() =>
-                {
-                    expandArea.IsVisible = !expandArea.IsVisible;
-                });
-
-            });
-        }
-        else
-        {
-            expandArea.IsVisible = !expandArea.IsVisible;
-            expandArea.FadeTo(fadeDirection);
-        }
+        expandArea.IsVisible = !expandArea.IsVisible;
     }
 
     protected override void OnBindingContextChanged()
@@ -100,7 +84,19 @@ public partial class ExerciseSetsCollection : ContentView
 
     private void ObservableSets_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        RenderSets(_viewModel.Sets);
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+        {
+            AddSet(e.NewItems[0] as IExerciseSet);
+        }
+        else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+        {
+            this.expandArea.RemoveAt(e.OldStartingIndex);
+        }
+        else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace)
+        {
+            ReplaceSet(e.NewItems[0] as IExerciseSet, e.NewStartingIndex);
+        }
+
         UpdateSetsStatus();
     }
 
@@ -124,16 +120,25 @@ public partial class ExerciseSetsCollection : ContentView
     private void RenderSets(IEnumerable<IExerciseSet> sets)
     {
         this.expandArea.Clear();
-
-        var idx = 1;
         foreach (var set in sets)
         {
-            var wrapper = new SetWrapper(idx, set, _viewModel);
-            var setView = new ExerciseSetView() { BindingContext = wrapper };
-            setView.SetBinding(ExerciseSetView.SetClickedCommandProperty, new Binding(nameof(SetClickedCommand), source: this));
-            this.expandArea.Add(setView);
-            idx++;
+            AddSet(set);
         }
+    }
+
+    private void AddSet(IExerciseSet set)
+    {
+        var number = this.expandArea.Children.Count + 1;
+        var wrapper = new SetWrapper(number, set, _viewModel);
+        var setView = new ExerciseSetView() { BindingContext = wrapper };
+        setView.SetBinding(ExerciseSetView.SetClickedCommandProperty, new Binding(nameof(SetClickedCommand), source: this));
+        this.expandArea.Add(setView);
+    }
+
+    private void ReplaceSet(IExerciseSet set, int idx)
+    {
+        var wrapper = new SetWrapper(idx + 1, set, _viewModel);
+        ((ExerciseSetView)this.expandArea.Children[idx]).BindingContext = wrapper;
     }
 
     private void OnHeaderMenuClicked(object sender, System.EventArgs e)

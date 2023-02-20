@@ -149,8 +149,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
 
         var sets = SelectedModel.Sets as ObservableCollection<IExerciseSet>;
         var idx = sets.IndexOf(CompletedSet);
-        sets.RemoveAt(idx);
-        sets.Insert(idx, CompletedSet);
+        sets[idx] = CompletedSet;
 
         SelectedModel = null;
         CompletedSet = null;
@@ -191,8 +190,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
         {
             var sets = wrapper.Model.Sets as ObservableCollection<IExerciseSet>;
             var idx = wrapper.Number - 1;
-            sets.RemoveAt(idx);
-            sets.Insert(idx, new InProgressSet { Repetitions = wrapper.Set.Repetitions, Weight = wrapper.Set.Weight, RestTime = _currentTime });
+            sets[idx] = new InProgressSet { Repetitions = wrapper.Set.Repetitions, Weight = wrapper.Set.Weight, RestTime = _currentTime };
 
             _timer.SetMode(ExerciseTimerMode.Exercising);
         }
@@ -202,8 +200,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
             var idx = wrapper.Number - 1;
             var inProgressSet = wrapper.Set as InProgressSet;
             var completedSet = new CompletedSet { Repetitions = inProgressSet.Repetitions, Weight = inProgressSet.Weight, RestTime = inProgressSet.RestTime, Duration = _currentTime, CompletionTime = DateTime.UtcNow };
-            sets.RemoveAt(idx);
-            sets.Insert(idx, completedSet);
+            sets[idx] = completedSet;
             CompletedSet = completedSet;
 
             _timer.SetMode(ExerciseTimerMode.Resting);
@@ -248,8 +245,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
             };
 
             var idx = TodaySets.IndexOf(SelectedModel);
-            TodaySets.RemoveAt(idx);
-            TodaySets.Add(newLogEntry);
+            TodaySets[idx] = newLogEntry;
             _trackerDb.UpdateViewModel(newLogEntry);
         }
 

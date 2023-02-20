@@ -1,14 +1,13 @@
 using Nuke.Common;
 using Nuke.Common.CI;
-using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.DotNet;
+using System.Linq;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
-[CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
 class Build : NukeBuild
 {
@@ -17,7 +16,7 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
-    [Solution] readonly Solution Solution;
+    [Solution(GenerateProjects = true)] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
 
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
@@ -50,9 +49,9 @@ class Build : NukeBuild
     .Executes(() =>
     {
         DotNetPublish(s => s
-            .SetProject(Solution.GetProject("WorkoutTracker.MAUI"))
+            .SetProject(Solution.src.WorkoutTracker_MAUI)
             .SetConfiguration(Configuration)
-            .SetFramework("net7.0-android")
+            .SetFramework(Solution.src.WorkoutTracker_MAUI.GetTargetFrameworks().First())
             .SetOutput(ArtifactsDirectory));
     });
 }

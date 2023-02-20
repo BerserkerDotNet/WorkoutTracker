@@ -79,7 +79,7 @@
                       />
         </Grid>
         
-        <StackLayout x:Name="expandArea" Grid.ColumnSpan="2" Grid.Row="1" IsVisible="False" Opacity="0">
+        <StackLayout x:Name="expandArea" Grid.ColumnSpan="2" Grid.Row="1" IsVisible="False">
         </StackLayout>
         <!-- Exercise menu -->
         <dxco:DXPopup PlacementTarget="{x:Reference contextMenuBtn}" x:Name="contextMenu" Placement="Bottom" HorizontalAlignment="Right" AllowShadow="True">
