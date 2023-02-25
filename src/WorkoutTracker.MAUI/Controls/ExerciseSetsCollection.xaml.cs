@@ -49,6 +49,8 @@ public partial class ExerciseSetsCollection : ContentView
     }
 
     private LogEntryViewModel _viewModel;
+    private bool _isSetsRendered = false;
+
 
     public ExerciseSetsCollection()
     {
@@ -63,27 +65,50 @@ public partial class ExerciseSetsCollection : ContentView
     private void OnExpandCollapse(object sender, System.EventArgs e)
     {
         expandArea.IsVisible = !expandArea.IsVisible;
+        if (!_isSetsRendered)
+        {
+            RenderSets(_viewModel.Sets);
+        }
     }
 
     protected override void OnBindingContextChanged()
     {
         base.OnBindingContextChanged();
 
-        _viewModel = BindingContext as LogEntryViewModel;
-        if (_viewModel is null)
+        var ctx = BindingContext as LogEntryViewModel;
+        if (ctx is null)
         {
             return;
         }
 
+        if (_viewModel is not null)
+        {
+            var oldSets = _viewModel.Sets as ObservableCollection<IExerciseSet>;
+            oldSets.CollectionChanged -= ObservableSets_CollectionChanged;
+        }
+
+        _viewModel = ctx;
+
         var observableSets = _viewModel.Sets as ObservableCollection<IExerciseSet>;
         observableSets.CollectionChanged += ObservableSets_CollectionChanged;
 
-        RenderSets(_viewModel.Sets);
+        if (expandArea.IsVisible)
+        {
+            RenderSets(_viewModel.Sets);
+        }
+
         UpdateSetsStatus();
     }
 
     private void ObservableSets_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
+        UpdateSetsStatus();
+
+        if (!_isSetsRendered)
+        {
+            return;
+        }
+
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
             AddSet(e.NewItems[0] as IExerciseSet);
@@ -96,8 +121,6 @@ public partial class ExerciseSetsCollection : ContentView
         {
             ReplaceSet(e.NewItems[0] as IExerciseSet, e.NewStartingIndex);
         }
-
-        UpdateSetsStatus();
     }
 
     private void UpdateSetsStatus()
@@ -119,11 +142,16 @@ public partial class ExerciseSetsCollection : ContentView
 
     private void RenderSets(IEnumerable<IExerciseSet> sets)
     {
+        this.expandArea.BatchBegin();
         this.expandArea.Clear();
         foreach (var set in sets)
         {
             AddSet(set);
         }
+
+        this.expandArea.BatchCommit();
+
+        _isSetsRendered = true;
     }
 
     private void AddSet(IExerciseSet set)

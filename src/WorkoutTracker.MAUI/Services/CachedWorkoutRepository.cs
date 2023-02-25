@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,7 +107,7 @@ public class CachedWorkoutRepositoryDecorator : IWorkoutRepository
 
     public Task UpdateMuscle(MuscleViewModel muscle) => _decoratedRepository.UpdateMuscle(muscle);
 
-    public Task<bool> UploadImage(IBrowserFile file, string imagePath) => _decoratedRepository.UploadImage(file, imagePath);
+    public Task<bool> UploadImage(FileResult file, string imagePath) => _decoratedRepository.UploadImage(file, imagePath);
 
     public Task UpdateProgram(WorkoutProgram program) => _decoratedRepository.UpdateProgram(program);
 

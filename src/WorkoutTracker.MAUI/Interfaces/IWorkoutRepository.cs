@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.Maui.Storage;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -37,5 +37,5 @@ public interface IWorkoutRepository
 
     Task UpdateProgram(WorkoutProgram program);
 
-    Task<bool> UploadImage(IBrowserFile file, string imagePath);
+    Task<bool> UploadImage(FileResult file, string imagePath);
 }

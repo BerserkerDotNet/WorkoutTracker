@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
     <TargetFramework>net7.0-android</TargetFramework>
 		<OutputType>Exe</OutputType>
@@ -6,7 +6,6 @@
 		<UseMaui>true</UseMaui>
 		<RootNamespace>WorkoutTracker.MAUI</RootNamespace>
 		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
-    <EnableDefaultCssItems>false</EnableDefaultCssItems>
 
 		<!-- Display name -->
 		<ApplicationTitle>Workout tracker</ApplicationTitle>
@@ -81,27 +80,4 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Compile Update="Controls\ExerciseSetView.xaml.cs">
-	    <DependentUpon>ExerciseSetView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Controls\ExerciseSetsCollection.xaml.cs">
-	    <DependentUpon>ExerciseSetsCollection.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\EditExercisePage.xaml.cs">
-	    <DependentUpon>EditExercisePage.xaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-	<ItemGroup>
-	  <MauiXaml Update="Controls\ExerciseSetView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Controls\ExerciseSetsCollection.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\EditExercisePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	</ItemGroup>
-
 </Project>

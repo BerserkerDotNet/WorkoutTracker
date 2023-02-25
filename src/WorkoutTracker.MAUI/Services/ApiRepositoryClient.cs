@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,14 +132,14 @@ public class ApiRepositoryClient : IWorkoutRepository
         return summaries;
     }
 
-    public async Task<bool> UploadImage(IBrowserFile file, string imagePath)
+    public async Task<bool> UploadImage(FileResult file, string imagePath)
     {
         if (file is null)
         {
             return true;
         }
-
-        var fileContent = new StreamContent(file.OpenReadStream());
+        var stream = await file.OpenReadAsync();
+        var fileContent = new StreamContent(stream);
 
         using var content = new MultipartFormDataContent();
 
@@ -147,7 +147,7 @@ public class ApiRepositoryClient : IWorkoutRepository
         content.Add(
             content: fileContent,
             name: imagePath,
-            fileName: file.Name);
+            fileName: file.FileName);
 
         var response = await _client.PostAsync("UploadImage", content);
 
