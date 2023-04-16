@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
+             xmlns:dxdf="clr-namespace:DevExpress.Maui.DataForm;assembly=DevExpress.Maui.Editors"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
+             xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
+             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             x:Class="WorkoutTracker.MAUI.Views.EditWorkoutProgram"
+             x:DataType="vm:EditWorkoutProgramViewModel"
+             Title="Workout program">
+    <ContentPage.Resources>
+        <conv:ScheduleToListConverter x:Key="ScheduleToListConverter"></conv:ScheduleToListConverter>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" />
+    </ContentPage.ToolbarItems>
+    <Grid x:Name="grid" RowSpacing="10" Margin="10,0">
+        <dxdf:DataFormView x:Name="mainForm" DataObject="{Binding WorkoutProgram, Mode=TwoWay}" EditorBoxMode="Filled" ValidationMode="PropertyChanged" IsEditorLabelVisible="True" IsAutoGenerationEnabled="False" EditorLabelPosition="Top">
+            <dxdf:DataFormCustomItem FieldName="Name" RowOrder="1" x:DataType="entities:WorkoutProgram">
+                <dxe:TextEdit Text="{Binding Name,Mode=TwoWay}" PlaceholderText="Program name" />
+            </dxdf:DataFormCustomItem>
+            
+            <dxdf:DataFormCustomItem FieldName="Schedule" RowOrder="2" x:DataType="entities:WorkoutProgram">
+                <dxcv:DXCollectionView ItemsSource="{Binding Schedule, Converter={x:StaticResource ScheduleToListConverter}}" TapCommand="{Binding Path=BindingContext.EditDefinitionCommand, Source={x:Reference mainForm}}">
+                    <dxcv:DXCollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="entities:AssignedWorkoutDefinition">
+                        <Grid Padding="18,1,18,7">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <StackLayout Orientation="Vertical">
+                                <Label Text="{Binding DayOfWeekName}"
+                                       HorizontalTextAlignment="Start"
+                                       Margin="10,2"
+                                       FontSize="18"
+                                       TextColor="#55575c"/>
+                                <Label Text="{Binding Definition.Name}"
+                                       HorizontalTextAlignment="Start"
+                                       Margin="10,2"
+                                       FontSize="18"
+                                       TextColor="#2088ff"/>
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                        </dxcv:DXCollectionView.ItemTemplate>
+                </dxcv:DXCollectionView>
+            </dxdf:DataFormCustomItem>
+            
+            <dxdf:DataFormCustomItem FieldName="Id" RowOrder="51" IsVisible="False" />
+        </dxdf:DataFormView>
+    </Grid>
+</ContentPage>

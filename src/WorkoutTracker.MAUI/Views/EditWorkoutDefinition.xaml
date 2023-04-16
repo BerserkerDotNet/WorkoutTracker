@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
+             xmlns:dxdf="clr-namespace:DevExpress.Maui.DataForm;assembly=DevExpress.Maui.Editors"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
+             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:controls="clr-namespace:WorkoutTracker.MAUI.Controls.WorkoutDefinition"
+             x:Class="WorkoutTracker.MAUI.Views.EditWorkoutDefinition"
+             x:DataType="vm:EditWorkoutDefinitionViewModel"
+             Title="Workout definition">
+    <ContentPage.Resources>
+        <conv:NewExerciseOptionsConverter x:Key="NewExerciseOptionsConverter" />
+        <Style x:Key="SeparatorStyle" TargetType="BoxView">
+            <Setter Property="BackgroundColor" Value="#EBEBEB"/>
+            <Setter Property="HeightRequest" Value="1"/>
+        </Style>
+        <Style x:Key="ButtonStyle" TargetType="dxco:SimpleButton">
+            <Setter Property="IconColor" Value="#404144"/>
+            <Setter Property="TextColor" Value="#404144"/>
+            <Setter Property="Padding" Value="24,8"/>
+            <Setter Property="IconIndent" Value="16"/>
+            <Setter Property="HorizontalContentAlignment" Value="Start"/>
+            <Setter Property="PressedBackgroundColor" Value="#e8e8e8"/>
+            <Setter Property="HorizontalOptions" Value="Fill"/>
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding ShowNewExerciseMenuCommand}" />
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" />
+    </ContentPage.ToolbarItems>
+    <Grid RowSpacing="10" Margin="10,0">
+        <dxdf:DataFormView x:Name="mainForm" DataObject="{Binding WorkoutDefinition, Mode=TwoWay}" EditorBoxMode="Filled" ValidationMode="PropertyChanged" IsEditorLabelVisible="True" IsAutoGenerationEnabled="False" EditorLabelPosition="Top">
+            <dxdf:DataFormCustomItem FieldName="Name" RowOrder="1" x:DataType="entities:WorkoutDefinition">
+                <dxe:TextEdit Text="{Binding Name, Mode=TwoWay}" PlaceholderText="Name" />
+            </dxdf:DataFormCustomItem>
+            <dxdf:DataFormCustomItem FieldName="Exercises" RowOrder="2" x:DataType="entities:WorkoutDefinition">
+                <VerticalStackLayout>
+                    <dxcv:DXCollectionView
+                            FlexLayout.Grow="1"
+                            ReduceSizeToContent="True"
+                            ItemsSource="{Binding Exercises}"
+                            SelectionMode="None">
+                        <dxcv:DXCollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ExerciseDefinitionEditor 
+                                    Exercises="{Binding BindingContext.Exercises, Source={x:Reference mainForm}}"
+                                    Muscles="{Binding BindingContext.Muscles, Source={x:Reference mainForm}}"/>
+                            </DataTemplate>
+                        </dxcv:DXCollectionView.ItemTemplate>
+                        <dxcv:DXCollectionView.Margin>
+                            <x:OnIdiom Phone="8,0,0,0" Tablet="71,0,0,0"/>
+                        </dxcv:DXCollectionView.Margin>
+                    </dxcv:DXCollectionView>
+                </VerticalStackLayout>
+            </dxdf:DataFormCustomItem>
+        </dxdf:DataFormView>
+
+        <!-- Exercise menu -->
+        <dxco:DXPopup x:Name="addExerciseMenu" IsOpen="{Binding IsNewExerciseMenuVisible}" AllowScrim="True" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" >
+            <StackLayout Orientation="Vertical">
+                <Label Text="Exercise options"
+                           TextColor="#404144"
+                           Margin="24,16,24,14"
+                           HorizontalTextAlignment="Center"/>
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <dxe:ChoiceChipGroup x:Name="exerciseSelector" ChipIsIconVisible="True" 
+                                     ItemsSource="{Binding ExerciseSelectorTypes, Source={RelativeSource AncestorType={x:Type vm:EditWorkoutDefinitionViewModel }}}" ChipSelectedBackgroundColor="#2088ff" DisplayMember="Text" />
+                <dxe:ChoiceChipGroup x:Name="overloadSelector" ChipIsIconVisible="True" 
+                                     ItemsSource="{Binding OverloadSelectorTypes, Source={RelativeSource AncestorType={x:Type vm:EditWorkoutDefinitionViewModel }}}" ChipSelectedBackgroundColor="#2088ff" DisplayMember="Text" />
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <dxco:SimpleButton Text="Done"
+                                       Command="{Binding AddExerciseCommand, Source={RelativeSource AncestorType={x:Type vm:EditWorkoutDefinitionViewModel }} }"
+                                       TextColor="#2088ff"
+                                       PressedBackgroundColor="#e8e8e8"
+                                       BackgroundColor="Transparent"
+                                       Margin="0,0,0,6">
+                        <dxco:SimpleButton.CommandParameter>
+                            <MultiBinding Converter="{StaticResource NewExerciseOptionsConverter}">
+                                <MultiBinding.Bindings>
+                                    <Binding Path="SelectedItem" Source="{x:Reference exerciseSelector}" />
+                                    <Binding Path="SelectedItem" Source="{x:Reference overloadSelector}" />
+                                </MultiBinding.Bindings>
+                            </MultiBinding>
+                        </dxco:SimpleButton.CommandParameter>
+                    </dxco:SimpleButton>
+                    <dxco:SimpleButton Text="Cancel"
+                                       Command="{Binding Path=HideNewExerciseMenuCommand, Source={RelativeSource AncestorType={x:Type vm:EditWorkoutDefinitionViewModel }}}"
+                                       TextColor="HotPink"
+                                       PressedBackgroundColor="#e8e8e8"
+                                       BackgroundColor="Transparent"
+                                       Margin="0,0,0,6"/>
+                </HorizontalStackLayout>
+            </StackLayout>
+        </dxco:DXPopup>
+    </Grid>
+</ContentPage>

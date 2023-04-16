@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
+             xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
+             xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
+             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             x:DataType="vm:WorkoutProgramsViewModel"
+             x:Class="WorkoutTracker.MAUI.Views.WorkoutPrograms"
+             Title="Workout Programs">
+    <ContentPage.Resources>
+        <conv:ScheduleToNamesListConverter x:Key="ScheduleToNamesListConverter"></conv:ScheduleToNamesListConverter>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding EditProgramCommand}" IconImageSource="add.svg" />
+    </ContentPage.ToolbarItems>
+    <StackLayout>
+        <dxcv:DXCollectionView
+                ItemsSource="{Binding Programs}"
+                PullToRefreshCommand="{Binding LoadProgramsCommand}"
+                TapCommand="{Binding EditProgramCommand}"
+                IsRefreshing="{Binding IsLoadingData}"
+                SelectionMode="None">
+            <dxcv:DXCollectionView.ItemTemplate>
+                <DataTemplate x:DataType="entities:WorkoutProgram">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Name}"
+                            HorizontalTextAlignment="Start"
+                            Margin="10,2"
+                            FontSize="18"
+                            TextColor="#55575c"/>
+                        <dxe:ChipGroup  ChipTextColor="#55575c" ItemsSource="{Binding Schedule, Converter={x:StaticResource ScheduleToNamesListConverter}}" />
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </dxcv:DXCollectionView.ItemTemplate>
+            <dxcv:DXCollectionView.Margin>
+                <x:OnIdiom Phone="8,0,0,0" Tablet="71,0,0,0"/>
+            </dxcv:DXCollectionView.Margin>
+        </dxcv:DXCollectionView>
+    </StackLayout>
+</ContentPage>
