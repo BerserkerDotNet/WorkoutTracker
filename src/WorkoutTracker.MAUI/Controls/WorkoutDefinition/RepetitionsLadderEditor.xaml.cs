@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using WorkoutTracker.Models.Entities;
+
+namespace WorkoutTracker.MAUI.Controls.WorkoutDefinition
+{
+    public partial class RepetitionsLadderEditor : ContentView
+    {
+        public RepetitionsLadderEditor(RepetitionsLadderOverloadFactor factor)
+        {
+            InitializeComponent();
+            BindingContext = factor;
+        }
+    }
+}

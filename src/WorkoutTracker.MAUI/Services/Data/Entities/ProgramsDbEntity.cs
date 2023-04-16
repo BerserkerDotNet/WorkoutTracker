@@ -12,6 +12,16 @@ public class ProgramsDbEntity : BaseDbEntity
 
     public string ScheduleBlobbed { get; set; }
 
+    public WorkoutProgram ToViewModel()
+    {
+        return new WorkoutProgram
+        {
+            Id = Id,
+            Name = Name,
+            Schedule = Schedule,
+        };
+    }
+
     public static ProgramsDbEntity FromViewModel(WorkoutProgram workoutProgram)
     {
         return new ProgramsDbEntity

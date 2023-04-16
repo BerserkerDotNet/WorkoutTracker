@@ -93,7 +93,7 @@ public sealed partial class LibraryViewModel : ObservableObject
             .Build();
 
         WorkManager.GetInstance(Microsoft.Maui.ApplicationModel.Platform.AppContext)
-            .EnqueueUniqueWork(DataSyncWorker.TAG, ExistingWorkPolicy.Keep, workerRequest);
+            .EnqueueUniqueWork(DataSyncWorker.TAG, ExistingWorkPolicy.Replace, workerRequest);
     }
 
     [RelayCommand]

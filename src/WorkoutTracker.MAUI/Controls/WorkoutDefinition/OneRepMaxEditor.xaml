@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
+             x:DataType="entities:OneRepMaxProgressiveOverloadFactor"
+             x:Class="WorkoutTracker.MAUI.Controls.WorkoutDefinition.OneRepMaxEditor">
+    <VerticalStackLayout>
+        <dxe:NumericEdit LabelText="Percentage" Value="{Binding Percentage, Mode=TwoWay}"
+                         Suffix="%" IsUpDownIconVisible="True" StepValue="5" MinValue="5" MaxValue="100" UpDownIconAlignment="Start" />
+        <dxe:NumericEdit LabelText="Target sets" Value="{Binding NumberOfSets, Mode=TwoWay}"
+                         IsUpDownIconVisible="True" StepValue="1" MinValue="1" UpDownIconAlignment="Start"/>
+    </VerticalStackLayout>
+</ContentView>

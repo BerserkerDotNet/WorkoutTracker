@@ -11,6 +11,8 @@ public interface IExerciseSet
     double Weight { get; set; }
 
     int Repetitions { get; set; }
+
+    bool IsWarmup { get; set; }
 }
 
 public class IExerciseSetPolymorphicJsonConverter : JsonConverter<IExerciseSet>

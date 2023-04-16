@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
+             x:DataType="entities:SteadyStateProgressiveOverloadFactor"
+             x:Class="WorkoutTracker.MAUI.Controls.WorkoutDefinition.SteadyStateEditor">
+    <VerticalStackLayout>
+        <dxe:NumericEdit LabelText="Weight" Value="{Binding Weight, Mode=TwoWay}"
+                         Suffix="LB" IsUpDownIconVisible="True" StepValue="5" MinValue="0" UpDownIconAlignment="Start" />
+        <dxe:NumericEdit LabelText="Target sets" Value="{Binding NumberOfSets, Mode=TwoWay}"
+                         IsUpDownIconVisible="True" StepValue="1" MinValue="1" UpDownIconAlignment="Start"/>
+        <dxe:NumericEdit LabelText="Target reps" Value="{Binding NumberOfReps, Mode=TwoWay}"
+                         IsUpDownIconVisible="True" StepValue="1" MinValue="1" UpDownIconAlignment="Start"/>
+    </VerticalStackLayout>
+</ContentView>

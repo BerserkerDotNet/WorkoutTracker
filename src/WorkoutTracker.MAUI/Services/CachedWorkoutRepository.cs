@@ -107,7 +107,7 @@ public class CachedWorkoutRepositoryDecorator : IWorkoutRepository
 
     public Task UpdateMuscle(MuscleViewModel muscle) => _decoratedRepository.UpdateMuscle(muscle);
 
-    public Task<bool> UploadImage(FileResult file, string imagePath) => _decoratedRepository.UploadImage(file, imagePath);
+    public Task<bool> UploadImage(FileResult file, string imagePath) => Task.FromResult(false);
 
     public Task UpdateProgram(WorkoutProgram program) => _decoratedRepository.UpdateProgram(program);
 

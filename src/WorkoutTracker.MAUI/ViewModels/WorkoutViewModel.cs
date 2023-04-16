@@ -13,6 +13,8 @@ using WorkoutTracker.MAUI.Services.Data;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.Models.Selectors;
+using WorkoutTracker.Services;
 
 namespace WorkoutTracker.MAUI.ViewModels;
 
@@ -138,7 +140,10 @@ public sealed partial class WorkoutViewModel : ObservableObject
     [RelayCommand]
     public void StartTimer()
     {
-        _timer.Start();
+        if (!_timer.IsRunning)
+        {
+            _timer.Start();
+        }
     }
 
     [RelayCommand]
@@ -218,7 +223,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
     [RelayCommand]
     public void ReplaceExercise(ExerciseViewModel exercise)
     {
-        var sets = _setsGenerator.Generate(exercise.Id, new OneRepMaxProgressiveOverloadFactor(80, 3)).OfType<IExerciseSet>();
+        var sets = _setsGenerator.Generate(exercise.Id, new PowerLadderOverloadFactor(5, includeWarmup: true)).OfType<IExerciseSet>();
 
         if (SelectedModel is null) // Add
         {
@@ -275,80 +280,16 @@ public sealed partial class WorkoutViewModel : ObservableObject
     }
 }
 
-public class SetsGenerator
-{
-    private readonly WorkoutTrackerDb _workoutTrackerDb;
-
-    public SetsGenerator(WorkoutTrackerDb workoutTrackerDb)
-    {
-        _workoutTrackerDb = workoutTrackerDb;
-    }
-
-    public IEnumerable<IExerciseSet> Generate(Guid exerciseId, IProgressiveOverloadFactor overloadFactor)
-    {
-        return overloadFactor switch
-        {
-            OneRepMaxProgressiveOverloadFactor oneRepMax => GenerateWith1RMPercentage(exerciseId, oneRepMax),
-            SteadyStateProgressiveOverloadFactor steady => GenerateSets(steady.NumberOfSets, steady.Weight, steady.NumberOfReps),
-            _ => Enumerable.Empty<IExerciseSet>()
-        };
-    }
-
-    private IEnumerable<IExerciseSet> GenerateSets(int count, int weight, int reps) => Enumerable.Range(0, count)
-            .Select(_ => new ProposedSet { Repetitions = reps, Weight = weight })
-            .ToArray();
-
-    private IEnumerable<IExerciseSet> GenerateWith1RMPercentage(Guid exerciseId, OneRepMaxProgressiveOverloadFactor oneRepMaxProgressiveOverload)
-    {
-        var repsCount = (int)Math.Floor(37.0 - ((oneRepMaxProgressiveOverload.Percentage / 100.0) * 36.0));
-        var maxSet = _workoutTrackerDb.GetMaxWeightLiftedOnExercise(exerciseId);
-
-        if (maxSet is null)
-        {
-            // need defaults for types of exercise
-            maxSet = new ProposedSet
-            {
-                Weight = 20,
-                Repetitions = 10
-            };
-        }
-
-        var oneRM = Math.Floor(maxSet.Weight * (36.0 / (37.0 - maxSet.Repetitions)));
-        var weightToSet = oneRM * (oneRepMaxProgressiveOverload.Percentage / 100.0);
-
-        // TODO: add warm-up sets
-
-        return Enumerable.Range(0, oneRepMaxProgressiveOverload.NumberOfSets)
-            .Select(_ => new ProposedSet { Repetitions = repsCount, Weight = RoundToNearestFive((int)weightToSet) })
-            .ToArray();
-    }
-
-    private int RoundToNearestFive(int weight)
-    {
-
-        var lastDigit = weight % 10;
-        if (lastDigit <= 2)
-        {
-            return weight - lastDigit;
-        }
-        else if (lastDigit <= 7)
-        {
-            return weight + (5 - lastDigit);
-        }
-        else
-        {
-            return weight + (10 - lastDigit);
-        }
-    }
-}
-
 public sealed class WorkoutProgramProvider
 {
-    private static readonly Guid Pullups = Guid.Parse("04ad6bd8-5dec-4264-b05d-5182429a1ec9");
+    private static readonly Guid BarbellRow = Guid.Parse("b1ce8082-2b1a-4956-b3de-e687e3e16902");
+    private static readonly Guid LatPullDown = Guid.Parse("d6846bae-ccf8-4073-8825-e9fb28def637");
+    private static readonly Guid BarbellCurl = Guid.Parse("93b66b46-74bc-484f-bc52-844d5facba69");
     private static readonly Guid Facepulls = Guid.Parse("d4355b45-ac08-4ed6-8401-6a7cf9d91491");
 
     public static WorkoutProgram Default = new WorkoutProgram
     {
+        Id = Guid.Parse("5184f670-ad0d-4062-a936-6a16c9e14069"),
         Name = "Default",
         Schedule = new Schedule
         {
@@ -371,38 +312,38 @@ public sealed class WorkoutProgramProvider
             {
                 new ExerciseDefinition
                 {
-                    ExerciseSelector = new SpecificExerciseSelector(Pullups),
-                    OverloadFactor = new SteadyStateProgressiveOverloadFactor(0, 2, 10),
+                    ExerciseSelector = new SpecificExerciseSelector(BarbellRow),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: true)
+                },
+                new ExerciseDefinition
+                {
+                    ExerciseSelector = new SpecificExerciseSelector(LatPullDown),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false)
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Back"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3)
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false)
                 },
                 new ExerciseDefinition
                 {
-                    ExerciseSelector = new MuscleGroupExerciseSelector("Back"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
-                },
-                new ExerciseDefinition
-                {
-                    ExerciseSelector = new MuscleGroupExerciseSelector("Arm"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(70, 3),
+                    ExerciseSelector = new SpecificExerciseSelector(BarbellCurl),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: true)
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Arm"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(60, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Arm"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(60, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new SpecificExerciseSelector(Facepulls),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(50, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 }
             }
         };
@@ -418,32 +359,32 @@ public sealed class WorkoutProgramProvider
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Quads"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: true),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Glutes"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Hamstrings"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Quads"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Calves"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false, workingReps: 15),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new SpecificExerciseSelector(Facepulls),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(50, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 }
             }
         };
@@ -459,32 +400,32 @@ public sealed class WorkoutProgramProvider
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Chest"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: true),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Chest"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Shoulder"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: true),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Shoulder"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Triceps"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new SpecificExerciseSelector(Facepulls),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(50, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 }
             }
         };
@@ -500,7 +441,7 @@ public sealed class WorkoutProgramProvider
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Back"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3)
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: true)
                 },
                 new ExerciseDefinition
                 {
@@ -510,32 +451,32 @@ public sealed class WorkoutProgramProvider
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Chest"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(70, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: true),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Shoulder"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Arm"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(60, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Arm"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(60, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new MuscleGroupExerciseSelector("Triceps"),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(80, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 },
                 new ExerciseDefinition
                 {
                     ExerciseSelector = new SpecificExerciseSelector(Facepulls),
-                    OverloadFactor = new OneRepMaxProgressiveOverloadFactor(50, 3),
+                    OverloadFactor = new PowerLadderOverloadFactor(5, includeWarmup: false),
                 }
             }
         };

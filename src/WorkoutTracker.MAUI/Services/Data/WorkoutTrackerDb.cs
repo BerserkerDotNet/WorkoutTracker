@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using WorkoutTracker.MAUI.Interfaces;
 using WorkoutTracker.MAUI.Services.Data.Entities;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
@@ -35,7 +36,7 @@ public sealed class SystemTextJsonBlobSerializer : ITextBlobSerializer
     }
 }
 
-public class WorkoutTrackerDb : IDisposable
+public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
 {
     private const string DatabaseFilename = "WorkoutTrackerDb.db3";
     private static string DatabasePath => Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
@@ -102,6 +103,21 @@ public class WorkoutTrackerDb : IDisposable
         return maxSet;
     }
 
+    public LogEntryViewModel GetLastEntryForExercise(Guid id)
+    {
+        var log = _database.GetAllWithChildren<LogsDbEntity>(l => l.ExerciseId == id, recursive: true)
+            .OrderByDescending(l => l.Date)
+            .Where(l => l.Sets.Any(s => s is LegacySet || s is CompletedSet))
+            .FirstOrDefault();
+
+        if (log is null)
+        {
+            return null;
+        }
+
+        return log.ToViewModel();
+    }
+
     public DateTime GetLastSyncDate()
     {
         var settings = _database.Table<Settings>().FirstOrDefault();
@@ -113,10 +129,25 @@ public class WorkoutTrackerDb : IDisposable
         var data = _database.GetAllWithChildren<MuscleDbEntity>(recursive: true);
         return data.Select(e => e.ToViewModel()).ToArray();
     }
+    
+    public IEnumerable<string> GetMuscleGroups()
+    {
+        return _database
+            .Table<MuscleDbEntity>()
+            .Select(m => m.MuscleGroup)
+            .Distinct()
+            .ToArray();
+    }
 
     public IEnumerable<ExerciseViewModel> GetExercises()
     {
         var data = _database.GetAllWithChildren<ExerciseDbEntity>(recursive: true);
+        return data.Select(e => e.ToViewModel()).ToArray();
+    }
+
+    public IEnumerable<WorkoutProgram> GetPrograms()
+    {
+        var data = _database.GetAllWithChildren<ProgramsDbEntity>(recursive: true);
         return data.Select(e => e.ToViewModel()).ToArray();
     }
 
@@ -166,6 +197,7 @@ public class WorkoutTrackerDb : IDisposable
         {
             ExerciseViewModel eVm => ExerciseDbEntity.FromViewModel(eVm),
             LogEntryViewModel lVm => LogsDbEntity.FromViewModel(lVm),
+            WorkoutProgram lVm => ProgramsDbEntity.FromViewModel(lVm),
             _ => throw new NotImplementedException($"Update to {typeof(T)} entity is not implemented.")
         };
 

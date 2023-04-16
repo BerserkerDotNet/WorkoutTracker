@@ -26,6 +26,10 @@
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiImage Include="Resources\appicon.svg" ForegroundFile="Resources\icon.png" IsAppIcon="true" />
+		<MauiImage Include="Resources\Images\exercise_menu\add_set.png" />
+		<MauiImage Include="Resources\Images\exercise_menu\delete_exercise.png" />
+		<MauiImage Include="Resources\Images\exercise_menu\delete_set.png" />
+		<MauiImage Include="Resources\Images\exercise_menu\replace_exercise.png" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\appiconfg.svg" Color="#FFFFFF" />
@@ -47,6 +51,11 @@
 	  <None Remove="Resources\Fonts\roboto-regular.ttf" />
 	  <None Remove="Resources\Fonts\univia-pro-medium.ttf" />
 	  <None Remove="Resources\Fonts\univia-pro-regular.ttf" />
+	  <None Remove="Resources\Images\exercise_menu\add_set.png" />
+	  <None Remove="Resources\Images\exercise_menu\delete_exercise.png" />
+	  <None Remove="Resources\Images\exercise_menu\delete_set.png" />
+	  <None Remove="Resources\Images\exercise_menu\replace_exercise.png" />
+	  <None Remove="Resources\Images\programs.svg" />
 	  <None Remove="Resources\Images\workout.svg" />
 	</ItemGroup>
 
@@ -79,5 +88,43 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />
+	  <ProjectReference Include="..\WorkoutTracker.Services\WorkoutTracker.Services.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Controls\WorkoutDefinitionEditor.xaml.cs">
+	    <DependentUpon>WorkoutDefinitionEditor.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\EditWorkoutDefinition.xaml.cs">
+	    <DependentUpon>EditWorkoutDefinition.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\EditWorkoutProgram.xaml.cs">
+	    <DependentUpon>EditWorkoutProgram.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\WorkoutPrograms.xaml.cs">
+	    <DependentUpon>WorkoutPrograms.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <MauiXaml Update="Controls\WorkoutDefinitionEditor.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Controls\WorkoutDefinition\ExerciseDefinitionEditor.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Controls\WorkoutDefinition\PowerLadderEditor.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Controls\WorkoutDefinition\SpecificExerciseSelectorEditor.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\EditWorkoutDefinition.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\EditWorkoutProgram.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="TemplateSelectors\" />
 	</ItemGroup>
 </Project>

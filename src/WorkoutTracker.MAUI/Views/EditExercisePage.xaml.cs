@@ -15,13 +15,6 @@ public partial class EditExercisePage : ContentPage
         BindingContext = _viewModel;
     }
 
-    protected override void OnAppearing()
-    {
-
-
-        base.OnAppearing();
-    }
-
     private void InputChipGroup_Completed(object sender, DevExpress.Maui.Editors.CompletedEventArgs e)
     {
         var chipGroup = sender as InputChipGroup;

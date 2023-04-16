@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.Models.Selectors;
 
 namespace WorkoutTracker.Models.Contracts;
 
@@ -13,4 +14,6 @@ public record ExerciseDescriptor(IEnumerable<ExerciseViewModel> MatchedExercises
 public interface IExerciseSelector
 {
     ExerciseDescriptor Select(IEnumerable<ExerciseViewModel> exercises);
+    
+    string DisplayText { get; }
 }

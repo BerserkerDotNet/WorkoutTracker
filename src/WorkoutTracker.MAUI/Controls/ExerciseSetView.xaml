@@ -11,7 +11,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <dxe:Chip Text="{Binding Number}" BackgroundColor="{Binding Color}" Grid.Column="0" HeightRequest="40" WidthRequest="40" Tap="OnTap" />
-        <dxe:NumericEdit Value="{Binding Set.Weight, Mode=TwoWay}" Prefix="Weight:" Suffix="LB" Grid.Column="1" BoxMode="Filled" BackgroundColor="Transparent" MinValue="0" />
-        <dxe:NumericEdit Value="{Binding Set.Repetitions}" Prefix="Reps:" Grid.Column="2" BoxMode="Filled" BackgroundColor="Transparent" MinValue="0" />
+        <dxe:NumericEdit Value="{Binding Set.Weight, Mode=TwoWay}" Prefix="Weight:" Suffix="LB" Grid.Column="1" BoxMode="Filled" BackgroundColor="Transparent" MinValue="0" SelectValueOnFocus="True" />
+        <dxe:NumericEdit Value="{Binding Set.Repetitions}" Prefix="Reps:" Grid.Column="2" BoxMode="Filled" BackgroundColor="Transparent" MinValue="0" SelectValueOnFocus="True" />
     </Grid>
 </ContentView>

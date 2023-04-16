@@ -86,8 +86,12 @@
                            Margin="24,16,24,14"
                            HorizontalTextAlignment="Center"/>
                 <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
-                <dxe:NumericEdit Value="{Binding CompletedSet.Weight, Mode=TwoWay}" LabelText="Weight:" Suffix="LB" BoxMode="Filled" BackgroundColor="Transparent" />
-                <dxe:NumericEdit Value="{Binding CompletedSet.Repetitions, Mode=TwoWay}" LabelText="Repetitions:" BoxMode="Filled" BackgroundColor="Transparent" />
+                <dxe:NumericEdit Value="{Binding CompletedSet.Weight, Mode=TwoWay}" 
+                                 LabelText="Weight:" Suffix="LB" BoxMode="Filled" BackgroundColor="Transparent" SelectValueOnFocus="True" 
+                                 IsUpDownIconVisible="True" StepValue="5" MinValue="0" UpDownIconAlignment="Start" />
+                <dxe:NumericEdit Value="{Binding CompletedSet.Repetitions, Mode=TwoWay}"
+                                 LabelText="Repetitions:" BoxMode="Filled" BackgroundColor="Transparent" SelectValueOnFocus="True"
+                                 IsUpDownIconVisible="True" StepValue="1" MinValue="1" UpDownIconAlignment="Start"/>
                 <dxe:NumericEdit Value="{Binding CompletedSet.RestTime, Converter={StaticResource TimeSpanToSecondsConverter}, Mode=TwoWay}" LabelText="Rest time" Suffix="seconds" BoxMode="Filled" BackgroundColor="Transparent" />
                 <dxe:NumericEdit Value="{Binding CompletedSet.Duration, Converter={StaticResource TimeSpanToSecondsConverter}, Mode=TwoWay}" LabelText="Duration" Suffix="seconds" BoxMode="Filled" BackgroundColor="Transparent" />
 

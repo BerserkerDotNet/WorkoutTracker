@@ -12,7 +12,7 @@ namespace WorkoutTracker.MAUI.Controls;
 
 public partial class ExerciseSetsCollection : ContentView
 {
-    public static readonly BindableProperty OnHeaderMenuClickedCommandProperty = BindableProperty.Create(nameof(OnHeaderMenuClickedCommand), typeof(ICommand), typeof(ExerciseSetsCollection), defaultValue: null, propertyChanged: OnCommandChange);
+    public static readonly BindableProperty OnHeaderMenuClickedCommandProperty = BindableProperty.Create(nameof(OnHeaderMenuClickedCommand), typeof(ICommand), typeof(ExerciseSetsCollection), defaultValue: null);
     public static readonly BindableProperty SetClickedCommandProperty = BindableProperty.Create(nameof(SetClickedCommand), typeof(ICommand), typeof(ExerciseSetsCollection), defaultValue: null);
     public static readonly BindableProperty AddSetCommandProperty = BindableProperty.Create(nameof(AddSetCommand), typeof(ICommand), typeof(ExerciseSetsCollection), defaultValue: null);
     public static readonly BindableProperty ReduceSetsCommandProperty = BindableProperty.Create(nameof(ReduceSetsCommand), typeof(ICommand), typeof(ExerciseSetsCollection), defaultValue: null);
@@ -49,17 +49,12 @@ public partial class ExerciseSetsCollection : ContentView
     }
 
     private LogEntryViewModel _viewModel;
-    private bool _isSetsRendered = false;
 
+    private bool _isSetsRendered = false;
 
     public ExerciseSetsCollection()
     {
         InitializeComponent();
-    }
-
-    private static void OnCommandChange(BindableObject bindable, object oldValue, object newValue)
-    {
-
     }
 
     private void OnExpandCollapse(object sender, System.EventArgs e)
@@ -92,6 +87,7 @@ public partial class ExerciseSetsCollection : ContentView
         var observableSets = _viewModel.Sets as ObservableCollection<IExerciseSet>;
         observableSets.CollectionChanged += ObservableSets_CollectionChanged;
 
+        _isSetsRendered = false;
         if (expandArea.IsVisible)
         {
             RenderSets(_viewModel.Sets);

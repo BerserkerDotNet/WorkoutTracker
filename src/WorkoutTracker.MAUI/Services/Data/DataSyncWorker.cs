@@ -83,6 +83,7 @@ public class DataSyncWorker : ListenableWorker, CallbackToFutureAdapter.IResolve
                 {
                     nameof(ExerciseViewModel) => UpdateExerciseRecord,
                     nameof(LogEntryViewModel) => UpdateLogRecord,
+                    nameof(WorkoutProgram) => UpdateWorkoutProgram,
                     _ => throw new NotSupportedException()
                 };
                 try
@@ -142,6 +143,22 @@ public class DataSyncWorker : ListenableWorker, CallbackToFutureAdapter.IResolve
             if (exerciseToSync is not null)
             {
                 await _repository.UpdateExercise(exerciseToSync.ToViewModel());
+            }
+        }
+    }
+
+    private async Task UpdateWorkoutProgram(WorkoutTrackerDb db, RecordsToSync record)
+    {
+        if (record.OpType == OperationType.Delete)
+        {
+            await _repository.DeleteWorkoutProgram(record.RecordId);
+        }
+        else
+        {
+            var programToSync = db.Get<ProgramsDbEntity>(record.RecordId);
+            if (programToSync is not null)
+            {
+                await _repository.UpdateProgram(programToSync.ToViewModel());
             }
         }
     }

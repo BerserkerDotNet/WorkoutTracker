@@ -14,7 +14,7 @@ using WorkoutTracker.MAUI.Extensions;
 using WorkoutTracker.MAUI.Interfaces;
 using WorkoutTracker.MAUI.Services;
 using WorkoutTracker.MAUI.Services.Data;
-using WorkoutTracker.MAUI.ViewModels;
+using WorkoutTracker.Services;
 using Xamarin.Android.Net;
 
 namespace WorkoutTracker.MAUI;
@@ -63,6 +63,7 @@ public static class MauiProgram
         builder.Services.AddScoped<AndroidMessageHandler>();
         builder.Services.AddScoped<AuthenticatedClientHandler>();
         builder.Services.AddSingleton<WorkoutTrackerDb>();
+        builder.Services.AddSingleton<IWorkoutDataProvider, WorkoutTrackerDb>();
         builder.Services.AddSingleton<SetsGenerator>();
         builder.Services.AddSingleton<IExerciseTimerService, ExerciseTimerService>();
 

@@ -94,7 +94,20 @@ public class Schedule
             _ => WorkoutDefinition.Rest
         };
     }
+
+    public static Schedule Default => new Schedule
+    {
+        Monday = WorkoutDefinition.Rest,
+        Tuesday = WorkoutDefinition.Rest,
+        Wednesday = WorkoutDefinition.Rest,
+        Thursday = WorkoutDefinition.Rest,
+        Friday = WorkoutDefinition.Rest,
+        Saturday = WorkoutDefinition.Rest,
+        Sunday = WorkoutDefinition.Rest
+    };
 }
+
+public record AssignedWorkoutDefinition(DayOfWeek Day, string DayOfWeekName, WorkoutDefinition Definition);
 
 public class WorkoutDefinition
 {
@@ -114,30 +127,103 @@ public class ExerciseDefinition
 
 [JsonDerivedType(typeof(OneRepMaxProgressiveOverloadFactor), nameof(OneRepMaxProgressiveOverloadFactor))]
 [JsonDerivedType(typeof(SteadyStateProgressiveOverloadFactor), nameof(SteadyStateProgressiveOverloadFactor))]
+[JsonDerivedType(typeof(PowerLadderOverloadFactor), nameof(PowerLadderOverloadFactor))]
+[JsonDerivedType(typeof(RepetitionsLadderOverloadFactor), nameof(RepetitionsLadderOverloadFactor))]
 public interface IProgressiveOverloadFactor
 {
-    string GetDisplayText();
+    string DisplayText { get; }
 }
 
-public record class OneRepMaxProgressiveOverloadFactor(int Percentage, int NumberOfSets) : IProgressiveOverloadFactor
+public class OneRepMaxProgressiveOverloadFactor : IProgressiveOverloadFactor
 {
-    public string GetDisplayText() => $"{Percentage}% of 1RM";
+    public OneRepMaxProgressiveOverloadFactor(int percentage, int numberOfSets)
+    {
+        this.Percentage = percentage;
+        this.NumberOfSets = numberOfSets;
+    }
+
+    public string DisplayText => $"{Percentage}% of 1RM";
+    public int Percentage { get; set; }
+    public int NumberOfSets { get; set; }
+
+    public void Deconstruct(out int percentage, out int numberOfSets)
+    {
+        percentage = this.Percentage;
+        numberOfSets = this.NumberOfSets;
+    }
 }
 
-public record class SteadyStateProgressiveOverloadFactor(int Weight, int NumberOfSets, int NumberOfReps) : IProgressiveOverloadFactor
+public class SteadyStateProgressiveOverloadFactor : IProgressiveOverloadFactor
 {
-    public string GetDisplayText() => $"Steady state";
+    public SteadyStateProgressiveOverloadFactor(int weight, int numberOfSets, int numberOfReps)
+    {
+        this.Weight = weight;
+        this.NumberOfSets = numberOfSets;
+        this.NumberOfReps = numberOfReps;
+    }
+
+    public string DisplayText => $"Steady state";
+    public int Weight { get; set; }
+    public int NumberOfSets { get; set; }
+    public int NumberOfReps { get; set; }
+
+    public void Deconstruct(out int weight, out int numberOfSets, out int numberOfReps)
+    {
+        weight = this.Weight;
+        numberOfSets = this.NumberOfSets;
+        numberOfReps = this.NumberOfReps;
+    }
 }
 
-public record class PowerLadderOverloadFactor(int StepIncrement, int Overload, int WarmupSets, int WorkingSets, int TargetReps) : IProgressiveOverloadFactor
+public class PowerLadderOverloadFactor : IProgressiveOverloadFactor
 {
-    public string GetDisplayText() => $"Ladder of {StepIncrement}LB with {Overload}LB bump";
+    public PowerLadderOverloadFactor(int stepIncrement, bool includeWarmup, int workingSets = 3, int workingReps = 5)
+    {
+        this.StepIncrement = stepIncrement;
+        this.IncludeWarmup = includeWarmup;
+        this.WorkingSets = workingSets;
+        this.WorkingReps = workingReps;
+    }
+
+    public string DisplayText => $"Ladder of {StepIncrement}LB.";
+    public int StepIncrement { get; set; }
+    public bool IncludeWarmup { get; set; }
+    public int WorkingSets { get; set; }
+    public int WorkingReps { get; set; }
+
+    public void Deconstruct(out int stepIncrement, out bool includeWarmup, out int workingSets, out int workingReps)
+    {
+        stepIncrement = this.StepIncrement;
+        includeWarmup = this.IncludeWarmup;
+        workingSets = this.WorkingSets;
+        workingReps = this.WorkingReps;
+    }
+}
+
+public class RepetitionsLadderOverloadFactor : IProgressiveOverloadFactor
+{
+    public int StepIncrement { get; set; }
+    public bool IncludeWarmup { get; set; }
+    public int WorkingSets { get; set; }
+    public int StartingReps { get; set; }
+
+    public RepetitionsLadderOverloadFactor(int stepIncrement, bool includeWarmup, int workingSets = 3, int startingReps = 5)
+    {
+        StepIncrement = stepIncrement;
+        IncludeWarmup = includeWarmup;
+        WorkingSets = workingSets;
+        StartingReps = startingReps;
+    }
+
+    public string DisplayText => "reps ladder";
 }
 
 public enum ProgressiveOverloadType
 {
     PowerLadder,
-    OneRepMaxPercentage
+    RepsLadder,
+    OneRepMaxPercentage,
+    SteadyState
 }
 
 public enum ExerciseSelectorType

@@ -31,6 +31,8 @@ public class LegacySet : IExerciseSet
             WeightKG = Math.Ceiling(value * 0.453592);
         }
     }
+
+    public bool IsWarmup { get; set; }
 }
 
 public sealed class ProposedSet : IExerciseSet
@@ -38,6 +40,8 @@ public sealed class ProposedSet : IExerciseSet
     public required double Weight { get; set; }
 
     public required int Repetitions { get; set; }
+
+    public bool IsWarmup { get; set; }
 }
 
 public sealed class InProgressSet : IExerciseSet
@@ -47,6 +51,8 @@ public sealed class InProgressSet : IExerciseSet
     public required int Repetitions { get; set; }
 
     public required TimeSpan RestTime { get; set; }
+
+    public bool IsWarmup { get; set; }
 }
 
 public sealed class CompletedSet : IExerciseSet
@@ -54,6 +60,8 @@ public sealed class CompletedSet : IExerciseSet
     public required double Weight { get; set; }
 
     public required int Repetitions { get; set; }
+
+    public bool IsWarmup { get; set; }
 
     public required TimeSpan RestTime { get; set; }
 

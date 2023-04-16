@@ -85,23 +85,36 @@
         <dxco:DXPopup PlacementTarget="{x:Reference contextMenuBtn}" x:Name="contextMenu" Placement="Bottom" HorizontalAlignment="Right" AllowShadow="True">
             <StackLayout WidthRequest="200">
                 <dxco:SimpleButton Text="Add sets" TextColor="#2088ff"
+                                      Icon="add_set.png"
+                                      IconColor="#2088ff"
+                                   HorizontalContentAlignment="Start"
                                       PressedBackgroundColor="#e8e8e8"
                                       BackgroundColor="Transparent"
                                       Margin="0,0,0,6"
                                    Clicked="OnAddSetClicked"/>
-                <dxco:SimpleButton Text="Reduce sets"
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <dxco:SimpleButton Text="Replace exercise" 
+                                      Icon="replace_exercise.png"
+                                      IconColor="#2088ff"
+                                   HorizontalContentAlignment="Start"
                                    TextColor="#2088ff"
                                       PressedBackgroundColor="#e8e8e8"
                                       BackgroundColor="Transparent"
                                       Margin="0,0,0,6"
-                                   Clicked="OnReduceSetsClicked"/>
-                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
-                <dxco:SimpleButton Text="Replace exercise" TextColor="#2088ff"
+                                   Clicked="OnReplaceExerciseClicked" />
+                <dxco:SimpleButton Text="Reduce sets"
+                                      Icon="delete_set.png"
+                                      IconColor="HotPink"
+                                   TextColor="HotPink"
+                                   HorizontalContentAlignment="Start"
                                       PressedBackgroundColor="#e8e8e8"
                                       BackgroundColor="Transparent"
                                       Margin="0,0,0,6"
-                                   Clicked="OnReplaceExerciseClicked" />
+                                   Clicked="OnReduceSetsClicked"/>
                 <dxco:SimpleButton Text="Remove exercise" TextColor="HotPink"
+                                      Icon="delete_exercise.png"
+                                      IconColor="HotPink"
+                                   HorizontalContentAlignment="Start"
                                       PressedBackgroundColor="#e8e8e8"
                                       BackgroundColor="Transparent"
                                       Margin="0,0,0,6"

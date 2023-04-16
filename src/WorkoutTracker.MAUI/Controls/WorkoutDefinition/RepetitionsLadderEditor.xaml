@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
+             x:DataType="entities:RepetitionsLadderOverloadFactor"
+             x:Class="WorkoutTracker.MAUI.Controls.WorkoutDefinition.RepetitionsLadderEditor">
+    <VerticalStackLayout>
+        <dxe:NumericEdit LabelText="Increment" Value="{Binding StepIncrement, Mode=TwoWay}" IsUpDownIconVisible="True" StepValue="1" MinValue="1" UpDownIconAlignment="Start" />
+        <dxe:NumericEdit LabelText="Target sets" Value="{Binding WorkingSets, Mode=TwoWay}" IsUpDownIconVisible="True" StepValue="1" MinValue="1" UpDownIconAlignment="Start" />
+        <dxe:NumericEdit LabelText="Starting reps" Value="{Binding StartingReps, Mode=TwoWay}" IsUpDownIconVisible="True" StepValue="1" MinValue="1" UpDownIconAlignment="Start" />
+        <dxe:CheckEdit Label="Include warmup sets" IsChecked="{Binding IncludeWarmup, Mode=TwoWay}" />
+    </VerticalStackLayout>
+</ContentView>
