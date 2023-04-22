@@ -49,6 +49,9 @@ builder.Services.AddSingleton(logEntriesContainer);
 var workoutProgramsContainer = await WorkoutProgramsContainer.Create(database);
 builder.Services.AddSingleton(workoutProgramsContainer);
 
+var usersContainer = await UsersContainer.Create(database);
+builder.Services.AddSingleton(usersContainer);
+
 var accountName = builder.Configuration.GetValue<string>("CDNAccountName");
 var containerEndpoint = string.Format("https://{0}.blob.core.windows.net/images", accountName);
 var containerClient = new BlobContainerClient(new Uri(containerEndpoint), new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true }));

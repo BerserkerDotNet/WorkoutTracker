@@ -1,11 +1,7 @@
-﻿using Azure.Core.Serialization;
-using Mediator;
+﻿using Mediator;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos;
-using System.Text.Json;
 using WorkoutTracker.Api.Services;
 using WorkoutTracker.Models.Entities;
-using WorkoutTracker.Models.Presentation;
 
 namespace WorkoutTracker.Api.RouteMaps;
 
@@ -31,6 +27,9 @@ public static class Routes
 
         group.MapGroup("/workoutprograms")
             .MapProgramsRoutes();
+
+        group.MapGroup("/profile")
+            .MapUserRoutes();
 
         group.MapGet("/GetPreviousWorkoutStatsByExercise/{id:guid}", async (IMediator mediator, Guid id) => await mediator.Send(new GetPreviousWorkoutStatsByExercise(id)));
         group.MapPost("/UploadImage", async (IMediator mediator, IFormFileCollection files) =>
@@ -94,40 +93,11 @@ public static class Routes
         });
         return group;
     }
-}
 
-public sealed class CosmosSystemTextJsonSerializer : CosmosSerializer
-{
-    private readonly JsonObjectSerializer _systemTextJsonSerializer;
-
-    public CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
+    public static RouteGroupBuilder MapUserRoutes(this RouteGroupBuilder group)
     {
-        _systemTextJsonSerializer = new JsonObjectSerializer(jsonSerializerOptions);
-    }
-
-    public override T FromStream<T>(Stream stream)
-    {
-        if (stream.CanSeek && stream.Length == 0)
-        {
-            return default;
-        }
-
-        if (typeof(Stream).IsAssignableFrom(typeof(T)))
-        {
-            return (T)(object)stream;
-        }
-
-        using (stream)
-        {
-            return (T)_systemTextJsonSerializer.Deserialize(stream, typeof(T), default);
-        }
-    }
-
-    public override Stream ToStream<T>(T input)
-    {
-        var streamPayload = new MemoryStream();
-        _systemTextJsonSerializer.Serialize(streamPayload, input, typeof(T), default);
-        streamPayload.Position = 0;
-        return streamPayload;
+        group.MapGet("/", async (IMediator mediator) => await mediator.Send(new GetCurrentProfile()));
+        group.MapPost("/setCurrentWorkout", async (IMediator mediator, SetCurrentWorkout command) => await mediator.Send(command));
+        return group;
     }
 }

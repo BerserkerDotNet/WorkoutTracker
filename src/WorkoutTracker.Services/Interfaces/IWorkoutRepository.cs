@@ -20,6 +20,8 @@ public interface IWorkoutRepository
 
     Task<IEnumerable<WorkoutProgram>> GetWorkoutPrograms();
 
+    Task<Profile> GetProfile();
+
     Task DeleteWorkoutProgram(Guid id);
 
     Task AddLogRecord(LogEntryViewModel model);
@@ -34,6 +36,7 @@ public interface IWorkoutRepository
 
     Task UpdateProgram(WorkoutProgram program);
 
+    Task<Profile> SetCurrentWorkoutProgram(Guid programId);
 }
 
 public interface IWorkoutDataProvider

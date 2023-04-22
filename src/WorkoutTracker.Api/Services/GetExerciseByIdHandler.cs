@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 using WorkoutTracker.Api.Data;
 using WorkoutTracker.Models.Entities;
 
