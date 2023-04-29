@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Services;
 using WorkoutTracker.MAUI.Services.Data;
@@ -21,6 +22,9 @@ public sealed partial class WorkoutProgramsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoadingData;
 
+    [ObservableProperty]
+    private Guid? _selectedProgram;
+
     public WorkoutProgramsViewModel(WorkoutTrackerDb trackerDb, ApplicationContext<WorkoutViewModel> context)
     {
         _trackerDb = trackerDb;
@@ -32,6 +36,7 @@ public sealed partial class WorkoutProgramsViewModel : ObservableObject
     {
         IsLoadingData = true;
         Programs = new ObservableCollection<WorkoutProgram>(_trackerDb.GetPrograms());
+        SelectedProgram = _trackerDb.GetProfile().CurrentWorkout;
         IsLoadingData = false;
     }
 
@@ -43,5 +48,17 @@ public sealed partial class WorkoutProgramsViewModel : ObservableObject
         {
             { nameof(EditWorkoutProgramViewModel.WorkoutProgram), program }
         });
+    }
+    
+    [RelayCommand]
+    public void SetCurrentWorkout(WorkoutProgram program)
+    {
+        if (SelectedProgram == program.Id)
+        {
+            return;
+        }
+
+        _trackerDb.SetCurrentWorkout(program.Id);
+        SelectedProgram = program.Id;
     }
 }

@@ -63,6 +63,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         _database.CreateTable<ProgramsDbEntity>();
         _database.CreateTable<Settings>();
         _database.CreateTable<RecordsToSync>();
+        _database.CreateTable<ProfileDbEntity>();
     }
 
     public void UpdateDataFromServer(ServerData data)
@@ -71,13 +72,15 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         var exercises = data.Exercises.Select(ExerciseDbEntity.FromViewModel);
         var logs = data.Logs.Select(LogsDbEntity.FromViewModel);
         var programs = data.Programs.Select(ProgramsDbEntity.FromViewModel);
-
+        var profile = ProfileDbEntity.FromViewModel(data.Profile);
+        
         _database.RunInTransaction(() =>
         {
             _database.InsertOrReplaceAllWithChildren(muscles);
             _database.InsertOrReplaceAllWithChildren(exercises);
             _database.InsertOrReplaceAllWithChildren(logs);
             _database.InsertOrReplaceAllWithChildren(programs);
+            _database.InsertOrReplaceWithChildren(profile);
             var settings = _database.Table<Settings>().FirstOrDefault() ?? new Settings { Id = Guid.NewGuid() };
             settings.LastSyncDate = DateTime.UtcNow;
             _database.Update(settings);
@@ -129,15 +132,6 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         var data = _database.GetAllWithChildren<MuscleDbEntity>(recursive: true);
         return data.Select(e => e.ToViewModel()).ToArray();
     }
-    
-    public IEnumerable<string> GetMuscleGroups()
-    {
-        return _database
-            .Table<MuscleDbEntity>()
-            .Select(m => m.MuscleGroup)
-            .Distinct()
-            .ToArray();
-    }
 
     public IEnumerable<ExerciseViewModel> GetExercises()
     {
@@ -149,6 +143,24 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
     {
         var data = _database.GetAllWithChildren<ProgramsDbEntity>(recursive: true);
         return data.Select(e => e.ToViewModel()).ToArray();
+    }
+
+    public Profile GetProfile()
+    {
+        var profile = _database.Table<ProfileDbEntity>().FirstOrDefault();
+        if (profile is null)
+        {
+            return new Profile {Name = "N/A"};
+        }
+
+        return profile.ToViewModel();
+    }
+
+    public void SetCurrentWorkout(Guid id)
+    {
+        var profile = GetProfile();
+        profile.CurrentWorkout = id;
+        UpdateViewModel(profile);
     }
 
     public T Get<T>(Guid id)
@@ -198,6 +210,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
             ExerciseViewModel eVm => ExerciseDbEntity.FromViewModel(eVm),
             LogEntryViewModel lVm => LogsDbEntity.FromViewModel(lVm),
             WorkoutProgram lVm => ProgramsDbEntity.FromViewModel(lVm),
+            Profile lvm => ProfileDbEntity.FromViewModel(lvm),
             _ => throw new NotImplementedException($"Update to {typeof(T)} entity is not implemented.")
         };
 

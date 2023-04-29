@@ -67,7 +67,8 @@
                         AddSetCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},Path = BindingContext.AddSetCommand }"
                         ReduceSetsCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},Path = BindingContext.ReduceSetsCommand }"
                         RemoveExerciseCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},Path = BindingContext.RemoveExerciseCommand }"
-                        />
+                        >
+                    </ctrl:ExerciseSetsCollection>
                 </DataTemplate>
             </dxcv:DXCollectionView.ItemTemplate>
             <dxcv:DXCollectionView.SortDescriptions>

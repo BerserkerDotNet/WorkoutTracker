@@ -65,9 +65,19 @@ public class ApiRepositoryClient : IWorkoutRepository
         return Create(program, "workoutprograms");
     }
 
+    public Task<Profile> SetCurrentWorkoutProgram(Guid programId)
+    {
+        return Create<Profile>(new { WorkoutId = programId }, "profile/setCurrentWorkout");
+    }
+
     public Task<IEnumerable<WorkoutProgram>> GetWorkoutPrograms()
     {
         return GetMultiple<WorkoutProgram>("workoutprograms");
+    }
+
+    public Task<Profile> GetProfile()
+    {
+        return Get<Profile>("profile");
     }
 
     public Task DeleteWorkoutProgram(Guid id)
@@ -204,7 +214,7 @@ public class ApiRepositoryClient : IWorkoutRepository
         }
     }
 
-    private async Task<T> Create<T>(T entity, string endpoint)
+    private async Task<TReturn> Create<TReturn>(object entity, string endpoint)
     {
         var content = JsonSerializer.Serialize(entity, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         var response = await _client.PostAsync(endpoint, new StringContent(content, System.Text.Encoding.UTF8, "application/json"));
@@ -215,6 +225,11 @@ public class ApiRepositoryClient : IWorkoutRepository
             throw new DataPersistanceException($"Failed to create {endpoint} record. Reason: {response.StatusCode} - {response.ReasonPhrase}. {responseContent}");
         }
 
-        return await response.Content.ReadFromJsonAsync<T>();
+        return await response.Content.ReadFromJsonAsync<TReturn>();
+    }
+
+    private Task<T> Create<T>(T entity, string endpoint)
+    {
+        return Create<T>((object)entity, endpoint);
     }
 }

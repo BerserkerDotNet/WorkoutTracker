@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using WorkoutTracker.MAUI.ViewModels;
 
 namespace WorkoutTracker.MAUI.Views;

@@ -20,7 +20,11 @@ using Xamarin.Android.Net;
 
 namespace WorkoutTracker.MAUI.Services.Data;
 
-public record ServerData(IEnumerable<MuscleViewModel> Muscles, IEnumerable<ExerciseViewModel> Exercises, IEnumerable<LogEntryViewModel> Logs, IEnumerable<WorkoutProgram> Programs);
+public record ServerData(IEnumerable<MuscleViewModel> Muscles,
+    IEnumerable<ExerciseViewModel> Exercises,
+    IEnumerable<LogEntryViewModel> Logs,
+    IEnumerable<WorkoutProgram> Programs,
+    Profile Profile);
 
 public class DataSyncWorker : ListenableWorker, CallbackToFutureAdapter.IResolver
 {
@@ -84,6 +88,7 @@ public class DataSyncWorker : ListenableWorker, CallbackToFutureAdapter.IResolve
                     nameof(ExerciseViewModel) => UpdateExerciseRecord,
                     nameof(LogEntryViewModel) => UpdateLogRecord,
                     nameof(WorkoutProgram) => UpdateWorkoutProgram,
+                    nameof(Profile) => UpdateCurrentWorkout,
                     _ => throw new NotSupportedException()
                 };
                 try
@@ -103,9 +108,10 @@ public class DataSyncWorker : ListenableWorker, CallbackToFutureAdapter.IResolve
             var exercises = await _repository.GetExercises();
             var logs = await _repository.GetLogs(lastSyncDate, DateTime.UtcNow);
             var programs = await _repository.GetWorkoutPrograms();
+            var profile = await _repository.GetProfile();
 
             Log.Debug(TAG, "Updating database.");
-            db.UpdateDataFromServer(new ServerData(muscles, exercises, logs, programs));
+            db.UpdateDataFromServer(new ServerData(muscles, exercises, logs, programs, profile));
 
             Log.Debug(TAG, "Sending notification.");
             var notification = new NotificationRequest
@@ -160,6 +166,15 @@ public class DataSyncWorker : ListenableWorker, CallbackToFutureAdapter.IResolve
             {
                 await _repository.UpdateProgram(programToSync.ToViewModel());
             }
+        }
+    }
+
+    private async Task UpdateCurrentWorkout(WorkoutTrackerDb db, RecordsToSync record)
+    {
+        var profile = db.Get<ProfileDbEntity>(record.RecordId);
+        if (profile is not null && profile.CurrentWorkout.HasValue)
+        {
+            await _repository.SetCurrentWorkoutProgram(profile.CurrentWorkout.Value);
         }
     }
 

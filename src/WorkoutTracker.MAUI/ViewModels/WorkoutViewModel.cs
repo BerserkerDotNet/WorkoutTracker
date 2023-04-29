@@ -82,7 +82,18 @@ public sealed partial class WorkoutViewModel : ObservableObject
             var schedule = _trackerDb.GetTodaysSchedule().ToList();
             if (!schedule.Any())
             {
+                var profile = _trackerDb.GetProfile();
                 var program = WorkoutProgramProvider.Default;
+                if (profile.CurrentWorkout.HasValue)
+                {
+                    var programs = _trackerDb.GetPrograms();
+                    var selectedProgram = programs.FirstOrDefault(p => p.Id == profile.CurrentWorkout.Value);
+                    if (selectedProgram is not null)
+                    {
+                        program = selectedProgram;
+                    }
+                }
+                
                 var todayWorkoutDefinition = program.Schedule.From(DateTime.Today.DayOfWeek);
 
                 IList<ExerciseViewModel> exercises = Exercises;
