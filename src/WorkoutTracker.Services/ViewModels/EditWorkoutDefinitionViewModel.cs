@@ -1,15 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using WorkoutTracker.MAUI.Converters;
-using WorkoutTracker.MAUI.Services.Data;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
 using WorkoutTracker.Models.Selectors;
+using WorkoutTracker.Services.Interfaces;
 
-namespace WorkoutTracker.MAUI.ViewModels;
+namespace WorkoutTracker.Services.ViewModels;
+
+public record NewExerciseOptions(ExerciseSelectorType ExerciseSelector, ProgressiveOverloadType OverloadType);
+
+public record Option<T>(string Text, T Value);
 
 public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, IQueryAttributable
 {
@@ -26,16 +27,16 @@ public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, I
     private bool _isNewExerciseMenuVisible;
 
     [ObservableProperty]
-    private  ChipOption<ExerciseSelectorType>[] _exerciseSelectorTypes;
+    private  Option<ExerciseSelectorType>[] _exerciseSelectorTypes;
     
     [ObservableProperty]
-    private  ChipOption<ProgressiveOverloadType>[] _overloadSelectorTypes;
+    private  Option<ProgressiveOverloadType>[] _overloadSelectorTypes;
 
     private ExerciseDefinition _selectedExerciseDefinition;
 
-    private readonly WorkoutTrackerDb _workoutTrackerDb;
+    private readonly IWorkoutDataProvider _workoutTrackerDb;
 
-    public EditWorkoutDefinitionViewModel(WorkoutTrackerDb workoutTrackerDb)
+    public EditWorkoutDefinitionViewModel(IWorkoutDataProvider workoutTrackerDb)
     {
         _workoutTrackerDb = workoutTrackerDb;
     }
@@ -45,13 +46,13 @@ public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, I
         Exercises = new ObservableCollection<ExerciseViewModel>(_workoutTrackerDb.GetExercises());
         Muscles = new ObservableCollection<MuscleViewModel>(_workoutTrackerDb.GetMuscles());
         
-        ExerciseSelectorTypes = new ChipOption<ExerciseSelectorType>[] {
+        ExerciseSelectorTypes = new Option<ExerciseSelectorType>[] {
             new ("Specific exercise", ExerciseSelectorType.SpecificExercise),
             new ("Specific muscle", ExerciseSelectorType.SpecificMuscle),
             new ("Muscle group", ExerciseSelectorType.MuscleGroup),
         };
         
-        OverloadSelectorTypes = new ChipOption<ProgressiveOverloadType>[]{
+        OverloadSelectorTypes = new Option<ProgressiveOverloadType>[]{
             new ("Power ladder", ProgressiveOverloadType.PowerLadder),
             new ("Reps ladder", ProgressiveOverloadType.RepsLadder),
             new ("One rep max %", ProgressiveOverloadType.OneRepMaxPercentage),
@@ -93,8 +94,6 @@ public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, I
             WorkoutDefinition.Exercises.Add(newDefition);
         }
 
-        
-        
         HideNewExerciseMenu();
     }
 

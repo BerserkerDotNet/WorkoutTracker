@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>net7.0;net7.0-android</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UseMaui>true</UseMaui>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <Folder Include="ViewModels\" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

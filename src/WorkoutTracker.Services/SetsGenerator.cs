@@ -2,6 +2,7 @@
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Services.Extensions;
+using WorkoutTracker.Services.Interfaces;
 
 namespace WorkoutTracker.Services;
 

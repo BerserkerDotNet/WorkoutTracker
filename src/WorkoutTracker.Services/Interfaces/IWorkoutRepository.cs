@@ -1,5 +1,4 @@
-﻿using WorkoutTracker.Models.Contracts;
-using WorkoutTracker.Models.Entities;
+﻿using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
 
 namespace WorkoutTracker.MAUI.Interfaces;
@@ -37,11 +36,4 @@ public interface IWorkoutRepository
     Task UpdateProgram(WorkoutProgram program);
 
     Task<Profile> SetCurrentWorkoutProgram(Guid programId);
-}
-
-public interface IWorkoutDataProvider
-{
-    IExerciseSet GetMaxWeightLiftedOnExercise(Guid id);
-
-    LogEntryViewModel GetLastEntryForExercise(Guid id);
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using WorkoutTracker.Models.Entities;
+using WorkoutTracker.Services.ViewModels;
 
 namespace WorkoutTracker.MAUI.Converters
 {
@@ -8,8 +9,8 @@ namespace WorkoutTracker.MAUI.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var exerciseSelector = values[0] as ChipOption<ExerciseSelectorType>;
-            var overloadSelector = values[1] as ChipOption<ProgressiveOverloadType>;
+            var exerciseSelector = values[0] as Option<ExerciseSelectorType>;
+            var overloadSelector = values[1] as Option<ProgressiveOverloadType>;
 
             if (exerciseSelector is null || overloadSelector is null)
             {
