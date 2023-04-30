@@ -6,6 +6,7 @@ using WorkoutTracker.MAUI.Views;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.Services.ViewModels;
 
 namespace WorkoutTracker.MAUI.Extensions;
 

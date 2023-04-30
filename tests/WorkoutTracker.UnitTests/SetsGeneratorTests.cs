@@ -5,6 +5,7 @@ using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
 using WorkoutTracker.Services;
 using WorkoutTracker.Services.Extensions;
+using WorkoutTracker.Services.Interfaces;
 
 namespace WorkoutTracker.UnitTests;
 
