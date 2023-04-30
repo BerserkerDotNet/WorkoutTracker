@@ -23,6 +23,8 @@ jobs:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
     - name: Install workload
       run: dotnet workload install maui-android
+    - name: Add DevExpress feed
+      run: dotnet nuget add source ${{ secrets.DEVEXPRESSFEED }} -n DevExpress
     - name: Install dependencies
       run: dotnet restore
     - name: Build
