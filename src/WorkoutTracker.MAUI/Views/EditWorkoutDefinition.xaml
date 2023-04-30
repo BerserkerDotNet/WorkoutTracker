@@ -47,9 +47,17 @@
                             SelectionMode="None">
                         <dxcv:DXCollectionView.ItemTemplate>
                             <DataTemplate>
-                                <controls:ExerciseDefinitionEditor 
-                                    Exercises="{Binding BindingContext.Exercises, Source={x:Reference mainForm}}"
-                                    Muscles="{Binding BindingContext.Muscles, Source={x:Reference mainForm}}"/>
+                                <dxcv:SwipeContainer>
+                                    <dxcv:SwipeContainer.ItemView>
+                                        <controls:ExerciseDefinitionEditor 
+                                            Exercises="{Binding BindingContext.Exercises, Source={x:Reference mainForm}}"
+                                            Muscles="{Binding BindingContext.Muscles, Source={x:Reference mainForm}}"/>
+                                    </dxcv:SwipeContainer.ItemView>
+                                    <dxcv:SwipeContainer.StartSwipeItems>
+                                        <dxcv:SwipeItem Caption="Replace" BackgroundColor="Orange"
+                                                        Command="{Binding ShowNewExerciseMenuCommand, Source={RelativeSource AncestorType={x:Type vm:EditWorkoutDefinitionViewModel }} }"/>
+                                    </dxcv:SwipeContainer.StartSwipeItems>
+                                </dxcv:SwipeContainer>
                             </DataTemplate>
                         </dxcv:DXCollectionView.ItemTemplate>
                         <dxcv:DXCollectionView.Margin>

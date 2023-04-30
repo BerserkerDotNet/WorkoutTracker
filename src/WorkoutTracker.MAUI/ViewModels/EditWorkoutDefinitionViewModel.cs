@@ -31,6 +31,8 @@ public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, I
     [ObservableProperty]
     private  ChipOption<ProgressiveOverloadType>[] _overloadSelectorTypes;
 
+    private ExerciseDefinition _selectedExerciseDefinition;
+
     private readonly WorkoutTrackerDb _workoutTrackerDb;
 
     public EditWorkoutDefinitionViewModel(WorkoutTrackerDb workoutTrackerDb)
@@ -60,7 +62,7 @@ public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, I
     [RelayCommand]
     public void AddExercise(NewExerciseOptions options)
     {
-        WorkoutDefinition.Exercises.Add(new ExerciseDefinition
+        var newDefition = new ExerciseDefinition
         {
             ExerciseSelector = options.ExerciseSelector switch
             {
@@ -77,8 +79,23 @@ public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, I
                 ProgressiveOverloadType.RepsLadder => new RepetitionsLadderOverloadFactor(1, true),
                 _ => new SteadyStateProgressiveOverloadFactor(0, 3, 10),
             }
-        });
-        IsNewExerciseMenuVisible = false;
+        }; 
+        
+        if (_selectedExerciseDefinition is not null)
+        {
+            var collection = WorkoutDefinition.Exercises as ObservableCollection<ExerciseDefinition>;
+            var idx = collection.IndexOf(_selectedExerciseDefinition);
+            collection[idx] = newDefition;
+            _selectedExerciseDefinition = null;
+        }
+        else
+        {
+            WorkoutDefinition.Exercises.Add(newDefition);
+        }
+
+        
+        
+        HideNewExerciseMenu();
     }
 
     [RelayCommand]
@@ -88,8 +105,9 @@ public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, I
     }
 
     [RelayCommand]
-    public void ShowNewExerciseMenu()
+    public void ShowNewExerciseMenu(ExerciseDefinition definition)
     {
+        _selectedExerciseDefinition = definition;
         IsNewExerciseMenuVisible = true;
     }
     
