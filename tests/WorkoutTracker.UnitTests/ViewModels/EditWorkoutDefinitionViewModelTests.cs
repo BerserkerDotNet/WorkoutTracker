@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.Maui.Handlers;
 using NSubstitute;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Selectors;
@@ -51,6 +52,37 @@ public class EditWorkoutDefinitionViewModelTests
         _viewModel.WorkoutDefinition.Exercises.Count.Should().Be(2);
         _viewModel.WorkoutDefinition.Exercises.Last().ExerciseSelector.Should().BeOfType<SpecificExerciseSelector>();
         _viewModel.WorkoutDefinition.Exercises.Last().OverloadFactor.Should().BeOfType<PowerLadderOverloadFactor>();
+    }
+
+    [Test]
+    public void AddExercisesOfTypeShouldCreateCorrectDefinition(
+        [Values(ExerciseSelectorType.SpecificExercise, ExerciseSelectorType.MuscleGroup, ExerciseSelectorType.ExerciseGroup, ExerciseSelectorType.SpecificMuscle, 12)]ExerciseSelectorType selector, 
+        [Values(ProgressiveOverloadType.PowerLadder, ProgressiveOverloadType.OneRepMaxPercentage, ProgressiveOverloadType.RepsLadder, ProgressiveOverloadType.SteadyState, 12)]ProgressiveOverloadType overload)
+    {
+        var expectedSelectorType = selector switch
+        {
+            ExerciseSelectorType.SpecificExercise => typeof(SpecificExerciseSelector),
+            ExerciseSelectorType.ExerciseGroup => typeof(MuscleGroupExerciseSelector),
+            ExerciseSelectorType.SpecificMuscle => typeof(MuscleExerciseSelector),
+            ExerciseSelectorType.MuscleGroup => typeof(MuscleGroupExerciseSelector),
+            _ => typeof(MuscleGroupExerciseSelector)
+        };
+
+        var expectedOverloadType = overload switch
+        {
+            ProgressiveOverloadType.PowerLadder => typeof(PowerLadderOverloadFactor),
+            ProgressiveOverloadType.RepsLadder => typeof(RepetitionsLadderOverloadFactor),
+            ProgressiveOverloadType.OneRepMaxPercentage => typeof(OneRepMaxProgressiveOverloadFactor),
+            ProgressiveOverloadType.SteadyState => typeof(SteadyStateProgressiveOverloadFactor),
+            _ => typeof(SteadyStateProgressiveOverloadFactor)
+        };
+
+        _viewModel.AddExercise(new NewExerciseOptions(selector, overload));
+        
+        _viewModel.WorkoutDefinition.Exercises.Should().HaveCount(1);
+        var definition = _viewModel.WorkoutDefinition.Exercises.First();
+        definition.ExerciseSelector.Should().BeOfType(expectedSelectorType);
+        definition.OverloadFactor.Should().BeOfType(expectedOverloadType);
     }
 
     [Test]
@@ -129,5 +161,39 @@ public class EditWorkoutDefinitionViewModelTests
         
         _viewModel.WorkoutDefinition.Exercises[2].ExerciseSelector.Should().BeOfType<MuscleGroupExerciseSelector>();
         _viewModel.WorkoutDefinition.Exercises[2].OverloadFactor.Should().BeOfType<PowerLadderOverloadFactor>();
+    }
+
+    [Test]
+    public void DeleteExerciseDefinitionFromTheMiddle()
+    {
+        var definitions = _viewModel.WorkoutDefinition.Exercises;
+        
+        var exercise1 = new ExerciseDefinition
+        {
+            OverloadFactor = new PowerLadderOverloadFactor(2, false),
+            ExerciseSelector = new MuscleGroupExerciseSelector("Test 1")
+        };
+        var exercise2 = new ExerciseDefinition
+        {
+            OverloadFactor = new PowerLadderOverloadFactor(2, false),
+            ExerciseSelector = new MuscleGroupExerciseSelector("Test 2")
+        };
+        var exercise3 = new ExerciseDefinition
+        {
+            OverloadFactor = new PowerLadderOverloadFactor(3, false),
+            ExerciseSelector = new MuscleGroupExerciseSelector("Test 3")
+        };
+        
+        definitions.Add(exercise1);
+        definitions.Add(exercise2);
+        definitions.Add(exercise3);
+        
+        
+        _viewModel.DeleteExercise(exercise2);
+
+        definitions.Count.Should().Be(2);
+        definitions.Contains(exercise1).Should().BeTrue();
+        definitions.Contains(exercise2).Should().BeFalse();
+        definitions.Contains(exercise3).Should().BeTrue();
     }
 }
