@@ -1,4 +1,4 @@
-name: Build and deploy .NET application to container app workout-tracker-api
+name: Build and test
 on:
   push:
     branches:
