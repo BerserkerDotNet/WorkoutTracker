@@ -96,6 +96,13 @@ public sealed partial class EditWorkoutDefinitionViewModel : ObservableObject, I
 
         HideNewExerciseMenu();
     }
+    
+    [RelayCommand]
+    public void DeleteExercise(ExerciseDefinition definition)
+    {
+        var collection = WorkoutDefinition.Exercises as ObservableCollection<ExerciseDefinition>;
+        collection.Remove(definition);
+    }
 
     [RelayCommand]
     public async Task Save()
