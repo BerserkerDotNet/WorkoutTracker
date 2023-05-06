@@ -4,7 +4,6 @@ on:
     branches:
     - master
   pull_request:
-    types: [ opened, reopened ]
     branches: master
 env:
   CONTAINER_APP_CONTAINER_NAME: workout-tracker-api
