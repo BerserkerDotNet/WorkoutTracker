@@ -57,6 +57,10 @@
                                         <dxcv:SwipeItem Caption="Replace" BackgroundColor="Orange"
                                                         Command="{Binding ShowNewExerciseMenuCommand, Source={RelativeSource AncestorType={x:Type vm:EditWorkoutDefinitionViewModel }} }"/>
                                     </dxcv:SwipeContainer.StartSwipeItems>
+                                    <dxcv:SwipeContainer.EndSwipeItems>
+                                        <dxcv:SwipeItem Caption="Delete" BackgroundColor="HotPink"
+                                                        Command="{Binding DeleteExerciseCommand, Source={RelativeSource AncestorType={x:Type vm:EditWorkoutDefinitionViewModel }} }"/>
+                                    </dxcv:SwipeContainer.EndSwipeItems>
                                 </dxcv:SwipeContainer>
                             </DataTemplate>
                         </dxcv:DXCollectionView.ItemTemplate>

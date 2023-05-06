@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
@@ -19,38 +19,42 @@
         <ToolbarItem Text="Save" Command="{Binding SaveCommand}" />
     </ContentPage.ToolbarItems>
     <Grid x:Name="grid" RowSpacing="10" Margin="10,0">
-        <dxdf:DataFormView x:Name="mainForm" DataObject="{Binding WorkoutProgram, Mode=TwoWay}" EditorBoxMode="Filled" ValidationMode="PropertyChanged" IsEditorLabelVisible="True" IsAutoGenerationEnabled="False" EditorLabelPosition="Top">
+        <dxdf:DataFormView x:Name="mainForm" DataObject="{Binding WorkoutProgram, Mode=TwoWay}" EditorBoxMode="Filled"
+                           ValidationMode="PropertyChanged" IsEditorLabelVisible="True" IsAutoGenerationEnabled="False"
+                           EditorLabelPosition="Top">
             <dxdf:DataFormCustomItem FieldName="Name" RowOrder="1" x:DataType="entities:WorkoutProgram">
                 <dxe:TextEdit Text="{Binding Name,Mode=TwoWay}" PlaceholderText="Program name" />
             </dxdf:DataFormCustomItem>
-            
+
             <dxdf:DataFormCustomItem FieldName="Schedule" RowOrder="2" x:DataType="entities:WorkoutProgram">
-                <dxcv:DXCollectionView ItemsSource="{Binding Schedule, Converter={x:StaticResource ScheduleToListConverter}}" TapCommand="{Binding Path=BindingContext.EditDefinitionCommand, Source={x:Reference mainForm}}">
+                <dxcv:DXCollectionView
+                    ItemsSource="{Binding Schedule, Converter={x:StaticResource ScheduleToListConverter}}"
+                    TapCommand="{Binding Path=BindingContext.EditDefinitionCommand, Source={x:Reference mainForm}}">
                     <dxcv:DXCollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="entities:AssignedWorkoutDefinition">
-                        <Grid Padding="18,1,18,7">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="50" />
-                            </Grid.ColumnDefinitions>
-                            <StackLayout Orientation="Vertical">
-                                <Label Text="{Binding DayOfWeekName}"
-                                       HorizontalTextAlignment="Start"
-                                       Margin="10,2"
-                                       FontSize="18"
-                                       TextColor="#55575c"/>
-                                <Label Text="{Binding Definition.Name}"
-                                       HorizontalTextAlignment="Start"
-                                       Margin="10,2"
-                                       FontSize="18"
-                                       TextColor="#2088ff"/>
-                            </StackLayout>
-                        </Grid>
-                    </DataTemplate>
-                        </dxcv:DXCollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="entities:AssignedWorkoutDefinition">
+                            <Grid Padding="0,1,0,7">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="50" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Orientation="Vertical">
+                                    <Label Text="{Binding DayOfWeekName}"
+                                           HorizontalTextAlignment="Start"
+                                           Margin="5,2"
+                                           FontSize="18"
+                                           TextColor="#55575c" />
+                                    <Label Text="{Binding Definition.Name}"
+                                           HorizontalTextAlignment="Start"
+                                           Margin="5,2"
+                                           FontSize="18"
+                                           TextColor="#2088ff" />
+                                </StackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
                 </dxcv:DXCollectionView>
             </dxdf:DataFormCustomItem>
-            
+
             <dxdf:DataFormCustomItem FieldName="Id" RowOrder="51" IsVisible="False" />
         </dxdf:DataFormView>
     </Grid>
