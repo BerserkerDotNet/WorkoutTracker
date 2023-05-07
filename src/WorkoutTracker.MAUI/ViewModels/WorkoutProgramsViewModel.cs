@@ -8,6 +8,7 @@ using WorkoutTracker.MAUI.Services;
 using WorkoutTracker.MAUI.Services.Data;
 using WorkoutTracker.MAUI.Views;
 using WorkoutTracker.Models.Entities;
+using WorkoutTracker.Services.ViewModels;
 
 namespace WorkoutTracker.MAUI.ViewModels;
 
@@ -43,7 +44,7 @@ public sealed partial class WorkoutProgramsViewModel : ObservableObject
     [RelayCommand]
     public async Task EditProgram(WorkoutProgram program)
     {
-        program = program ?? new WorkoutProgram { Name = "New program", Id = Guid.NewGuid(), Schedule = Schedule.Default };
+        program ??= new WorkoutProgram { Name = "New program", Id = Guid.NewGuid(), Schedule = Schedule.Default };
         await Shell.Current.GoToAsync(nameof(EditWorkoutProgram), new Dictionary<string, object>
         {
             { nameof(EditWorkoutProgramViewModel.WorkoutProgram), program }

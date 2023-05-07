@@ -1,33 +1,30 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Text.Json;
-using System.Threading.Tasks;
-using WorkoutTracker.MAUI.Services;
-using WorkoutTracker.MAUI.Services.Data;
-using WorkoutTracker.MAUI.Views;
 using WorkoutTracker.Models.Entities;
-using WorkoutTracker.Services.ViewModels;
+using WorkoutTracker.Services.Interfaces;
+using INavigation = WorkoutTracker.Services.Interfaces.INavigation;
 
-namespace WorkoutTracker.MAUI.ViewModels;
+namespace WorkoutTracker.Services.ViewModels;
 
 public sealed partial class EditWorkoutProgramViewModel : ObservableObject, IQueryAttributable
 {
     [ObservableProperty]
     private WorkoutProgram _workoutProgram;
 
-    private readonly WorkoutTrackerDb _trackerDb;
-    private readonly ApplicationContext<WorkoutViewModel> _context;
+    private readonly IWorkoutDataProvider _trackerDb;
+    private readonly INavigation _navigation;
 
-    public EditWorkoutProgramViewModel(WorkoutTrackerDb trackerDb, ApplicationContext<WorkoutViewModel> context)
+    public EditWorkoutProgramViewModel(IWorkoutDataProvider trackerDb, INavigation navigation)
     {
         _trackerDb = trackerDb;
-        _context = context;
+        _navigation = navigation;
     }
     
     [RelayCommand]
     public async Task EditDefinition(AssignedWorkoutDefinition definition)
     {
-        await Shell.Current.GoToAsync(nameof(EditWorkoutDefinition), new Dictionary<string, object>
+        await _navigation.GoTo("EditWorkoutDefinition", new Dictionary<string, object>
         {
             { nameof(EditWorkoutDefinitionViewModel.WorkoutDefinition), definition.Definition }
         });
@@ -37,7 +34,14 @@ public sealed partial class EditWorkoutProgramViewModel : ObservableObject, IQue
     public async Task Save()
     {
         _trackerDb.UpdateViewModel(_workoutProgram);
-        await Shell.Current.GoToAsync("..");
+        await Back();
+    }
+    
+    [RelayCommand]
+    public async Task Back()
+    {
+        _workoutProgram = null;
+        await _navigation.GoBack();
     }
 
     public void Refresh()

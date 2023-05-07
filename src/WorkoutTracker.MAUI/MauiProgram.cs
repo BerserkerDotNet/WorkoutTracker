@@ -17,6 +17,7 @@ using WorkoutTracker.MAUI.Services.Data;
 using WorkoutTracker.Services;
 using WorkoutTracker.Services.Interfaces;
 using Xamarin.Android.Net;
+using INavigation = WorkoutTracker.Services.Interfaces.INavigation;
 
 namespace WorkoutTracker.MAUI;
 
@@ -65,6 +66,7 @@ public static class MauiProgram
         builder.Services.AddScoped<AuthenticatedClientHandler>();
         builder.Services.AddSingleton<WorkoutTrackerDb>();
         builder.Services.AddSingleton<IWorkoutDataProvider, WorkoutTrackerDb>();
+        builder.Services.AddSingleton<INavigation, ShellNavigation>();
         builder.Services.AddSingleton<SetsGenerator>();
         builder.Services.AddSingleton<IExerciseTimerService, ExerciseTimerService>();
 
