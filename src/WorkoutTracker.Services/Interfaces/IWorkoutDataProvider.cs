@@ -12,4 +12,6 @@ public interface IWorkoutDataProvider
     IEnumerable<MuscleViewModel> GetMuscles();
 
     IEnumerable<ExerciseViewModel> GetExercises();
+
+    void UpdateViewModel<T>(T model);
 }

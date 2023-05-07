@@ -30,8 +30,8 @@
         </Style>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Command="{Binding ShowNewExerciseMenuCommand}" />
-        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" />
+        <ToolbarItem Text="Add" Command="{Binding ShowNewExerciseMenuCommand}" IconImageSource="add.svg" />
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save.svg" />
     </ContentPage.ToolbarItems>
     <Grid RowSpacing="10" Margin="10,0">
         <dxdf:DataFormView x:Name="mainForm" DataObject="{Binding WorkoutDefinition, Mode=TwoWay}" EditorBoxMode="Filled" ValidationMode="PropertyChanged" IsEditorLabelVisible="True" IsAutoGenerationEnabled="False" EditorLabelPosition="Top">
