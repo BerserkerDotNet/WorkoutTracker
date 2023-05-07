@@ -3,12 +3,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
-             xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
-             xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
+             xmlns:vm="clr-namespace:WorkoutTracker.Services.ViewModels;assembly=WorkoutTracker.Services"
              xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
              xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
              xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
-             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
              x:DataType="vm:WorkoutProgramsViewModel"
              x:Class="WorkoutTracker.MAUI.Views.WorkoutPrograms"
              Title="Workout Programs">
@@ -28,42 +26,50 @@
             SelectionMode="None">
             <dxcv:DXCollectionView.ItemTemplate>
                 <DataTemplate x:DataType="entities:WorkoutProgram">
-                    <Grid Padding="18,1,18,7" Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="50" />
-                        </Grid.ColumnDefinitions>
-                        <VerticalStackLayout>
+                    <dxcv:SwipeContainer>
+                        <dxcv:SwipeContainer.ItemView>
+                            <Grid Padding="18,1,18,7" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="50" />
+                                </Grid.ColumnDefinitions>
+                                <VerticalStackLayout>
 
-                                <Label Text="{Binding Name}"
-                                       HorizontalTextAlignment="Start"
-                                       Margin="10,2"
-                                       FontSize="18"
-                                       TextColor="#55575c" />
-                            <dxe:ChipGroup ChipTextColor="#55575c"
-                                           ItemsSource="{Binding Schedule, Converter={x:StaticResource ScheduleToNamesListConverter}}" />
-                        </VerticalStackLayout>
-                        <dxe:Chip
-                                  Grid.Column="1"
-                                  IconColor="Green"
-                                  IconSize="32,32"
-                                  HorizontalOptions="EndAndExpand"
-                                  VerticalOptions="CenterAndExpand"
-                                  HeightRequest="36"
-                                  WidthRequest="36"
-                                  BorderThickness="0"
-                                  TapCommand="{Binding SetCurrentWorkoutCommand, Source={RelativeSource AncestorType={x:Type vm:WorkoutProgramsViewModel }}}"
-                                  TapCommandParameter="{Binding .}"
-                                  IsIconVisible="True">
-                            <dxe:Chip.Icon>
-                                <MultiBinding Converter="{StaticResource SelectedWorkoutColor}">
-                                    <Binding Path="Id" />
-                                    <Binding Path="SelectedProgram"
-                                             Source="{RelativeSource AncestorType={x:Type vm:WorkoutProgramsViewModel }}" />
-                                </MultiBinding>
-                            </dxe:Chip.Icon>
-                        </dxe:Chip>
-                    </Grid>
+                                    <Label Text="{Binding Name}"
+                                           HorizontalTextAlignment="Start"
+                                           Margin="10,2"
+                                           FontSize="18"
+                                           TextColor="#55575c" />
+                                    <dxe:ChipGroup ChipTextColor="#55575c"
+                                                   ItemsSource="{Binding Schedule, Converter={x:StaticResource ScheduleToNamesListConverter}}" />
+                                </VerticalStackLayout>
+                                <dxe:Chip
+                                    Grid.Column="1"
+                                    IconColor="Green"
+                                    IconSize="32,32"
+                                    HorizontalOptions="EndAndExpand"
+                                    VerticalOptions="CenterAndExpand"
+                                    HeightRequest="36"
+                                    WidthRequest="36"
+                                    BorderThickness="0"
+                                    TapCommand="{Binding SetCurrentWorkoutCommand, Source={RelativeSource AncestorType={x:Type vm:WorkoutProgramsViewModel }}}"
+                                    TapCommandParameter="{Binding .}"
+                                    IsIconVisible="True">
+                                    <dxe:Chip.Icon>
+                                        <MultiBinding Converter="{StaticResource SelectedWorkoutColor}">
+                                            <Binding Path="Id" />
+                                            <Binding Path="SelectedProgram"
+                                                     Source="{RelativeSource AncestorType={x:Type vm:WorkoutProgramsViewModel }}" />
+                                        </MultiBinding>
+                                    </dxe:Chip.Icon>
+                                </dxe:Chip>
+                            </Grid>
+                        </dxcv:SwipeContainer.ItemView>
+                        <dxcv:SwipeContainer.EndSwipeItems>
+                            <dxcv:SwipeItem Caption="Delete" BackgroundColor="HotPink"
+                                            Command="{Binding DeleteProgramCommand, Source={RelativeSource AncestorType={x:Type vm:WorkoutProgramsViewModel }} }"/>
+                        </dxcv:SwipeContainer.EndSwipeItems>
+                    </dxcv:SwipeContainer>
                 </DataTemplate>
             </dxcv:DXCollectionView.ItemTemplate>
             <dxcv:DXCollectionView.Margin>

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>net7.0;net7.0-android</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <UseMaui>true</UseMaui>
   </PropertyGroup>
 
