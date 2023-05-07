@@ -10,7 +10,7 @@ namespace WorkoutTracker.Services
         private static readonly Guid BarbellCurl = Guid.Parse("93b66b46-74bc-484f-bc52-844d5facba69");
         private static readonly Guid Facepulls = Guid.Parse("d4355b45-ac08-4ed6-8401-6a7cf9d91491");
 
-        public static WorkoutProgram Default = new WorkoutProgram
+        public static WorkoutProgram Default => new WorkoutProgram
         {
             Id = Guid.Parse("5184f670-ad0d-4062-a936-6a16c9e14069"),
             Name = "Default",

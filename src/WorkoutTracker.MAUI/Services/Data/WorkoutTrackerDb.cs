@@ -190,6 +190,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         {
             ExerciseViewModel eVm => ExerciseDbEntity.FromViewModel(eVm),
             LogEntryViewModel lVm => LogsDbEntity.FromViewModel(lVm),
+            WorkoutProgram lVm => ProgramsDbEntity.FromViewModel(lVm),
             _ => throw new NotImplementedException($"Delete of {typeof(T)} entity is not implemented.")
         };
 
@@ -200,7 +201,6 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
             RecordId = dbData.Id,
             TableName = model.GetType().Name,
             OpType = OperationType.Delete
-
         });
     }
 
