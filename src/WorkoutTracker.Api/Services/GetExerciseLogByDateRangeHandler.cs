@@ -35,13 +35,7 @@ public sealed class GetExerciseLogByDateRangeHandler : IRequestHandler<GetExerci
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var exercise = exercises.Single(e => e.Id == item.ExerciseId);
-                var viewModel = new LogEntryViewModel
-                {
-                    Date = item.Date,
-                    Id = item.Id,
-                    Sets = item.Sets,
-                    Exercise = exercise
-                };
+                var viewModel = item.ToViewModel(exercise);
                 logs.Add(viewModel);
             }
         }
