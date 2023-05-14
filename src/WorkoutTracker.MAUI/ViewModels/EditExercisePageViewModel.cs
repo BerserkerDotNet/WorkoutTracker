@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using WorkoutTracker.MAUI.Services;
 using WorkoutTracker.MAUI.Services.Data;
 using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.Services;
 
 namespace WorkoutTracker.MAUI.ViewModels;
 

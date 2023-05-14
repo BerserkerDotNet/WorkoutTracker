@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-    <TargetFramework>net7.0-android</TargetFramework>
+    <TargetFramework>net8.0-android</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<SingleProject>true</SingleProject>
 		<UseMaui>true</UseMaui>
@@ -67,7 +67,7 @@
     <PackageReference Include="Plugin.LocalNotification" Version="10.0.3" />
     <PackageReference Include="CommunityToolkit.Maui" Version="3.1.0" />
     <PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.7.1.5" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.5.1.1" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.5.1.2" />
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.0-rc.2.*" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0-rc.2.*" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.2" />

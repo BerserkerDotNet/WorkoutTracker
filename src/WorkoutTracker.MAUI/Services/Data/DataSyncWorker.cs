@@ -16,6 +16,7 @@ using WorkoutTracker.MAUI.Interfaces;
 using WorkoutTracker.MAUI.Services.Data.Entities;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.Services;
 using Xamarin.Android.Net;
 
 namespace WorkoutTracker.MAUI.Services.Data;

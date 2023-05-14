@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
              xmlns:ctrl="clr-namespace:WorkoutTracker.MAUI.Controls"
-             xmlns:vm="clr-namespace:WorkoutTracker.MAUI.ViewModels"
+             xmlns:vm="clr-namespace:WorkoutTracker.Services.ViewModels;assembly=WorkoutTracker.Services"
              xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
              xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
              xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
@@ -50,7 +50,8 @@
             Icon="timer"
             IconVisible="True"
             IconColor="White" />
-        <Label Text="No exercises for today." HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Margin="8,0,0,0" IsVisible="{Binding TodaySets, Converter={StaticResource CollectionToVisibilityConverter}}" Grid.Row="1" />
+        <Label Text="No exercises for today." HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Margin="8,0,0,0"
+               IsVisible="{Binding TodaySets, Converter={StaticResource CollectionToVisibilityConverter}}" Grid.Row="1" />
         <dxcv:DXCollectionView
                 x:Name="setsList"
                 Grid.Row="1"

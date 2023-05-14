@@ -2,7 +2,7 @@
 using System;
 using WorkoutTracker.MAUI.Interfaces;
 
-namespace WorkoutTracker.MAUI.Services;
+namespace WorkoutTracker.Services;
 
 public class ApplicationContext : ILogger, INotificationService
 {

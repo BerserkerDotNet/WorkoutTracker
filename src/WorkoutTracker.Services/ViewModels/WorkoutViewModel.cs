@@ -1,26 +1,20 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using DevExpress.Maui.Scheduler.Internal;
-using System;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using WorkoutTracker.MAUI.Controls;
-using WorkoutTracker.MAUI.Extensions;
 using WorkoutTracker.MAUI.Interfaces;
-using WorkoutTracker.MAUI.Services;
-using WorkoutTracker.MAUI.Services.Data;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
 using WorkoutTracker.Models.Selectors;
-using WorkoutTracker.Services;
+using WorkoutTracker.Services.Extensions;
+using WorkoutTracker.Services.Interfaces;
+using WorkoutTracker.Services.Models;
 
-namespace WorkoutTracker.MAUI.ViewModels;
+namespace WorkoutTracker.Services.ViewModels;
 
 public sealed partial class WorkoutViewModel : ObservableObject
 {
-    private readonly WorkoutTrackerDb _trackerDb;
+    private readonly IWorkoutDataProvider _trackerDb;
     private readonly SetsGenerator _setsGenerator;
     private readonly IExerciseTimerService _timer;
     private readonly ApplicationContext<WorkoutViewModel> _context;
@@ -52,7 +46,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<ExerciseViewModel> _exercises;
 
-    public WorkoutViewModel(WorkoutTrackerDb trackerDb, SetsGenerator setsGenerator, IExerciseTimerService timer, ApplicationContext<WorkoutViewModel> context)
+    public WorkoutViewModel(IWorkoutDataProvider trackerDb, SetsGenerator setsGenerator, IExerciseTimerService timer, ApplicationContext<WorkoutViewModel> context)
     {
         _trackerDb = trackerDb;
         _setsGenerator = setsGenerator;
@@ -109,7 +103,10 @@ public sealed partial class WorkoutViewModel : ObservableObject
                 .ToArray();
                 // Remove reserved from the list
 
-                reservedExercises.ForEach(r => exercises.Remove(r));
+                foreach (var reservedExercise in reservedExercises)
+                {
+                    exercises.Remove(reservedExercise);
+                }
                 foreach (var exerciseDefinition in todayWorkoutDefinition.Exercises)
                 {
                     // This sucks!
@@ -185,6 +182,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
     {
         var sets = model.Sets as ObservableCollection<IExerciseSet>;
         sets.Add(new ProposedSet { Repetitions = 0, Weight = 0 });
+        _trackerDb.UpdateViewModel(model);
     }
 
     [RelayCommand]
@@ -194,6 +192,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
         if (sets.Last() is ProposedSet)
         {
             sets.Remove(sets.Last());
+            _trackerDb.UpdateViewModel(model);
         }
     }
 

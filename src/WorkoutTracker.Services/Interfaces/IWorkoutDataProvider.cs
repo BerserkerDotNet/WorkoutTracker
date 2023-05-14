@@ -23,4 +23,6 @@ public interface IWorkoutDataProvider
     Profile GetProfile();
 
     IEnumerable<WorkoutProgram> GetPrograms();
+
+    IEnumerable<LogEntryViewModel> GetTodaysSchedule();
 }

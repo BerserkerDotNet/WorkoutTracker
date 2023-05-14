@@ -1,7 +1,7 @@
 using AndroidX.Work;
 using System;
 using WorkoutTracker.MAUI.Services.Data;
-using WorkoutTracker.MAUI.ViewModels;
+using WorkoutTracker.Services.ViewModels;
 
 namespace WorkoutTracker.MAUI.Views;
 
