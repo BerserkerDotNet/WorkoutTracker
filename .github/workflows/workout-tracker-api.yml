@@ -14,7 +14,7 @@ env:
   PROJECT_NAME_FOR_DOCKER: workouttracker-api
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - name: Checkout to the branch
       uses: actions/checkout@v2
