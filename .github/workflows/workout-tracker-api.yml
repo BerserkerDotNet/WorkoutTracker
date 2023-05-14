@@ -30,7 +30,7 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore -bl
+      run: dotnet build --configuration Release --no-restore -bl --framework net8.0-android -p:AndroidEnableMarshalMethods=false
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Upload binlog for investigation

@@ -18,9 +18,9 @@
 		<ApplicationVersion>1</ApplicationVersion>
 		<ApplicationDisplayVersion>2.0</ApplicationDisplayVersion>
 
-		<UseInterpreter Condition="'$(TargetFramework)' == 'net7.0-android'">False</UseInterpreter>
+		<UseInterpreter Condition="'$(TargetFramework)' == 'net8.0-android'">False</UseInterpreter>
 		<LangVersion>preview</LangVersion>
-		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net7.0-android'">28.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net8.0-android'">28.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -64,23 +64,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Plugin.LocalNotification" Version="10.0.3" />
-    <PackageReference Include="CommunityToolkit.Maui" Version="3.1.0" />
-    <PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.7.1.5" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.5.1.2" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.0-rc.2.*" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0-rc.2.*" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.2" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0-rc.2.*" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0-rc.2.*" />
+    <PackageReference Include="Plugin.LocalNotification" Version="10.1.4" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="5.1.0" />
+    <PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.8.1.1" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.6.1.1" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.0-preview.3.23177.8" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0-preview.3.23174.8" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.54.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0-preview.3.23174.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-preview.3.23174.8" />
     <PackageReference Include="DevExpress.Maui.Charts" Version="22.2.3" />
     <PackageReference Include="DevExpress.Maui.CollectionView" Version="22.2.3" />
     <PackageReference Include="DevExpress.Maui.Core" Version="22.2.3" />
     <PackageReference Include="DevExpress.Maui.DataGrid" Version="22.2.3" />
     <PackageReference Include="DevExpress.Maui.Editors" Version="22.2.3" />
     <PackageReference Include="DevExpress.Maui.Scheduler" Version="22.2.3" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="UnitsNet" Version="4.149.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.2" />
