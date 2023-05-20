@@ -62,7 +62,7 @@
                     x:Name="setsStatus"
                     Margin="10,2"
                     HeightRequest="40"
-                    WidthRequest="50" />
+                    WidthRequest="60" />
             </StackLayout>
             <dxe:Chip x:Name="contextMenuBtn"
                       Grid.Column="1"

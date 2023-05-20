@@ -10,7 +10,7 @@ env:
   PROJECT_NAME_FOR_DOCKER: workouttracker-api
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - name: Checkout to the branch
       uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
         name: binlog
         path: msbuild.binlog
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: publish
     steps:
     - name: Azure Login

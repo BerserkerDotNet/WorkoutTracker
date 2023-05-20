@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Hosting;
 using WorkoutTracker.MAUI.ViewModels;
 using WorkoutTracker.MAUI.Views;
-using WorkoutTracker.Models.Contracts;
-using WorkoutTracker.Models.Entities;
-using WorkoutTracker.Models.Presentation;
 using WorkoutTracker.Services.ViewModels;
 
 namespace WorkoutTracker.MAUI.Extensions;
@@ -32,32 +28,5 @@ public static class MauiAppBuilderExtensions
         builder.Services.AddSingleton<EditWorkoutProgram>();
         builder.Services.AddSingleton<EditWorkoutDefinition>();
         return builder;
-    }
-}
-
-public static class IExerciseSetExtensions
-{
-    public static Color GetColor(this IExerciseSet set)
-    {
-        return set switch
-        {
-            LegacySet => Colors.LightGreen,
-            CompletedSet => Colors.LightGreen,
-            InProgressSet => Colors.LightPink,
-            ProposedSet => Colors.LightSkyBlue,
-            _ => Colors.Gray
-        };
-    }
-
-    public static SetStatus GetStatus(this IExerciseSet set)
-    {
-        return set switch
-        {
-            LegacySet => SetStatus.Completed,
-            CompletedSet => SetStatus.Completed,
-            InProgressSet => SetStatus.InProgress,
-            ProposedSet => SetStatus.NotStarted,
-            _ => SetStatus.NotStarted
-        };
     }
 }

@@ -14,6 +14,7 @@ using WorkoutTracker.MAUI.Interfaces;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.Services;
 
 namespace WorkoutTracker.MAUI.Services;
 

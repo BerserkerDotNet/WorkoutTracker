@@ -7,6 +7,7 @@ using WorkoutTracker.MAUI.Extensions;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.Services.Models;
 
 namespace WorkoutTracker.MAUI.Controls;
 
@@ -205,9 +206,4 @@ public partial class ExerciseSetsCollection : ContentView
             ReduceSetsCommand.Execute(_viewModel);
         }
     }
-}
-
-public record SetWrapper(int Number, IExerciseSet Set, LogEntryViewModel Model)
-{
-    public Color Color => Set.GetColor();
 }
