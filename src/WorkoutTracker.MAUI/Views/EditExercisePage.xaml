@@ -6,7 +6,7 @@
              xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
              xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
-             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:conv="clr-namespace:WorkoutTracker.Services.Converters;assembly=WorkoutTracker.Services"
              x:Class="WorkoutTracker.MAUI.Views.EditExercisePage"
              x:DataType="vm:EditExercisePageViewModel"
              Title="Edit Exercise">

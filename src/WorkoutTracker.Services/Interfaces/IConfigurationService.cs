@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace WorkoutTracker.MAUI.Interfaces;
+﻿namespace WorkoutTracker.Services.Interfaces;
 
 public record EndpointConfiguration(string Url, string Secret);
 

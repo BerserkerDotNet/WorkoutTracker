@@ -1,22 +1,28 @@
-﻿using System;
+﻿using Microsoft.Maui.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 
-namespace WorkoutTracker.MAUI.Converters
+namespace WorkoutTracker.Services.Converters
 {
-    public sealed class SetsToStatusConverter : IValueConverter
+    public sealed class SetsToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is IEnumerable<IExerciseSet> sets)
             {
-                return $"{sets.OfType<CompletedSet>().Count()}/{sets.Count()}";
+                if (sets.OfType<ProposedSet>().Count() == sets.Count())
+                {
+                    return Colors.Transparent;
+                }
+
+                return sets.OfType<CompletedSet>().Count() == sets.Count() ? Colors.LightGreen : Colors.LightSkyBlue;
             }
 
-            return "N/A";
+            return Colors.Transparent;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

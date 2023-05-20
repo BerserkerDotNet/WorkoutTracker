@@ -1,7 +1,7 @@
 ﻿using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
 
-namespace WorkoutTracker.MAUI.Interfaces;
+namespace WorkoutTracker.Services.Interfaces;
 
 public interface IWorkoutRepository
 {

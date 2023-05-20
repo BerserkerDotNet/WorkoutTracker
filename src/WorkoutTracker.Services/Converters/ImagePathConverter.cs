@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Globalization;
-using WorkoutTracker.MAUI.Services;
+﻿using System.Globalization;
 
-namespace WorkoutTracker.MAUI.Converters;
+namespace WorkoutTracker.Services.Converters;
 
 public class ImagePathConverter : IValueConverter
 {
@@ -11,7 +8,7 @@ public class ImagePathConverter : IValueConverter
 
     public ImagePathConverter()
     {
-        _provider = App.Current.ServiceProvider.GetRequiredService<CDNImageProvider>();
+        _provider = Application.Current.Handler.MauiContext.Services.GetRequiredService<CDNImageProvider>();
     }
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

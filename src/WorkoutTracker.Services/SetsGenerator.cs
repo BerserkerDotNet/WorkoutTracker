@@ -1,12 +1,11 @@
-﻿using WorkoutTracker.MAUI.Interfaces;
-using WorkoutTracker.Models.Contracts;
+﻿using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Services.Extensions;
 using WorkoutTracker.Services.Interfaces;
 
 namespace WorkoutTracker.Services;
 
-public class SetsGenerator
+public class SetsGenerator : ISetsGenerator
 {
     private readonly IWorkoutDataProvider _dataProvider;
 

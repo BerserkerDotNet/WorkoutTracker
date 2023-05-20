@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using WorkoutTracker.MAUI.Interfaces;
+using WorkoutTracker.Services.Interfaces;
 
 namespace WorkoutTracker.Services;
 

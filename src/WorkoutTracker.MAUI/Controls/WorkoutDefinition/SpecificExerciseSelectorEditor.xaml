@@ -4,7 +4,7 @@
              xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
              xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
              xmlns:selectors="clr-namespace:WorkoutTracker.Models.Selectors;assembly=WorkoutTracker.Models"
-             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:conv="clr-namespace:WorkoutTracker.Services.Converters;assembly=WorkoutTracker.Services"
              x:Class="WorkoutTracker.MAUI.Controls.WorkoutDefinition.SpecificExerciseSelectorEditor"
              x:DataType="selectors:SpecificExerciseSelector">
     <ContentView.Resources>

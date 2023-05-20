@@ -1,4 +1,4 @@
-﻿using WorkoutTracker.MAUI.Interfaces;
+﻿using WorkoutTracker.Services.Interfaces;
 
 namespace WorkoutTracker.MAUI.Services;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:conv="clr-namespace:WorkoutTracker.Services.Converters;assembly=WorkoutTracker.Services"
              xmlns:ctrl="clr-namespace:WorkoutTracker.MAUI.Controls"
              xmlns:vm="clr-namespace:WorkoutTracker.Services.ViewModels;assembly=WorkoutTracker.Services"
              xmlns:model="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
@@ -19,6 +19,7 @@
         <conv:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"></conv:CollectionToVisibilityConverter>
         <conv:TimeSpanToSecondsConverter x:Key="TimeSpanToSecondsConverter"></conv:TimeSpanToSecondsConverter>
         <conv:TimerModeToColorConverter x:Key="TimerModeToColorConverter"></conv:TimerModeToColorConverter>
+        <conv:AddReplaceExerciseOptionsConverter x:Key="AddReplaceExerciseOptionsConverter"></conv:AddReplaceExerciseOptionsConverter>
         <Style x:Key="SeparatorStyle" TargetType="BoxView">
             <Setter Property="BackgroundColor" Value="#EBEBEB"/>
             <Setter Property="HeightRequest" Value="1"/>
@@ -156,16 +157,25 @@
                         </DataTemplate>
                     </dxe:AutoCompleteEdit.ItemTemplate>
                 </dxe:AutoCompleteEdit>
-
+                <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
+                <dxe:CheckEdit Label="Include warm-up sets" x:Name="includeWarupSets" />
                 <BoxView Style="{StaticResource SeparatorStyle}" Margin="24,0"/>
                 <HorizontalStackLayout HorizontalOptions="Center">
                     <dxco:SimpleButton Text="Done"
                                       Command="{Binding ReplaceExerciseCommand}"
-                                      CommandParameter="{Binding Source={x:Reference replaceExercisePicker}, Path=SelectedItem}"
                                       TextColor="#2088ff"
                                       PressedBackgroundColor="#e8e8e8"
                                       BackgroundColor="Transparent"
-                                      Margin="0,0,0,6"/>
+                                      Margin="0,0,0,6">
+                        <dxco:SimpleButton.CommandParameter>
+                            <MultiBinding Converter="{StaticResource AddReplaceExerciseOptionsConverter}">
+                                <MultiBinding.Bindings>
+                                    <Binding Path="SelectedItem" Source="{x:Reference replaceExercisePicker}" />
+                                    <Binding Path="IsChecked" Source="{x:Reference includeWarupSets}" />
+                                </MultiBinding.Bindings>
+                            </MultiBinding>
+                        </dxco:SimpleButton.CommandParameter>
+                    </dxco:SimpleButton>
                     <dxco:SimpleButton Text="Cancel"
                                       Command="{Binding CancelExerciseCommand}"
                                       TextColor="HotPink"

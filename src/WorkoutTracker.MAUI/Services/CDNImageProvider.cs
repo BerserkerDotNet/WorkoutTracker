@@ -1,29 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using WorkoutTracker.MAUI.Interfaces;
+using WorkoutTracker.Services.Interfaces;
 
 namespace WorkoutTracker.MAUI.Services;
 
-public class CDNImageProvider
-{
-    private readonly Uri _basePath;
 
-    public CDNImageProvider(Uri basePath)
-    {
-        this._basePath = basePath;
-    }
-
-    public string GetFullPath(string imagePath)
-    {
-        if (string.IsNullOrEmpty(imagePath))
-        {
-            return _basePath.ToString();
-        }
-
-        return new Uri(_basePath, imagePath.TrimStart('/', '\\')).ToString();
-    }
-}
 
 public class ExerciseTimerService : IExerciseTimerService, IDisposable
 {

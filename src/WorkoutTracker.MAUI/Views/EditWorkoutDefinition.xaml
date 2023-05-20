@@ -7,7 +7,7 @@
              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
              xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
              xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
-             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:conv="clr-namespace:WorkoutTracker.Services.Converters;assembly=WorkoutTracker.Services"
              xmlns:controls="clr-namespace:WorkoutTracker.MAUI.Controls.WorkoutDefinition"
              x:Class="WorkoutTracker.MAUI.Views.EditWorkoutDefinition"
              x:DataType="vm:EditWorkoutDefinitionViewModel"
