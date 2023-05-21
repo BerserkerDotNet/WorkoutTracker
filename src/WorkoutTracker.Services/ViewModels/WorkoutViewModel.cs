@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using WorkoutTracker.MAUI.Interfaces;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
@@ -12,10 +11,12 @@ using WorkoutTracker.Services.Models;
 
 namespace WorkoutTracker.Services.ViewModels;
 
+public record AddReplaceExerciseOptions(ExerciseViewModel Exercise, bool IncludeWarmup);
+
 public sealed partial class WorkoutViewModel : ObservableObject
 {
     private readonly IWorkoutDataProvider _trackerDb;
-    private readonly SetsGenerator _setsGenerator;
+    private readonly ISetsGenerator _setsGenerator;
     private readonly IExerciseTimerService _timer;
     private readonly ApplicationContext<WorkoutViewModel> _context;
 
@@ -46,7 +47,7 @@ public sealed partial class WorkoutViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<ExerciseViewModel> _exercises;
 
-    public WorkoutViewModel(IWorkoutDataProvider trackerDb, SetsGenerator setsGenerator, IExerciseTimerService timer, ApplicationContext<WorkoutViewModel> context)
+    public WorkoutViewModel(IWorkoutDataProvider trackerDb, ISetsGenerator setsGenerator, IExerciseTimerService timer, ApplicationContext<WorkoutViewModel> context)
     {
         _trackerDb = trackerDb;
         _setsGenerator = setsGenerator;
@@ -231,9 +232,11 @@ public sealed partial class WorkoutViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void ReplaceExercise(ExerciseViewModel exercise)
+    public void ReplaceExercise(AddReplaceExerciseOptions options)
     {
-        var sets = _setsGenerator.Generate(exercise.Id, new PowerLadderOverloadFactor(5, includeWarmup: true)).OfType<IExerciseSet>();
+        var (exercise, includeWarmup) = options;
+        
+        var sets = _setsGenerator.Generate(exercise.Id, new PowerLadderOverloadFactor(5, includeWarmup)).OfType<IExerciseSet>();
 
         if (SelectedModel is null) // Add
         {

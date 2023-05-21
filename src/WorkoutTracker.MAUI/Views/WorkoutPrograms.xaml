@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:entities="clr-namespace:WorkoutTracker.Models.Entities;assembly=WorkoutTracker.Models"
              xmlns:vm="clr-namespace:WorkoutTracker.Services.ViewModels;assembly=WorkoutTracker.Services"
-             xmlns:conv="clr-namespace:WorkoutTracker.MAUI.Converters"
+             xmlns:conv="clr-namespace:WorkoutTracker.Services.Converters;assembly=WorkoutTracker.Services"
              xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
              xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
              x:DataType="vm:WorkoutProgramsViewModel"

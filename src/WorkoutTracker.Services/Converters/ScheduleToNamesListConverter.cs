@@ -2,7 +2,7 @@
 using System.Globalization;
 using WorkoutTracker.Models.Entities;
 
-namespace WorkoutTracker.MAUI.Converters
+namespace WorkoutTracker.Services.Converters
 {
     public sealed class ScheduleToNamesListConverter : IValueConverter
     {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Maui.Graphics;
 using System;
 using System.Globalization;
-using WorkoutTracker.MAUI.Interfaces;
+using WorkoutTracker.Services.Interfaces;
 
-namespace WorkoutTracker.MAUI.Converters
+namespace WorkoutTracker.Services.Converters
 {
     public sealed class TimerModeToColorConverter : IValueConverter
     {

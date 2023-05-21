@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using WorkoutTracker.MAUI.Interfaces;
 using WorkoutTracker.MAUI.Services.Data.Entities;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;

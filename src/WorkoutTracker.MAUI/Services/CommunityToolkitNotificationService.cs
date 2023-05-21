@@ -2,7 +2,7 @@
 using CommunityToolkit.Maui.Core;
 using System;
 using System.Threading;
-using WorkoutTracker.MAUI.Interfaces;
+using WorkoutTracker.Services.Interfaces;
 
 namespace WorkoutTracker.MAUI.Services;
 

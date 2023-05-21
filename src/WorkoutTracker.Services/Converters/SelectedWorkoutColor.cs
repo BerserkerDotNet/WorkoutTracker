@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace WorkoutTracker.MAUI.Converters
+namespace WorkoutTracker.Services.Converters
 {
     public sealed class SelectedWorkoutColor : IMultiValueConverter
     {

@@ -11,13 +11,13 @@ using System;
 using System.Reflection;
 using WorkoutTracker.MAUI.Android;
 using WorkoutTracker.MAUI.Extensions;
-using WorkoutTracker.MAUI.Interfaces;
 using WorkoutTracker.MAUI.Services;
 using WorkoutTracker.MAUI.Services.Data;
 using WorkoutTracker.Services;
 using WorkoutTracker.Services.Interfaces;
 using Xamarin.Android.Net;
 using INavigation = WorkoutTracker.Services.Interfaces.INavigation;
+using INotificationService = WorkoutTracker.Services.Interfaces.INotificationService;
 
 namespace WorkoutTracker.MAUI;
 
@@ -61,13 +61,13 @@ public static class MauiProgram
         builder.Services.AddSingleton(new CDNImageProvider(new Uri("https://workout-tracker-content.azureedge.net/images/")));
         builder.Services.AddScoped<AuthenticationService>();
         builder.Services.AddScoped<ICacheService, AndroidCacheService>();
-        builder.Services.AddScoped<Interfaces.INotificationService, CommunityToolkitNotificationService>();
+        builder.Services.AddScoped<INotificationService, CommunityToolkitNotificationService>();
         builder.Services.AddScoped<AndroidMessageHandler>();
         builder.Services.AddScoped<AuthenticatedClientHandler>();
         builder.Services.AddSingleton<WorkoutTrackerDb>();
         builder.Services.AddSingleton<IWorkoutDataProvider, WorkoutTrackerDb>();
         builder.Services.AddSingleton<INavigation, ShellNavigation>();
-        builder.Services.AddSingleton<SetsGenerator>();
+        builder.Services.AddSingleton<ISetsGenerator, SetsGenerator>();
         builder.Services.AddSingleton<IExerciseTimerService, ExerciseTimerService>();
 
         //var httpClientBuilder = builder.Services.AddHttpClient<IWorkoutRepository, CachedWorkoutRepositoryDecorator>((client, sp) =>

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.Collections.ObjectModel;
-using WorkoutTracker.MAUI.Interfaces;
+using UnitsNet;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
@@ -17,15 +17,17 @@ public class WorkoutViewModelTests
 {
     private WorkoutViewModel _vm;
     private IWorkoutDataProvider _dataProvider;
+    private ISetsGenerator _setsGenerator;
     
     [SetUp]
     public void Init()
     {
         _dataProvider = Substitute.For<IWorkoutDataProvider>();
+        _setsGenerator = Substitute.For<ISetsGenerator>();
         var timer = Substitute.For<IExerciseTimerService>();
         var context = new ApplicationContext<WorkoutViewModel>(Substitute.For<INotificationService>(),
             Substitute.For<ILogger<WorkoutViewModel>>());
-        _vm = new WorkoutViewModel(_dataProvider, new SetsGenerator(_dataProvider), timer, context);
+        _vm = new WorkoutViewModel(_dataProvider, _setsGenerator, timer, context);
     }
 
     [Test]
@@ -70,5 +72,90 @@ public class WorkoutViewModelTests
         model.Sets.Should().AllBeOfType<ProposedSet>();
 
         _dataProvider.Received(1).UpdateViewModel(model);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ReplaceExerciseAddsIfSelectedModelIsNull(bool includeWarmup)
+    {
+        _setsGenerator.Generate(Arg.Any<Guid>(), Arg.Any<IProgressiveOverloadFactor>())
+            .Returns(new[]
+            {
+                new ProposedSet() { Weight = 10, Repetitions = 10 },
+                new ProposedSet() { Weight = 10, Repetitions = 10 },
+            });
+        var exercise = new ExerciseViewModel()
+        {
+            Id = Guid.NewGuid()
+        };
+        
+        var options = new AddReplaceExerciseOptions(exercise, includeWarmup);
+        _vm.SelectedModel = null;
+        
+        _vm.ReplaceExercise(options);
+
+        _vm.TodaySets.Should().HaveCount(1);
+        var workout = _vm.TodaySets.First();
+        workout.Exercise.Should().Be(exercise);
+        workout.Sets.Should().HaveCount(2);
+        
+        _dataProvider.Received(1).UpdateViewModel(workout);
+        _setsGenerator.Received(1).Generate(exercise.Id,
+            Arg.Is<PowerLadderOverloadFactor>(o => o.IncludeWarmup == includeWarmup && o.StepIncrement == 5));
+    }
+    
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ReplaceExerciseIfSelectedModelIsNotNull(bool includeWarmup)
+    {
+        _setsGenerator.Generate(Arg.Any<Guid>(), Arg.Any<IProgressiveOverloadFactor>())
+            .Returns(new[]
+            {
+                new ProposedSet() { Weight = 10, Repetitions = 10 },
+            });
+        var newExercise = new ExerciseViewModel()
+        {
+            Id = Guid.NewGuid()
+        };
+        var options = new AddReplaceExerciseOptions(newExercise, includeWarmup);
+        _vm.TodaySets.Add(new LogEntryViewModel
+        {
+            Id = Guid.NewGuid(),
+            Exercise = new ExerciseViewModel(),
+            Sets = Enumerable.Empty<IExerciseSet>(),
+            Date = DateTime.UtcNow,
+            Order = 0
+        });
+        _vm.TodaySets.Add(new LogEntryViewModel
+        {
+            Id = Guid.NewGuid(),
+            Exercise = new ExerciseViewModel(),
+            Sets = Enumerable.Empty<IExerciseSet>(),
+            Date = DateTime.UtcNow,
+            Order = 1
+        });
+        _vm.TodaySets.Add(new LogEntryViewModel
+        {
+            Id = Guid.NewGuid(),
+            Exercise = new ExerciseViewModel(),
+            Sets = Enumerable.Empty<IExerciseSet>(),
+            Date = DateTime.UtcNow,
+            Order = 2
+        });
+
+        _vm.SelectedModel = _vm.TodaySets.ElementAt(1);
+        
+        _vm.ReplaceExercise(options);
+
+        _vm.TodaySets.Should().HaveCount(3);
+        _vm.SelectedModel.Should().BeNull();
+        var workout = _vm.TodaySets.ElementAt(1);
+        workout.Exercise.Should().Be(newExercise);
+        workout.Sets.Should().HaveCount(1);
+        workout.Order.Should().Be(1);
+        
+        _dataProvider.Received(1).UpdateViewModel(workout);
+        _setsGenerator.Received(1).Generate(newExercise.Id,
+            Arg.Is<PowerLadderOverloadFactor>(o => o.IncludeWarmup == includeWarmup && o.StepIncrement == 5));
     }
 }

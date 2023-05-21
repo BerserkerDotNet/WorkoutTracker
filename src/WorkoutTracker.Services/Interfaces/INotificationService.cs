@@ -1,4 +1,4 @@
-﻿namespace WorkoutTracker.MAUI.Interfaces;
+﻿namespace WorkoutTracker.Services.Interfaces;
 
 public interface INotificationService
 {

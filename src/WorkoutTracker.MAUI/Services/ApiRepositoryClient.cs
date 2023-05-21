@@ -10,11 +10,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using UnitsNet;
 using WorkoutTracker.MAUI.Exceptions;
-using WorkoutTracker.MAUI.Interfaces;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
 using WorkoutTracker.Services;
+using WorkoutTracker.Services.Interfaces;
 
 namespace WorkoutTracker.MAUI.Services;
 
