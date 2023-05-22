@@ -1,129 +1,130 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-    <TargetFramework>net8.0-android</TargetFramework>
-		<OutputType>Exe</OutputType>
-		<SingleProject>true</SingleProject>
-		<UseMaui>true</UseMaui>
-		<RootNamespace>WorkoutTracker.MAUI</RootNamespace>
-		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
+    <PropertyGroup>
+        <TargetFramework>net8.0-android</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <SingleProject>true</SingleProject>
+        <UseMaui>true</UseMaui>
+        <RootNamespace>WorkoutTracker.MAUI</RootNamespace>
+        <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
 
-		<!-- Display name -->
-		<ApplicationTitle>Workout tracker</ApplicationTitle>
+        <!-- Display name -->
+        <ApplicationTitle>Workout tracker</ApplicationTitle>
 
-		<!-- App Identifier -->
-		<ApplicationId>com.andriisnihyr.WorkoutTracker</ApplicationId>
-    <ApplicationIdGuid>a977f55f-d146-4e1f-b5c4-d36aa1d5649c</ApplicationIdGuid>
+        <!-- App Identifier -->
+        <ApplicationId>com.andriisnihyr.WorkoutTracker</ApplicationId>
+        <ApplicationIdGuid>a977f55f-d146-4e1f-b5c4-d36aa1d5649c</ApplicationIdGuid>
 
-		<!-- Versions -->
-		<ApplicationVersion>1</ApplicationVersion>
-		<ApplicationDisplayVersion>2.0</ApplicationDisplayVersion>
+        <!-- Versions -->
+        <ApplicationVersion>1</ApplicationVersion>
+        <ApplicationDisplayVersion>2.0</ApplicationDisplayVersion>
 
-		<UseInterpreter Condition="'$(TargetFramework)' == 'net8.0-android'">False</UseInterpreter>
-		<LangVersion>preview</LangVersion>
-		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net8.0-android'">28.0</SupportedOSPlatformVersion>
-	</PropertyGroup>
+        <UseInterpreter Condition="'$(TargetFramework)' == 'net8.0-android'">False</UseInterpreter>
+        <LangVersion>preview</LangVersion>
+        <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net8.0-android'">28.0</SupportedOSPlatformVersion>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<!-- App Icon -->
-		<MauiImage Include="Resources\appicon.svg" ForegroundFile="Resources\icon.png" IsAppIcon="true" />
-		<MauiImage Include="Resources\Images\exercise_menu\add_set.png" />
-		<MauiImage Include="Resources\Images\exercise_menu\delete_exercise.png" />
-		<MauiImage Include="Resources\Images\exercise_menu\delete_set.png" />
-		<MauiImage Include="Resources\Images\exercise_menu\replace_exercise.png" />
+    <ItemGroup>
+        <!-- App Icon -->
+        <MauiImage Include="Resources\appicon.svg" ForegroundFile="Resources\icon.png" IsAppIcon="true" />
+        <MauiImage Include="Resources\Images\exercise_menu\add_set.png" />
+        <MauiImage Include="Resources\Images\exercise_menu\delete_exercise.png" />
+        <MauiImage Include="Resources\Images\exercise_menu\delete_set.png" />
+        <MauiImage Include="Resources\Images\exercise_menu\replace_exercise.png" />
 
-		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\appiconfg.svg" Color="#FFFFFF" />
+        <!-- Splash Screen -->
+        <MauiSplashScreen Include="Resources\appiconfg.svg" Color="#FFFFFF" />
 
-		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" />
+        <!-- Images -->
+        <MauiImage Include="Resources\Images\*" />
 
-		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
-	</ItemGroup>
+        <!-- Custom Fonts -->
+        <MauiFont Include="Resources\Fonts\*" />
+    </ItemGroup>
 
-	<ItemGroup>
-	  <Content Remove="appsettings.json" />
-	</ItemGroup>
+    <ItemGroup>
+        <Content Remove="appsettings.json" />
+    </ItemGroup>
 
-	<ItemGroup>
-	  <None Remove="Resources\Fonts\roboto-bold.ttf" />
-	  <None Remove="Resources\Fonts\roboto-medium.ttf" />
-	  <None Remove="Resources\Fonts\roboto-regular.ttf" />
-	  <None Remove="Resources\Fonts\univia-pro-medium.ttf" />
-	  <None Remove="Resources\Fonts\univia-pro-regular.ttf" />
-	  <None Remove="Resources\Images\exercise_menu\add_set.png" />
-	  <None Remove="Resources\Images\exercise_menu\delete_exercise.png" />
-	  <None Remove="Resources\Images\exercise_menu\delete_set.png" />
-	  <None Remove="Resources\Images\exercise_menu\replace_exercise.png" />
-	  <None Remove="Resources\Images\programs.svg" />
-	  <None Remove="Resources\Images\workout.svg" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Remove="Resources\Fonts\roboto-bold.ttf" />
+        <None Remove="Resources\Fonts\roboto-medium.ttf" />
+        <None Remove="Resources\Fonts\roboto-regular.ttf" />
+        <None Remove="Resources\Fonts\univia-pro-medium.ttf" />
+        <None Remove="Resources\Fonts\univia-pro-regular.ttf" />
+        <None Remove="Resources\Images\exercise_menu\add_set.png" />
+        <None Remove="Resources\Images\exercise_menu\delete_exercise.png" />
+        <None Remove="Resources\Images\exercise_menu\delete_set.png" />
+        <None Remove="Resources\Images\exercise_menu\replace_exercise.png" />
+        <None Remove="Resources\Images\programs.svg" />
+        <None Remove="Resources\Images\workout.svg" />
+    </ItemGroup>
 
-	<ItemGroup>
-	  <EmbeddedResource Include="appsettings.json" />
-	</ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="appsettings.json" />
+    </ItemGroup>
 
-	<ItemGroup>
-    <PackageReference Include="Plugin.LocalNotification" Version="10.1.4" />
-    <PackageReference Include="CommunityToolkit.Maui" Version="5.1.0" />
-    <PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.7.1.5" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.0-preview.3.23177.8" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0-preview.3.23174.8" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.54.0" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0-preview.3.23174.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-preview.3.23174.8" />
-    <PackageReference Include="DevExpress.Maui.Charts" Version="22.2.3" />
-    <PackageReference Include="DevExpress.Maui.CollectionView" Version="22.2.3" />
-    <PackageReference Include="DevExpress.Maui.Core" Version="22.2.3" />
-    <PackageReference Include="DevExpress.Maui.DataGrid" Version="22.2.3" />
-    <PackageReference Include="DevExpress.Maui.Editors" Version="22.2.3" />
-    <PackageReference Include="DevExpress.Maui.Scheduler" Version="22.2.3" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
-    <PackageReference Include="UnitsNet" Version="4.149.0" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
-    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.2" />
-    <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />
-	  <ProjectReference Include="..\WorkoutTracker.Services\WorkoutTracker.Services.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Update="Controls\WorkoutDefinitionEditor.xaml.cs">
-	    <DependentUpon>WorkoutDefinitionEditor.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\EditWorkoutDefinition.xaml.cs">
-	    <DependentUpon>EditWorkoutDefinition.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\EditWorkoutProgram.xaml.cs">
-	    <DependentUpon>EditWorkoutProgram.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\WorkoutPrograms.xaml.cs">
-	    <DependentUpon>WorkoutPrograms.xaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-	<ItemGroup>
-	  <MauiXaml Update="Controls\WorkoutDefinitionEditor.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Controls\WorkoutDefinition\ExerciseDefinitionEditor.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Controls\WorkoutDefinition\PowerLadderEditor.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Controls\WorkoutDefinition\SpecificExerciseSelectorEditor.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\EditWorkoutDefinition.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\EditWorkoutProgram.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="TemplateSelectors\" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Plugin.LocalNotification" Version="10.1.4" />
+        <PackageReference Include="CommunityToolkit.Maui" Version="5.1.0" />
+        <PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.7.1.5" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.0-preview.4.23260.4" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0-preview.4.23259.5" />
+        <PackageReference Include="Microsoft.Identity.Client" Version="4.54.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0-preview.4.23259.5" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-preview.4.8333" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-preview.4.23259.5" />
+        <PackageReference Include="DevExpress.Maui.Charts" Version="22.2.6" />
+        <PackageReference Include="DevExpress.Maui.CollectionView" Version="22.2.6" />
+        <PackageReference Include="DevExpress.Maui.Core" Version="22.2.6" />
+        <PackageReference Include="DevExpress.Maui.DataGrid" Version="22.2.6" />
+        <PackageReference Include="DevExpress.Maui.Editors" Version="22.2.6" />
+        <PackageReference Include="DevExpress.Maui.Scheduler" Version="22.2.6" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+        <PackageReference Include="UnitsNet" Version="4.149.0" />
+        <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+        <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.2" />
+        <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\WorkoutTracker.Models\WorkoutTracker.Models.csproj" />
+        <ProjectReference Include="..\WorkoutTracker.Services\WorkoutTracker.Services.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Controls\WorkoutDefinitionEditor.xaml.cs">
+            <DependentUpon>WorkoutDefinitionEditor.xaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\EditWorkoutDefinition.xaml.cs">
+            <DependentUpon>EditWorkoutDefinition.xaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\EditWorkoutProgram.xaml.cs">
+            <DependentUpon>EditWorkoutProgram.xaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\WorkoutPrograms.xaml.cs">
+            <DependentUpon>WorkoutPrograms.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <MauiXaml Update="Controls\WorkoutDefinitionEditor.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Controls\WorkoutDefinition\ExerciseDefinitionEditor.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Controls\WorkoutDefinition\PowerLadderEditor.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Controls\WorkoutDefinition\SpecificExerciseSelectorEditor.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Views\EditWorkoutDefinition.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+        <MauiXaml Update="Views\EditWorkoutProgram.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </MauiXaml>
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="TemplateSelectors\" />
+    </ItemGroup>
 </Project>
