@@ -60,11 +60,6 @@ await containerClient.CreateIfNotExistsAsync();
 builder.Services.AddSingleton(containerClient);
 
 var app = builder.Build();
-if (app.Environment.IsProduction())
-{
-    app.Urls.Add("http://+:80");
-    app.Urls.Add("https://+:443");
-}
 
 app.UseCors(config =>
 {
