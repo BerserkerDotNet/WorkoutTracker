@@ -11,7 +11,9 @@ using WorkoutTracker.MAUI.Services.Data.Entities;
 using WorkoutTracker.Models.Contracts;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.Services;
 using WorkoutTracker.Services.Interfaces;
+using WorkoutTracker.Services.Models;
 
 namespace WorkoutTracker.MAUI.Services.Data;
 
@@ -62,6 +64,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         _database.CreateTable<LogsDbEntity>();
         _database.CreateTable<ProgramsDbEntity>();
         _database.CreateTable<Settings>();
+        _database.CreateTable<WorkoutStatistics>();
         _database.CreateTable<RecordsToSync>();
         _database.CreateTable<ProfileDbEntity>();
     }
@@ -87,9 +90,11 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         });
     }
 
-    public IEnumerable<RecordsToSync> GetPendingChanges()
+    public IEnumerable<RecordToSyncViewModel> GetPendingChanges()
     {
-        return _database.Table<RecordsToSync>().ToList();
+        return _database.Table<RecordsToSync>()
+            .Select(r => r.ToViewModel())
+            .ToList();
     }
 
     public IExerciseSet GetMaxWeightLiftedOnExercise(Guid id)
@@ -125,6 +130,31 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
     {
         var settings = _database.Table<Settings>().FirstOrDefault();
         return settings?.LastSyncDate ?? DateTime.MinValue;
+    }
+
+    public TotalWorkoutData GetWorkoutStatistics()
+    {
+        var stats = _database.Table<WorkoutStatistics>().FirstOrDefault();
+        if (stats is null)
+        {
+            return new TotalWorkoutData(0, 0, 0);
+        }
+
+        return new TotalWorkoutData(stats.TotalWorkouts, stats.WorkoutsThisWeek, stats.WorkoutsThisMonth);
+    }
+    
+    public void UpdateWorkoutStatistics(TotalWorkoutData data)
+    {
+        var stats = _database.Table<WorkoutStatistics>().FirstOrDefault() ?? new WorkoutStatistics
+        {
+            Id = Guid.NewGuid()
+        };
+
+        stats.TotalWorkouts = data.TotalCount;
+        stats.WorkoutsThisWeek = data.ThisWeek;
+        stats.WorkoutsThisMonth = data.ThisMonth;
+
+        _database.InsertOrReplace(stats);
     }
 
     public IEnumerable<MuscleViewModel> GetMuscles()
@@ -163,6 +193,14 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         UpdateViewModel(profile);
     }
 
+    public IEnumerable<LogEntryViewModel> GetWorkoutLogs()
+    {
+        return _database.GetAllWithChildren<LogsDbEntity>(recursive: true)
+            .OrderByDescending(e => e.Date)
+            .Select(e => e.ToViewModel())
+            .ToArray();
+    }
+
     public T Get<T>(Guid id)
         where T : BaseDbEntity, new()
     {
@@ -183,6 +221,33 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         _database.Delete(recordToDelete);
     }
 
+    public T GetViewModel<T>(Guid recordId)
+        where T: class
+    {
+        var targetType = typeof(T);
+        if (targetType == typeof(ExerciseViewModel))
+        {
+            return _database.GetWithChildren<ExerciseDbEntity>(recordId, recursive: true).ToViewModel() as T;
+        }
+        
+        if (targetType == typeof(LogEntryViewModel))
+        {
+            return _database.GetWithChildren<LogsDbEntity>(recordId, recursive: true).ToViewModel() as T;
+        }
+        
+        if (targetType == typeof(WorkoutProgram))
+        {
+            return _database.GetWithChildren<ProgramsDbEntity>(recordId, recursive: true).ToViewModel() as T;
+        }
+        
+        if (targetType == typeof(RecordToSyncViewModel))
+        {
+            return _database.GetWithChildren<RecordsToSync>(recordId, recursive: true).ToViewModel() as T;
+        }
+
+        throw new NotImplementedException($"Get of {typeof(T)} entity is not implemented.");
+    }
+
     public void DeleteViewModel<T>(T model)
     {
         BaseDbEntity dbData = model switch
@@ -190,6 +255,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
             ExerciseViewModel eVm => ExerciseDbEntity.FromViewModel(eVm),
             LogEntryViewModel lVm => LogsDbEntity.FromViewModel(lVm),
             WorkoutProgram lVm => ProgramsDbEntity.FromViewModel(lVm),
+            RecordToSyncViewModel rVm => RecordsToSync.FromViewModel(rVm),
             _ => throw new NotImplementedException($"Delete of {typeof(T)} entity is not implemented.")
         };
 

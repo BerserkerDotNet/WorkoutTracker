@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:viewModels="clr-namespace:WorkoutTracker.Services.ViewModels;assembly=WorkoutTracker.Services"
+             x:Class="WorkoutTracker.MAUI.Views.WorkoutStats"
+             x:DataType="viewModels:WorkoutStatsViewModel"
+             Title="Workout Stats">
+    <ScrollView>
+        <VerticalStackLayout>
+            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*,*">
+                <dxco:SimpleButton Style="{StaticResource cardButtonStyle}" HeightRequest="200">
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="*,2*,*,*">
+                        <Label FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="Total Workouts" VerticalOptions="Start"/>
+                        <Image Source="workout" Grid.Column="1" WidthRequest="24" HeightRequest="24"  VerticalOptions="Start"/>
+                        <Label Grid.Row="1" 
+                               TextColor="{AppThemeBinding 
+                               Light={StaticResource Gray950}, 
+                               Dark={StaticResource White}}" 
+                               Text="{Binding TotalWorkoutData.TotalCount}"
+                               FontSize="40"
+                               HorizontalOptions="Center"
+                               FontAttributes="Bold"/>
+                        <HorizontalStackLayout Grid.Row="2" VerticalOptions="End">
+                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="{Binding TotalWorkoutData.ThisWeek}" FontAttributes="Bold"/>
+                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text=" this week" Margin="4,0,0,0"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Grid.Row="3" VerticalOptions="End">
+                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="{Binding TotalWorkoutData.ThisMonth}" FontAttributes="Bold"/>
+                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="this month" Margin="4,0,0,0"/>
+                        </HorizontalStackLayout>
+                    </Grid>
+                </dxco:SimpleButton>
+                <dxco:SimpleButton Grid.Column="1"  Style="{StaticResource cardButtonStyle}" HeightRequest="100">
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="*,*">
+                        <Label FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="Active Users" VerticalOptions="Start"/>
+                        <Image Source="add" Grid.Column="1" WidthRequest="16" HeightRequest="16"  VerticalOptions="Start"/>
+                        <HorizontalStackLayout Grid.Row="1" VerticalOptions="End">
+                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="120" FontAttributes="Bold"/>
+                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="online" Margin="4,0,0,0"/>
+                        </HorizontalStackLayout>
+                    </Grid>
+                </dxco:SimpleButton>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

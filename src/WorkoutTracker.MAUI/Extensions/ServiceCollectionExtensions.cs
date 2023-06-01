@@ -11,6 +11,7 @@ public static class MauiAppBuilderExtensions
     public static MauiAppBuilder AddViewModels(this MauiAppBuilder builder)
     {
         builder.Services.AddSingleton<WorkoutViewModel>();
+        builder.Services.AddSingleton<WorkoutStatsViewModel>();
         builder.Services.AddSingleton<WorkoutProgramsViewModel>();
         builder.Services.AddSingleton<LibraryViewModel>();
         builder.Services.AddSingleton<EditExercisePageViewModel>();
@@ -22,6 +23,7 @@ public static class MauiAppBuilderExtensions
     public static MauiAppBuilder AddViews(this MauiAppBuilder builder)
     {
         builder.Services.AddSingleton<Workout>();
+        builder.Services.AddSingleton<WorkoutStats>();
         builder.Services.AddSingleton<Library>();
         builder.Services.AddSingleton<WorkoutPrograms>();
         builder.Services.AddSingleton<EditExercisePage>();
