@@ -64,7 +64,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         _database.CreateTable<LogsDbEntity>();
         _database.CreateTable<ProgramsDbEntity>();
         _database.CreateTable<Settings>();
-        _database.CreateTable<WorkoutStatistics>();
+        _database.CreateTable<WorkoutStatisticsEntity>();
         _database.CreateTable<RecordsToSync>();
         _database.CreateTable<ProfileDbEntity>();
     }
@@ -132,29 +132,28 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         return settings?.LastSyncDate ?? DateTime.MinValue;
     }
 
-    public TotalWorkoutData GetWorkoutStatistics()
+    public WorkoutStatistics GetWorkoutStatistics()
     {
-        var stats = _database.Table<WorkoutStatistics>().FirstOrDefault();
-        if (stats is null)
+        var stats = _database.GetAllWithChildren<WorkoutStatisticsEntity>().FirstOrDefault();
+        if (stats is null || stats.Summary is null || stats.PercentageByMuscleGroup is null)
         {
-            return new TotalWorkoutData(0, 0, 0);
+            return new WorkoutStatistics(WorkoutsSummary.Empty, Enumerable.Empty<DataSeriesItem>());
         }
 
-        return new TotalWorkoutData(stats.TotalWorkouts, stats.WorkoutsThisWeek, stats.WorkoutsThisMonth);
+        return new WorkoutStatistics(stats.Summary, stats.PercentageByMuscleGroup);
     }
     
-    public void UpdateWorkoutStatistics(TotalWorkoutData data)
+    public void UpdateWorkoutStatistics(WorkoutStatistics data)
     {
-        var stats = _database.Table<WorkoutStatistics>().FirstOrDefault() ?? new WorkoutStatistics
+        var stats = _database.Table<WorkoutStatisticsEntity>().FirstOrDefault() ?? new WorkoutStatisticsEntity
         {
             Id = Guid.NewGuid()
         };
 
-        stats.TotalWorkouts = data.TotalCount;
-        stats.WorkoutsThisWeek = data.ThisWeek;
-        stats.WorkoutsThisMonth = data.ThisMonth;
+        stats.Summary = data.Summary;
+        stats.PercentageByMuscleGroup = data.PercentagePerMuscleGroup;
 
-        _database.InsertOrReplace(stats);
+        _database.InsertOrReplaceWithChildren(stats);
     }
 
     public IEnumerable<MuscleViewModel> GetMuscles()

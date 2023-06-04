@@ -3,21 +3,14 @@ using Android.Util;
 using AndroidX.Concurrent.Futures;
 using AndroidX.Work;
 using Google.Common.Util.Concurrent;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Plugin.LocalNotification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
-using WorkoutTracker.MAUI.Services.Data.Entities;
-using WorkoutTracker.Models.Entities;
-using WorkoutTracker.Models.Presentation;
+using WorkoutTracker.MAUI.Extensions;
 using WorkoutTracker.Services;
 using WorkoutTracker.Services.Interfaces;
-using WorkoutTracker.Services.Models;
 using Xamarin.Android.Net;
 
 namespace WorkoutTracker.MAUI.Services.Data;
@@ -26,27 +19,27 @@ public class DataSyncWorker : ListenableWorker, CallbackToFutureAdapter.IResolve
 {
     public const string TAG = "DataSyncWorker";
     private static int NotificationId = 100;
-    private readonly IWorkoutRepository _repository;
+    private readonly DataSyncService _dataSyncService;
 
     public DataSyncWorker(Context context, WorkerParameters workerParams) :
         base(context, workerParams)
     {
         try
         {
-            var a = Assembly.GetExecutingAssembly();
-            using var stream = a.GetManifestResourceStream("WorkoutTracker.MAUI.appsettings.json");
-
-            var config = new ConfigurationBuilder()
-                        .AddJsonStream(stream)
-                        .Build();
-
-            var handler = new AuthenticatedClientHandler(new AuthenticationService(config))
-            {
-                InnerHandler = new AndroidMessageHandler()
-            };
-            var httpClient = new HttpClient(handler);
-            httpClient.BaseAddress = new Uri(config["ApiEndpoint"]);
-            _repository = new ApiRepositoryClient(httpClient, new ApplicationContext<ApiRepositoryClient>(new NullNotificationService(), new LoggerFactory().CreateLogger<ApiRepositoryClient>()));
+            var builder = Host.CreateApplicationBuilder();
+            builder.Configuration.AddConfig();
+            
+            builder.Services.AddWorkoutTracker();
+            
+            var httpClientBuilder = builder.Services.AddHttpClient<IWorkoutRepository, ApiRepositoryClient>((client, sp) =>
+                {
+                    client.BaseAddress = new Uri(builder.Configuration["ApiEndpoint"]);
+                    return new ApiRepositoryClient(client, sp.GetRequiredService<ApplicationContext<ApiRepositoryClient>>());
+            })
+            .AddHttpMessageHandler<AuthenticatedClientHandler>()
+            .ConfigurePrimaryHttpMessageHandler<AndroidMessageHandler>();
+            var app = builder.Build();
+            _dataSyncService = app.Services.GetService<DataSyncService>();
         }
         catch (Exception ex)
         {
@@ -72,12 +65,8 @@ public class DataSyncWorker : ListenableWorker, CallbackToFutureAdapter.IResolve
     {
         try
         {
-            using var db = new WorkoutTrackerDb();
-            var syncServiceLogger = new LoggerFactory().CreateLogger<DataSyncService>();
-            var syncService = new DataSyncService(db, _repository, TimeProvider.System, syncServiceLogger);
-
-            await syncService.SynchronizeData();
-            syncService.UpdateStatistics();
+            await _dataSyncService.SynchronizeData();
+            await _dataSyncService.UpdateStatistics();
             
             Log.Debug(TAG, "Sending notification.");
             var notification = new NotificationRequest

@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Mediator;
+using Microsoft.Extensions.Logging;
 using WorkoutTracker.Models.Entities;
 using WorkoutTracker.Models.Presentation;
 using WorkoutTracker.Services.Interfaces;
 using WorkoutTracker.Services.Models;
+using WorkoutTracker.Services.Statistics;
 
 namespace WorkoutTracker.Services;
 
@@ -14,16 +16,16 @@ public record ServerData(IEnumerable<MuscleViewModel> Muscles,
     
 public class DataSyncService
 {
+    private readonly IMediator _mediator;
     private readonly IWorkoutDataProvider _db;
     private readonly IWorkoutRepository _repository;
-    private readonly TimeProvider _timeProvider;
     private readonly ILogger<DataSyncService> _logger;
 
-    public DataSyncService(IWorkoutDataProvider db, IWorkoutRepository repository, TimeProvider timeProvider,  ILogger<DataSyncService> logger)
+    public DataSyncService(IMediator mediator,  IWorkoutDataProvider db, IWorkoutRepository repository,  ILogger<DataSyncService> logger)
     {
+        _mediator = mediator;
         _db = db;
         _repository = repository;
-        _timeProvider = timeProvider;
         _logger = logger;
     }
 
@@ -66,28 +68,13 @@ public class DataSyncService
         _logger.LogInformation("Update completed");
     }
     
-    public void UpdateStatistics()
+    public async Task UpdateStatistics()
     {
-        var today = _timeProvider.GetLocalNow().Date;
-        
-        int daysSinceMonday = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
-        var beginningOfThisMonth = new DateTime(today.Year, today.Month, 1);
-        var beginningOfThisWeek = today.AddDays(-daysSinceMonday);
-        var logs = _db.GetWorkoutLogs(); 
-        var totalCount = logs
-            .GroupBy(e => new DateOnly(e.Date.Year, e.Date.Month, e.Date.Day))
-            .Count();
-        var thisMonth = logs
-            .Where(e => e.Date >= beginningOfThisMonth)
-            .GroupBy(e => new DateOnly(e.Date.Year, e.Date.Month, e.Date.Day))
-            .Count();
-        
-        var thisWeek = logs
-            .Where(e => e.Date >= beginningOfThisWeek)
-            .GroupBy(e => new DateOnly(e.Date.Year, e.Date.Month, e.Date.Day))
-            .Count();
+        var logs = _db.GetWorkoutLogs();
+        var totalWorkoutStats = await _mediator.Send(new GetWorkoutsSummary(logs));
+        var byMuscleGroup = await _mediator.Send(new GetPercentageByMuscleGroupStats(logs));
 
-        _db.UpdateWorkoutStatistics(new TotalWorkoutData(totalCount, thisWeek, thisMonth));
+        _db.UpdateWorkoutStatistics(new WorkoutStatistics(totalWorkoutStats, byMuscleGroup));
     }
 
     private async Task UpdateExerciseRecord(IWorkoutDataProvider db, RecordToSyncViewModel record)

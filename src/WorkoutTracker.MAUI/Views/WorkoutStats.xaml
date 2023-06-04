@@ -4,11 +4,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
              xmlns:viewModels="clr-namespace:WorkoutTracker.Services.ViewModels;assembly=WorkoutTracker.Services"
+             xmlns:charts="clr-namespace:WorkoutTracker.MAUI.Controls.Charts"
              x:Class="WorkoutTracker.MAUI.Views.WorkoutStats"
              x:DataType="viewModels:WorkoutStatsViewModel"
              Title="Workout Stats">
     <ScrollView>
         <VerticalStackLayout>
+            <charts:DonutChart 
+                BackgroundColor="Transparent"
+                Data="{Binding MuscleGroupStats }"
+                Title="By muscle group"
+                HeightRequest="300" 
+                HorizontalOptions="Fill" />
+
             <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*,*">
                 <dxco:SimpleButton Style="{StaticResource cardButtonStyle}" HeightRequest="200">
                     <Grid ColumnDefinitions="*, Auto" RowDefinitions="*,2*,*,*">
@@ -18,16 +26,16 @@
                                TextColor="{AppThemeBinding 
                                Light={StaticResource Gray950}, 
                                Dark={StaticResource White}}" 
-                               Text="{Binding TotalWorkoutData.TotalCount}"
+                               Text="{Binding WorkoutsSummary.TotalCount}"
                                FontSize="40"
                                HorizontalOptions="Center"
                                FontAttributes="Bold"/>
                         <HorizontalStackLayout Grid.Row="2" VerticalOptions="End">
-                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="{Binding TotalWorkoutData.ThisWeek}" FontAttributes="Bold"/>
+                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="{Binding WorkoutsSummary.ThisWeek}" FontAttributes="Bold"/>
                             <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text=" this week" Margin="4,0,0,0"/>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout Grid.Row="3" VerticalOptions="End">
-                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="{Binding TotalWorkoutData.ThisMonth}" FontAttributes="Bold"/>
+                            <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="{Binding WorkoutsSummary.ThisMonth}" FontAttributes="Bold"/>
                             <Label TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" Text="this month" Margin="4,0,0,0"/>
                         </HorizontalStackLayout>
                     </Grid>

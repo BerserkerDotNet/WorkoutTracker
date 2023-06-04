@@ -35,9 +35,9 @@ public interface IWorkoutDataProvider
     
     IEnumerable<LogEntryViewModel> GetWorkoutLogs();
 
-    TotalWorkoutData GetWorkoutStatistics();
+    WorkoutStatistics GetWorkoutStatistics();
     
-    void UpdateWorkoutStatistics(TotalWorkoutData data);
+    void UpdateWorkoutStatistics(WorkoutStatistics data);
 
     T GetViewModel<T>(Guid recordId)
         where T : class;
