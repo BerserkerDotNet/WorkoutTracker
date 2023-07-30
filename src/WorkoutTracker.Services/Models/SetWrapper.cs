@@ -12,7 +12,20 @@ public record SetWrapper(int Number, IExerciseSet Set, LogEntryViewModel Model)
 public record DataSeriesItem(string Name, int Value);
 
 
-public record WorkoutStatistics(WorkoutsSummary Summary, IEnumerable<DataSeriesItem> PercentagePerMuscleGroup);
+public record WorkoutStatistics(WorkoutsSummary Summary, WorkoutTimeMetrics TimeMetrics, IEnumerable<DataSeriesItem> PercentagePerMuscleGroup);
+
+public record WorkoutTimeMetrics(
+    TimeSpan TotalWorkoutTime,
+    TimeSpan TotalRestTime,
+    TimeSpan AvgWorkoutDuration,
+    TimeSpan AvgRestTime)
+{
+    public TimeSpan TotalActiveTime => TotalWorkoutTime - TotalRestTime;
+    
+    public TimeSpan AvgActiveTime => AvgWorkoutDuration - AvgRestTime;
+    
+    public static readonly WorkoutTimeMetrics Empty = new WorkoutTimeMetrics(TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero);
+}
 
 public record WorkoutsSummary(int TotalCount, int ThisWeek, int ThisMonth)
 {

@@ -137,10 +137,10 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         var stats = _database.GetAllWithChildren<WorkoutStatisticsEntity>().FirstOrDefault();
         if (stats is null || stats.Summary is null || stats.PercentageByMuscleGroup is null)
         {
-            return new WorkoutStatistics(WorkoutsSummary.Empty, Enumerable.Empty<DataSeriesItem>());
+            return new WorkoutStatistics(WorkoutsSummary.Empty, WorkoutTimeMetrics.Empty, Enumerable.Empty<DataSeriesItem>());
         }
 
-        return new WorkoutStatistics(stats.Summary, stats.PercentageByMuscleGroup);
+        return new WorkoutStatistics(stats.Summary, stats.TimeMetrics, stats.PercentageByMuscleGroup);
     }
     
     public void UpdateWorkoutStatistics(WorkoutStatistics data)
@@ -151,6 +151,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         };
 
         stats.Summary = data.Summary;
+        stats.TimeMetrics = data.TimeMetrics;
         stats.PercentageByMuscleGroup = data.PercentagePerMuscleGroup;
 
         _database.InsertOrReplaceWithChildren(stats);

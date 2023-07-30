@@ -43,6 +43,6 @@ public class DataSyncServiceTests
 
         await _service.UpdateStatistics();
 
-        _db.Received(1).UpdateWorkoutStatistics(new WorkoutStatistics(summary, byMuscleGroup));
+        _db.Received(1).UpdateWorkoutStatistics(new WorkoutStatistics(summary, null, byMuscleGroup));
     }
 }

@@ -36,6 +36,6 @@ public sealed class GetWorkoutsSummaryHandler : IRequestHandler<GetWorkoutsSumma
             .GroupBy(e => new DateOnly(e.Date.Year, e.Date.Month, e.Date.Day))
             .Count();
 
-        return new ValueTask<WorkoutsSummary>(Task.FromResult(new WorkoutsSummary(totalCount, thisWeek, thisMonth)));
+        return ValueTask.FromResult(new WorkoutsSummary(totalCount, thisWeek, thisMonth));
     }
 }

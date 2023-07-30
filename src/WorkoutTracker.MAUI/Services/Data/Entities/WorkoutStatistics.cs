@@ -10,6 +10,11 @@ namespace WorkoutTracker.MAUI.Services.Data.Entities
         public WorkoutsSummary Summary { get; set; }
         
         public string SummaryBlobbed { get; set; }
+        
+        [TextBlob(nameof(TimeMetricsBlobbed))]
+        public WorkoutTimeMetrics TimeMetrics { get; set; }
+        
+        public string TimeMetricsBlobbed { get; set; }
 
         [TextBlob(nameof(PercentageByMuscleGroupBlobbed))]
         public IEnumerable<DataSeriesItem> PercentageByMuscleGroup { get; set; }

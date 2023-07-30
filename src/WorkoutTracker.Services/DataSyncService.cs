@@ -73,8 +73,9 @@ public class DataSyncService
         var logs = _db.GetWorkoutLogs();
         var totalWorkoutStats = await _mediator.Send(new GetWorkoutsSummary(logs));
         var byMuscleGroup = await _mediator.Send(new GetPercentageByMuscleGroupStats(logs));
+        var timeMetrics = await _mediator.Send(new GetWorkoutTimeMetrics(logs));
 
-        _db.UpdateWorkoutStatistics(new WorkoutStatistics(totalWorkoutStats, byMuscleGroup));
+        _db.UpdateWorkoutStatistics(new WorkoutStatistics(totalWorkoutStats, timeMetrics, byMuscleGroup));
     }
 
     private async Task UpdateExerciseRecord(IWorkoutDataProvider db, RecordToSyncViewModel record)

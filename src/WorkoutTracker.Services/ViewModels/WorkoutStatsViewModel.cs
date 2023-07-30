@@ -13,6 +13,9 @@ public sealed partial class WorkoutStatsViewModel : ObservableObject
     private WorkoutsSummary _workoutsSummary;
     
     [ObservableProperty]
+    private WorkoutTimeMetrics _timeMetrics;
+    
+    [ObservableProperty]
     private ObservableCollection<DataSeriesItem> _muscleGroupStats;
     
     public WorkoutStatsViewModel(IWorkoutDataProvider trackerDb)
@@ -25,6 +28,7 @@ public sealed partial class WorkoutStatsViewModel : ObservableObject
         var stats = _trackerDb.GetWorkoutStatistics();
 
         WorkoutsSummary = stats.Summary;
+        TimeMetrics = stats.TimeMetrics;
         MuscleGroupStats = new ObservableCollection<DataSeriesItem>(stats.PercentagePerMuscleGroup);
     }
 }
