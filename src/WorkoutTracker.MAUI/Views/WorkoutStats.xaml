@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:viewModels="clr-namespace:WorkoutTracker.Services.ViewModels;assembly=WorkoutTracker.Services"
+             xmlns:charts="clr-namespace:WorkoutTracker.MAUI.Controls.Charts"
+             xmlns:converters="clr-namespace:WorkoutTracker.Services.Converters;assembly=WorkoutTracker.Services"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:presentation="clr-namespace:WorkoutTracker.Models.Presentation;assembly=WorkoutTracker.Models"
+             xmlns:editors="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:contracts="clr-namespace:WorkoutTracker.Models.Contracts;assembly=WorkoutTracker.Models"
+             x:Class="WorkoutTracker.MAUI.Views.WorkoutStats"
+             x:DataType="viewModels:WorkoutStatsViewModel"
+             Title="Workout Stats">
+    <ContentPage.Resources>
+        <converters:TimeSpanToTextConverter x:Key="TimeSpanToTextConverter" />
+        <converters:ImagePathConverter x:Key="ImagePathConverter"></converters:ImagePathConverter>
+        <converters:SetsToStatusConverter x:Key="SetsToStatusConverter"></converters:SetsToStatusConverter>
+        <converters:SetToColorConverter x:Key="SetToColorConverter"></converters:SetToColorConverter>
+        <converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"></converters:DateTimeToStringConverter>
+    </ContentPage.Resources>
+    <dxco:TabView ItemHeaderWidth="*">
+        <dxco:TabViewItem HeaderText="Journal">
+                <dxcv:DXCollectionView
+                    ItemsSource="{Binding WorkoutHistory}"
+                    LoadMoreCommand="{Binding LoadMoreLogsCommand}"
+                    IsRefreshing="{Binding IsRefreshing}"
+                    IsLoadMoreEnabled="True">
+                    <dxcv:DXCollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="presentation:LogEntryViewModel">
+                            <Grid Padding="10, 8, 18, 7">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Margin="0" Padding="0" ColumnSpacing="0" RowSpacing="0">
+                                    <Image
+                                        Source="{Binding Exercise.ImagePath, Converter = {StaticResource ImagePathConverter}}"
+                                        VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="80"
+                                        HeightRequest="80">
+                                        <Image.Clip>
+                                            <EllipseGeometry RadiusX="40" RadiusY="40" Center="40, 40" />
+                                        </Image.Clip>
+                                    </Image>
+                                    <Ellipse Margin="0"
+                                             Fill="Transparent"
+                                             Stroke="LightGray"
+                                             StrokeThickness="1"
+                                             HeightRequest="80"
+                                             WidthRequest="80"
+                                             VerticalOptions="Center"
+                                             HorizontalOptions="Center">
+                                    </Ellipse>
+                                </Grid>
+
+                                <StackLayout Padding="18,1,18,7" Grid.Column="1">
+                                    <Label Text="{Binding Exercise.Name}"
+                                           Margin="10,2"
+                                           FontSize="18"
+                                           TextColor="#55575c" />
+                                    <editors:ChipGroup ItemsSource="{Binding Sets}">
+                                        <editors:ChipGroup.ChipContentTemplate>
+                                            <DataTemplate x:DataType="contracts:IExerciseSet">
+                                                <HorizontalStackLayout>
+                                                    <Ellipse WidthRequest="10" HeightRequest="10"
+                                                             Fill="{Binding ., Converter={StaticResource SetToColorConverter}}" />
+                                                    <Label Text="{Binding Repetitions}" />
+                                                    <Label Text="x" />
+                                                    <Label Text="{Binding Weight}" />
+                                                </HorizontalStackLayout>
+                                            </DataTemplate>
+                                        </editors:ChipGroup.ChipContentTemplate>
+                                    </editors:ChipGroup>
+                                </StackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+                    <dxcv:DXCollectionView.GroupHeaderTemplate>
+                        <DataTemplate x:DataType="dxcv:GroupInfo">
+                            <Label Text="{Binding Value, Converter={StaticResource DateTimeToStringConverter}}" Padding="5, 10" FontSize="20" FontAttributes="Bold" />
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.GroupHeaderTemplate>
+                    <dxcv:DXCollectionView.SortDescriptions>
+                        <dxcv:SortDescription FieldName="Date" SortOrder="Ascending" />
+                    </dxcv:DXCollectionView.SortDescriptions>
+                    <dxcv:DXCollectionView.GroupDescription>
+                        <dxcv:GroupDescription FieldName="Date" GroupInterval="Date" SortOrder="Descending" />
+                    </dxcv:DXCollectionView.GroupDescription>
+                </dxcv:DXCollectionView>
+        </dxco:TabViewItem>
+        <dxco:TabViewItem HeaderText="Stats">
+            <VerticalStackLayout>
+                <charts:DonutChart
+                    BackgroundColor="Transparent"
+                    Data="{Binding MuscleGroupStats }"
+                    Title="By muscle group"
+                    HeightRequest="300"
+                    HorizontalOptions="Fill" />
+
+                <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*,*">
+                    <dxco:SimpleButton Style="{StaticResource cardButtonStyle}" HeightRequest="200">
+                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="*,2*,*,*">
+                            <Label FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                   Text="Total Workouts" VerticalOptions="Start" />
+                            <Image Source="workout" Grid.Column="1" WidthRequest="24" HeightRequest="24"
+                                   VerticalOptions="Start" />
+                            <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                   TextColor="{AppThemeBinding 
+                               Light={StaticResource Gray950}, 
+                               Dark={StaticResource White}}"
+                                   Text="{Binding WorkoutsSummary.TotalCount}"
+                                   FontSize="40"
+                                   HorizontalOptions="Center"
+                                   FontAttributes="Bold" />
+                            <HorizontalStackLayout Grid.Row="2" Grid.ColumnSpan="2" VerticalOptions="End">
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text="{Binding WorkoutsSummary.ThisWeek}" FontAttributes="Bold" />
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text=" this week" Margin="4,0,0,0" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2" VerticalOptions="End">
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text="{Binding WorkoutsSummary.ThisMonth}" FontAttributes="Bold" />
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text="this month" Margin="4,0,0,0" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </dxco:SimpleButton>
+                    <dxco:SimpleButton Grid.Column="1" Style="{StaticResource cardButtonStyle}" HeightRequest="200">
+                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="*,*,*,*,*">
+                            <Label FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                   Text="Time metrics" VerticalOptions="Start" />
+                            <Image Source="add" Grid.Column="1" WidthRequest="16" HeightRequest="16"
+                                   VerticalOptions="Start" />
+                            <HorizontalStackLayout Grid.Row="1" VerticalOptions="End">
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text="{Binding TimeMetrics.TotalWorkoutTime, Converter={StaticResource TimeSpanToTextConverter}}"
+                                    FontAttributes="Bold" />
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text=" spent working out" Margin="4,0,0,0" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Grid.Row="2" VerticalOptions="End">
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text="{Binding TimeMetrics.TotalRestTime, Converter={StaticResource TimeSpanToTextConverter}}"
+                                    FontAttributes="Bold" />
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text=" total rest time" Margin="4,0,0,0" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Grid.Row="3" VerticalOptions="End">
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text="{Binding TimeMetrics.AvgWorkoutDuration, Converter={StaticResource TimeSpanToTextConverter}}"
+                                    FontAttributes="Bold" />
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text=" workout session" Margin="4,0,0,0" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Grid.Row="4" VerticalOptions="End">
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text="{Binding TimeMetrics.AvgRestTime, Converter={StaticResource TimeSpanToTextConverter}}"
+                                    FontAttributes="Bold" />
+                                <Label
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}"
+                                    Text=" avg rest" Margin="4,0,0,0" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </dxco:SimpleButton>
+                </Grid>
+            </VerticalStackLayout>
+        </dxco:TabViewItem>
+    </dxco:TabView>
+</ContentPage>

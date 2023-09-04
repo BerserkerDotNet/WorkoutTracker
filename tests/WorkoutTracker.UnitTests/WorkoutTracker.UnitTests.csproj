@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="NBuilder" Version="6.1.0" />
     <PackageReference Include="NSubstitute" Version="5.0.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.3.0" />
@@ -19,7 +20,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-preview.4.8333" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-preview.6.*" />
   </ItemGroup>
 
   <ItemGroup>

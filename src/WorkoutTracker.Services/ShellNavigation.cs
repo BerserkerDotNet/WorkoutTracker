@@ -1,8 +1,10 @@
-﻿using INavigation = WorkoutTracker.Services.Interfaces.INavigation;
+﻿using WorkoutTracker.Models.Entities;
+using WorkoutTracker.Models.Presentation;
+using INavigation = WorkoutTracker.Services.Interfaces.INavigation;
 
 namespace WorkoutTracker.Services;
 
-public class ShellNavigation: INavigation
+public class ShellNavigation : INavigation
 {
     public Task GoTo(string path, Dictionary<string, object> parameters)
     {

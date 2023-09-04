@@ -44,31 +44,12 @@ public static class MauiProgram
                 fonts.AddFont("univia-pro-medium.ttf", "Univia-Pro Medium");
             });
 
-
-        var a = Assembly.GetExecutingAssembly();
-        using var stream = a.GetManifestResourceStream("WorkoutTracker.MAUI.appsettings.json");
-
-        var config = new ConfigurationBuilder()
-                    .AddJsonStream(stream)
-                    .Build();
-
-        builder.Configuration.AddConfiguration(config);
-
+        builder.Configuration.AddConfig();
+        
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
-        builder.Services.AddScoped(typeof(ApplicationContext<>));
-        builder.Services.AddSingleton(new CDNImageProvider(new Uri("https://workout-tracker-content.azureedge.net/images/")));
-        builder.Services.AddScoped<AuthenticationService>();
-        builder.Services.AddScoped<ICacheService, AndroidCacheService>();
-        builder.Services.AddScoped<INotificationService, CommunityToolkitNotificationService>();
-        builder.Services.AddScoped<AndroidMessageHandler>();
-        builder.Services.AddScoped<AuthenticatedClientHandler>();
-        builder.Services.AddSingleton<WorkoutTrackerDb>();
-        builder.Services.AddSingleton<IWorkoutDataProvider, WorkoutTrackerDb>();
-        builder.Services.AddSingleton<INavigation, ShellNavigation>();
-        builder.Services.AddSingleton<ISetsGenerator, SetsGenerator>();
-        builder.Services.AddSingleton<IExerciseTimerService, ExerciseTimerService>();
+        builder.Services.AddWorkoutTracker();
 
         //var httpClientBuilder = builder.Services.AddHttpClient<IWorkoutRepository, CachedWorkoutRepositoryDecorator>((client, sp) =>
         //{
@@ -79,7 +60,7 @@ public static class MauiProgram
         //})
         //.AddHttpMessageHandler<AuthenticatedClientHandler>()
         //.ConfigurePrimaryHttpMessageHandler<AndroidMessageHandler>();
-
+        
         using var workerConstraintsbuilder = new Constraints.Builder();
         workerConstraintsbuilder.SetRequiredNetworkType(NetworkType.Connected);
         var workConstraints = workerConstraintsbuilder.Build();

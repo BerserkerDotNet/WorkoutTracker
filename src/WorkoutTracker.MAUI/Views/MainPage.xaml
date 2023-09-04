@@ -2,9 +2,9 @@
 <Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
          xmlns:local="clr-namespace:WorkoutTracker.MAUI.Views"
-         Style="{StaticResource ShellStyle}"
          xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
          ios:Page.UseSafeArea="true"
+         Style="{StaticResource ShellStyle}"
         x:Class= "WorkoutTracker.MAUI.Views.MainPage">
     <TabBar>
         <Tab Title="Workout" Icon="workout">
@@ -12,6 +12,9 @@
         </Tab>
         <Tab Title="Library" Icon="library">
             <ShellContent ContentTemplate="{DataTemplate local:Library}" />
+        </Tab>
+        <Tab Title ="Stats" Icon="stats">
+            <ShellContent ContentTemplate="{DataTemplate local:WorkoutStats}" />
         </Tab>
         <Tab Title ="Programs" Icon="programs">
             <ShellContent ContentTemplate="{DataTemplate local:WorkoutPrograms}" />

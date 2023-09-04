@@ -11,7 +11,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-preview.4.8333" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-preview.6.*" />
+    <PackageReference Include="Mediator.Abstractions" Version="2.1.1" />
   </ItemGroup>
 
 </Project>
