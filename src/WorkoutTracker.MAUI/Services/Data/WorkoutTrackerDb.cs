@@ -43,6 +43,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
     private const string DatabaseFilename = "WorkoutTrackerDb.db3";
     private static string DatabasePath => Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
     private SQLiteConnection _database;
+
     public WorkoutTrackerDb()
     {
         Init();
@@ -76,7 +77,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         var logs = data.Logs.Select(LogsDbEntity.FromViewModel);
         var programs = data.Programs.Select(ProgramsDbEntity.FromViewModel);
         var profile = ProfileDbEntity.FromViewModel(data.Profile);
-        
+
         _database.RunInTransaction(() =>
         {
             _database.InsertOrReplaceAllWithChildren(muscles);
@@ -103,8 +104,8 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
             .ToArray();
 
         var legacyLogs = logs.SelectMany(e => e.Sets)
-        .OfType<LegacySet>()
-        .ToArray();
+            .OfType<LegacySet>()
+            .ToArray();
 
         var maxSet = legacyLogs.MaxBy(s => s.WeightLB);
 
@@ -137,18 +138,17 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         var stats = _database.GetAllWithChildren<WorkoutStatisticsEntity>().FirstOrDefault();
         if (stats is null || stats.Summary is null || stats.PercentageByMuscleGroup is null)
         {
-            return new WorkoutStatistics(WorkoutsSummary.Empty, WorkoutTimeMetrics.Empty, Enumerable.Empty<DataSeriesItem>());
+            return new WorkoutStatistics(WorkoutsSummary.Empty, WorkoutTimeMetrics.Empty,
+                Enumerable.Empty<DataSeriesItem>());
         }
 
         return new WorkoutStatistics(stats.Summary, stats.TimeMetrics, stats.PercentageByMuscleGroup);
     }
-    
+
     public void UpdateWorkoutStatistics(WorkoutStatistics data)
     {
-        var stats = _database.Table<WorkoutStatisticsEntity>().FirstOrDefault() ?? new WorkoutStatisticsEntity
-        {
-            Id = Guid.NewGuid()
-        };
+        var stats = _database.Table<WorkoutStatisticsEntity>().FirstOrDefault() ??
+                    new WorkoutStatisticsEntity { Id = Guid.NewGuid() };
 
         stats.Summary = data.Summary;
         stats.TimeMetrics = data.TimeMetrics;
@@ -180,7 +180,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         var profile = _database.Table<ProfileDbEntity>().FirstOrDefault();
         if (profile is null)
         {
-            return new Profile {Name = "N/A"};
+            return new Profile { Name = "N/A" };
         }
 
         return profile.ToViewModel();
@@ -193,7 +193,24 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         UpdateViewModel(profile);
     }
 
-    public IEnumerable<LogEntryViewModel> GetWorkoutLogs()
+    public IEnumerable<LogEntryViewModel> GetWorkoutLogs(DateTime startDate, int daysToFetch)
+    {
+        var endDate = startDate.AddDays(-daysToFetch);
+        var items = _database.CreateCommand($"SELECT * from '{nameof(LogsDbEntity)}' where Date > {endDate.Ticks}")
+            .ExecuteQuery<LogsDbEntity>();
+
+        foreach (var item in items)
+        {
+            _database.GetChildren(item, true);
+        }
+
+        return items.OrderByDescending(e => e.Date)
+            .ThenBy(e=> e.Order)
+            .Select(e => e.ToViewModel())
+            .ToArray();
+    }
+    
+    public IEnumerable<LogEntryViewModel> GetAllWorkoutLogs()
     {
         return _database.GetAllWithChildren<LogsDbEntity>(recursive: true)
             .OrderByDescending(e => e.Date)
@@ -222,24 +239,24 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
     }
 
     public T GetViewModel<T>(Guid recordId)
-        where T: class
+        where T : class
     {
         var targetType = typeof(T);
         if (targetType == typeof(ExerciseViewModel))
         {
             return _database.GetWithChildren<ExerciseDbEntity>(recordId, recursive: true).ToViewModel() as T;
         }
-        
+
         if (targetType == typeof(LogEntryViewModel))
         {
             return _database.GetWithChildren<LogsDbEntity>(recordId, recursive: true).ToViewModel() as T;
         }
-        
+
         if (targetType == typeof(WorkoutProgram))
         {
             return _database.GetWithChildren<ProgramsDbEntity>(recordId, recursive: true).ToViewModel() as T;
         }
-        
+
         if (targetType == typeof(RecordToSyncViewModel))
         {
             return _database.GetWithChildren<RecordsToSync>(recordId, recursive: true).ToViewModel() as T;
@@ -262,10 +279,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         _database.Delete(dbData);
         _database.InsertOrReplace(new RecordsToSync
         {
-            Id = dbData.Id,
-            RecordId = dbData.Id,
-            TableName = model.GetType().Name,
-            OpType = OperationType.Delete
+            Id = dbData.Id, RecordId = dbData.Id, TableName = model.GetType().Name, OpType = OperationType.Delete
         });
     }
 
@@ -283,10 +297,7 @@ public class WorkoutTrackerDb : IWorkoutDataProvider, IDisposable
         _database.InsertOrReplaceWithChildren(dbData, recursive: true);
         _database.InsertOrReplace(new RecordsToSync
         {
-            Id = dbData.Id,
-            RecordId = dbData.Id,
-            TableName = model.GetType().Name,
-            OpType = OperationType.Update
+            Id = dbData.Id, RecordId = dbData.Id, TableName = model.GetType().Name, OpType = OperationType.Update
         });
     }
 

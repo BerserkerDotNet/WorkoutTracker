@@ -33,7 +33,9 @@ public interface IWorkoutDataProvider
 
     IEnumerable<LogEntryViewModel> GetTodaysSchedule();
     
-    IEnumerable<LogEntryViewModel> GetWorkoutLogs();
+    IEnumerable<LogEntryViewModel> GetWorkoutLogs(DateTime startDate, int daysToFetch);
+
+    IEnumerable<LogEntryViewModel> GetAllWorkoutLogs();
 
     WorkoutStatistics GetWorkoutStatistics();
     

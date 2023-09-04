@@ -70,7 +70,8 @@ public class DataSyncService
     
     public async Task UpdateStatistics()
     {
-        var logs = _db.GetWorkoutLogs();
+        var startDate = DateTime.UtcNow;
+        var logs = _db.GetAllWorkoutLogs();
         var totalWorkoutStats = await _mediator.Send(new GetWorkoutsSummary(logs));
         var byMuscleGroup = await _mediator.Send(new GetPercentageByMuscleGroupStats(logs));
         var timeMetrics = await _mediator.Send(new GetWorkoutTimeMetrics(logs));
