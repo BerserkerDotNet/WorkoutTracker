@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos;
+using System.Net;
 using WorkoutTracker.Models.Entities;
 
 namespace WorkoutTracker.Api.Extensions;
@@ -25,9 +26,11 @@ public static class ContainerExtensions
     {
         logger.LogInformation("Deleting exercise '{Id}'", id);
         var response = await container.DeleteItemAsync<TEntity>(id.ToString(), new PartitionKey(id.ToString()));
-        if (response.StatusCode != System.Net.HttpStatusCode.NoContent)
+        if (response.StatusCode == HttpStatusCode.NoContent)
         {
-            throw new Exception($"Error deleting exercise. {response.StatusCode}.");
+            return;
         }
+
+        throw new Exception($"Error deleting exercise. {response.StatusCode}.");
     }
 }
