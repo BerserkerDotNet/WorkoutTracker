@@ -25,12 +25,13 @@ public static class ContainerExtensions
         where TEntity : EntityBase
     {
         logger.LogInformation("Deleting exercise '{Id}'", id);
-        var response = await container.DeleteItemAsync<TEntity>(id.ToString(), new PartitionKey(id.ToString()));
-        if (response.StatusCode == HttpStatusCode.NoContent)
+        try
         {
-            return;
+            await container.DeleteItemAsync<TEntity>(id.ToString(), new PartitionKey(id.ToString()));
         }
-
-        throw new Exception($"Error deleting exercise. {response.StatusCode}.");
+        catch(CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            logger.LogWarning(ex, $"Deleting the item ('{id}') that does not exist.");
+        }
     }
 }
