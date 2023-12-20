@@ -73,9 +73,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
-
+app.UseAntiforgery();
 app.MapRoutes();
 
 app.Run();
