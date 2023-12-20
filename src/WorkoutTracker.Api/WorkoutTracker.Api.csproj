@@ -18,11 +18,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.34.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
-    <PackageReference Include="Mediator.SourceGenerator" Version="2.1.1">
+    <PackageReference Include="Mediator.SourceGenerator" Version="2.1.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Mediator.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Mediator.Abstractions" Version="2.1.7" />
   </ItemGroup>
 
   <ItemGroup>
