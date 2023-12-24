@@ -36,7 +36,7 @@ public static class Routes
         {
             await mediator.Send(new UploadImage(files.First()));
             return Results.NoContent();
-        });
+        }).DisableAntiforgery();
 
         return group;
     }

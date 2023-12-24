@@ -18,10 +18,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediator();
 builder.Services.AddCors();
-builder.Services.AddAntiforgery();
 
 var dbEndpoint = builder.Configuration.GetValue<string>("DbEndpoint");
-var cosmosClient = new CosmosClient(dbEndpoint, new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true }), new CosmosClientOptions
+var cosmosClient = new CosmosClient(dbEndpoint, new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true}), new CosmosClientOptions
 {
     Serializer = new CosmosSystemTextJsonSerializer(new JsonSerializerOptions
     {
@@ -75,7 +74,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseAntiforgery();
 app.MapRoutes();
 
 app.Run();
