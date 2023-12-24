@@ -31,7 +31,7 @@ public static class ContainerExtensions
         }
         catch(CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            logger.LogWarning(ex, $"Deleting the item ('{id}') that does not exist.");
+            logger.LogWarning(ex, $"Deleting the item ({typeof(TEntity)} '{id}') that does not exist.");
         }
     }
 }
